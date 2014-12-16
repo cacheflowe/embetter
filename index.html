@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Embetter</title>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+    <meta content="no" name="imagetoolbar" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /> 
+    <link rel="stylesheet" href="./vendor/normalize.css">
+    <link rel="stylesheet" href="./vendor/skeleton.css">
+    <link rel="stylesheet" href="./embetter.css">
+    <style>
+      html, body {
+        margin: 0px;
+        padding: 0px;
+        height: 100%;
+        background-color: #efefef;
+      }
+      .container {
+        max-width: 600px;
+        width: 90%;
+        margin-top: 40px;
+      }
+      .embetter-container {
+        /*margin-bottom: 60px;*/
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Embetter</h1>
+      <h5>Because iframes are janky.</h5>
+      <p>Media embeds can quickly bog your site down, so why not lazy-load them? The basic Embetter "player" consists of a tiny template with a thumbnail image, a play button, and the essential data needed to construct the responsive iframe embed code. Add a dash of javascript &amp; css to your web page, and you have a simple, lightweight media player.</p>
+      <div class="row">
+        <div class="twelve columns">
+          <label for="pasteMediaUrl">Paste a media URL to build an Embetter player:</label>
+          <input class="u-full-width" type="email" placeholder="Vimeo, YouTube, Instagram, Soundcloud, or Dailymotion" id="pasteMediaUrl">
+        </div>
+      </div>
+      <div class="row">
+        <div id="new-embeds"></div>
+        <div id="test-embeds"></div>
+      </div>
+    </div>
+    <script src="./vendor/reqwest.min.js"></script>
+    <script src="./embetter.js"></script>
+    <script>
+      /////////////////////////////////////////////////////////////
+      // SET UP SERVICES/PLAYERS PER PAGE
+      /////////////////////////////////////////////////////////////
+      var pageEl = document.querySelector('.container');
+      var curServices = [
+        window.embetter.services.youtube, 
+        window.embetter.services.vimeo, 
+        window.embetter.services.soundcloud,
+        window.embetter.services.instagram,
+        window.embetter.services.dailymotion
+      ];
+      window.embetter.utils.initMediaPlayers(pageEl, curServices);
+
+      /////////////////////////////////////////////////////////////
+      // TEST CREATE EMBEDS FROM URL
+      /////////////////////////////////////////////////////////////
+      var testEmbedsEl = document.getElementById('test-embeds');
+      window.embetter.services.youtube.buildFromText('https://www.youtube.com/watch?v=l9XdkPsaynk', testEmbedsEl);
+      window.embetter.services.vimeo.buildFromText('http://vimeo.com/99276873', testEmbedsEl);
+      // window.embetter.services.soundcloud.buildFromText('https://soundcloud.com/plasticsoundsupply/drop-logik-time-lost', testEmbedsEl);
+      window.embetter.services.soundcloud.buildFromText('https://soundcloud.com/tylerpotts/night-beach?in=tylerpotts/sets/2014-recordings', testEmbedsEl);
+      window.embetter.services.instagram.buildFromText('http://instagram.com/p/wnAXxzQY9y/', testEmbedsEl);
+      window.embetter.services.dailymotion.buildFromText('http://www.dailymotion.com/video/x14y6rv_the-ultimate-drunk-fails-compilation_fun', testEmbedsEl);
+
+      /////////////////////////////////////////////////////////////
+      // LISTEN FOR URL PASTE INTO INPUT FIELD FOR DEMO
+      /////////////////////////////////////////////////////////////
+      var newEmbedsEl = document.getElementById('new-embeds');
+      var pasteInput = document.getElementById('pasteMediaUrl');
+      pasteInput.addEventListener('paste', function(e) {
+        window.requestAnimationFrame(function() {
+          window.embetter.utils.buildPlayerFromServiceURL(newEmbedsEl, pasteInput.value, curServices)
+          setTimeout(function() {
+            pasteInput.value = ''
+          }, 1000);
+        });
+      });
+    </script>
+  </body>
+</html>

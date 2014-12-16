@@ -1,0 +1,99 @@
+.embetter-container {
+  background-color: #000;
+  position: relative;
+  overflow: hidden;
+}
+
+.embetter-container a {
+  display: block;
+  line-height: 0;
+}
+
+.embetter-container img {
+  -webkit-transition: opacity 300ms linear, padding-bottom 300ms linear;
+  -moz-transition: opacity 300ms linear, padding-bottom 300ms linear;
+  -ms-transition: opacity 300ms linear, padding-bottom 300ms linear;
+  -o-transition: opacity 300ms linear, padding-bottom 300ms linear;
+  transition: opacity 300ms linear, padding-bottom 300ms linear;
+
+  width: 100%;
+}
+
+.embetter-container:hover img {
+  opacity: 0.8;
+}
+
+.embetter-container.playing img {
+  opacity: 0;
+}
+
+.embetter-container button {
+  -webkit-transition: opacity 300ms linear, -webkit-transform 300ms linear;
+  -moz-transition: opacity 300ms linear, -webkit-transform 300ms linear;
+  -ms-transition: opacity 300ms linear, -webkit-transform 300ms linear;
+  -o-transition: opacity 300ms linear, -webkit-transform 300ms linear;
+  transition: opacity 300ms linear, -webkit-transform 300ms linear;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  text-indent: -200%;
+  overflow: hidden;
+  border: 0;
+  outline: 0;
+  background-color: transparent;
+  background-image: url(./icon-play.svg);
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  cursor: pointer;
+}
+
+.embetter-container:hover button {
+  -webkit-transform: scale(1.04);
+  -moz-transform: scale(1.04);
+  -ms-transform: scale(1.04);
+  -o-transform: scale(1.04);
+  transform: scale(1.04);
+}
+
+.embetter-container.playing button {
+  opacity: 0;
+}
+
+.embetter-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+
+
+/* Per-service overrides */
+
+.embetter-container[data-youtube-id],
+.embetter-container[data-dailymotion-id] {
+  padding-bottom: 56.25%;
+  height: 0;
+}
+
+.embetter-container[data-youtube-id] img,
+.embetter-container[data-dailymotion-id] img {
+  margin: -9.4% 0;
+}
+
+.embetter-container[data-soundcloud-id] {
+  max-width: 600px;
+}
+
+.embetter-container[data-instagram-id] {
+  max-width: 600px;
+}
+.embetter-container[data-instagram-id].playing img {
+  padding-bottom: 80px;
+}
+
