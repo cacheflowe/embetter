@@ -81,7 +81,6 @@ window.embetter.utils = {
   },
   initPlayer: function(embedEl, service) {
     if(embedEl.classList.contains('embetter-player-ready') == true) {
-      console.log('already inited: ', embedEl);
       return;
     }
     window.embetter.curEmbeds.push( new window.embetter.EmbetterPlayer(embedEl, service) );
