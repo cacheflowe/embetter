@@ -6,6 +6,7 @@ window.embetter = {};
 
 window.embetter.debug = true;
 window.embetter.curEmbeds = [];
+window.embetter.mobileScrollTimeout = null;
 
 window.embetter.utils = {
   /////////////////////////////////////////////////////////////
@@ -26,7 +27,6 @@ window.embetter.utils = {
   playerHTML: function(service, mediaUrl, thumbnail, id) {
     return '<div class="embetter-container" ' + service.dataAttribute + '="' + id + '">\
         <a href="' + mediaUrl + '" target="_blank"><img src="' + thumbnail + '"></a>\
-        <button>Play</button>\
       </div>';
   },
   playerCode: function(htmlStr) {
@@ -54,8 +54,36 @@ window.embetter.utils = {
         window.embetter.utils.initPlayer(serviceEmbedContainers[j], service, embedsArray);
       }
     }
+    // handle mobile auto-embed on scroll
+    if(navigator.userAgent.toLowerCase().match(/iphone|ipad|ipod|android/)) {
+      // throttled scroll listener
+      window.addEventListener('scroll', function() {
+        if(window.embetter.mobileScrollTimeout != null) {
+          window.clearTimeout(window.embetter.mobileScrollTimeout);
+        }
+        // check to see if embeds are on screen. if so, embed! otherwise, unembed
+        window.embetter.mobileScrollTimeout = setTimeout(function() {
+          for (var i = 0; i < embedsArray.length; i++) {
+            var player = embedsArray[i];
+            var playerRect = player.el.getBoundingClientRect();
+            if(playerRect.bottom < window.innerHeight && playerRect.top > 0) {
+              player.embedMedia();
+            } else {
+              player.stop();
+            }
+          };
+        }, 500)
+      });
+      // force scroll to trigger listener
+      window.scroll(window.scrollX, window.scrollY+1); 
+      window.scroll(window.scrollX, window.scrollY-1);
+    };
   },
   initPlayer: function(embedEl, service, embedsArray) {
+    if(embedEl.classList.contains('embetter-player-ready') == true) {
+      console.log('already inited: ', embedEl);
+      return;
+    }
     embedsArray = embedsArray || window.embetter.curEmbeds;
     embedsArray.push( new window.embetter.EmbetterPlayer(embedEl, service) );
   },
@@ -189,7 +217,7 @@ window.embetter.services.soundcloud = {
   regex: window.embetter.utils.buildRegex('(?:soundcloud.com|snd.sc)\/(\\S*)(?:\\s|\\?|#)'),
   embed: function(id, w, h, autoplay) { 
     var autoplayQuery = (autoplay == true) ? '&amp;auto_play=true' : '';
-    return '<iframe width="100%" height="600" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/'+ id + autoplayQuery +'&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe>';
+    return '<iframe width="100%" height="600" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/'+ id + autoplayQuery +'&amp;hide_related=false&amp;color=373737&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe>';
   },
   getData: function(mediaUrl, callback) {
     reqwest({
@@ -318,18 +346,12 @@ window.embetter.curPlayer = null;
 
 window.embetter.EmbetterPlayer = function(el, serviceObj) {
   this.el = el;
+  this.el.classList.add('embetter-player-ready');
   this.serviceObj = serviceObj;
   this.id = this.el.getAttribute(serviceObj.dataAttribute);
   this.thumbnail = this.el.querySelector('img');
   this.playerEl = null;
-
   this.buildPlayButton();
-
-  // add mobile auto-embed
-  console.warn('Mobile embeds should auto-embed when scrolled into view');
-  if(navigator.userAgent.toLowerCase().match(/iphone|ipad|ipod/)) {
-    this.embedMedia();
-  };
 };
 
 window.embetter.EmbetterPlayer.prototype.buildPlayButton = function() {
@@ -355,14 +377,18 @@ window.embetter.EmbetterPlayer.prototype.play = function() {
 };
 
 window.embetter.EmbetterPlayer.prototype.stop = function() {
-  this.playerEl.parentNode.removeChild(this.playerEl);
+  if(this.playerEl != null && this.playerEl.parentNode != null) {
+    this.playerEl.parentNode.removeChild(this.playerEl);
+  }
   this.el.classList.remove('playing');
 };
 
   // embed if mobile
 window.embetter.EmbetterPlayer.prototype.embedMedia = function() {
-  if(this.id != null) this.playerEl = window.embetter.utils.stringToDomElement(getYouTubeEmbed(this.id, this.thumbnail.width, this.thumbnail.height, false));
+  if(this.el.classList.contains('playing') == true) return;
+  if(this.id != null) this.playerEl = window.embetter.utils.stringToDomElement(this.serviceObj.embed(this.id, this.thumbnail.width, this.thumbnail.height, false));
   this.el.appendChild(this.playerEl);
+  this.el.classList.add('playing');
 };
 
 window.embetter.EmbetterPlayer.prototype.dispose = function() {
