@@ -21,9 +21,6 @@
         width: 90%;
         margin-top: 40px;
       }
-      .embetter-container {
-        /*margin-bottom: 60px;*/
-      }
     </style>
   </head>
   <body>
@@ -49,6 +46,8 @@
       // SET UP SERVICES/PLAYERS PER PAGE
       /////////////////////////////////////////////////////////////
       var pageEl = document.querySelector('.container');
+      var testEmbedsEl = document.getElementById('test-embeds');
+      
       var curServices = [
         window.embetter.services.youtube, 
         window.embetter.services.vimeo, 
@@ -61,7 +60,6 @@
       /////////////////////////////////////////////////////////////
       // TEST CREATE EMBEDS FROM URL
       /////////////////////////////////////////////////////////////
-      var testEmbedsEl = document.getElementById('test-embeds');
       window.embetter.services.youtube.buildFromText('https://www.youtube.com/watch?v=l9XdkPsaynk', testEmbedsEl);
       window.embetter.services.vimeo.buildFromText('http://vimeo.com/99276873', testEmbedsEl);
       // window.embetter.services.soundcloud.buildFromText('https://soundcloud.com/plasticsoundsupply/drop-logik-time-lost', testEmbedsEl);
@@ -78,8 +76,8 @@
         window.requestAnimationFrame(function() {
           window.embetter.utils.buildPlayerFromServiceURL(newEmbedsEl, pasteInput.value, curServices)
           setTimeout(function() {
-            pasteInput.value = ''
-          }, 1000);
+            pasteInput.value = '';
+          }, 750);
         });
       });
     </script>
