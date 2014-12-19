@@ -45,59 +45,57 @@ window.embetter.utils = {
   /////////////////////////////////////////////////////////////
   // MEDIA PLAYERS PAGE MANAGEMENT
   /////////////////////////////////////////////////////////////
-  initMediaPlayers: function(el, services, embedsArray) {
-    embedsArray = embedsArray || window.embetter.curEmbeds;
+  initMediaPlayers: function(el, services) {
     for (var i = 0; i < services.length; i++) {
       var service = services[i];
       var serviceEmbedContainers = el.querySelectorAll('div['+service.dataAttribute+']');
       for(var j=0; j < serviceEmbedContainers.length; j++) {
-        window.embetter.utils.initPlayer(serviceEmbedContainers[j], service, embedsArray);
+        window.embetter.utils.initPlayer(serviceEmbedContainers[j], service);
       }
     }
     // handle mobile auto-embed on scroll
     if(navigator.userAgent.toLowerCase().match(/iphone|ipad|ipod|android/)) {
-      // throttled scroll listener
-      window.addEventListener('scroll', function() {
-        if(window.embetter.mobileScrollTimeout != null) {
-          window.clearTimeout(window.embetter.mobileScrollTimeout);
-        }
-        // check to see if embeds are on screen. if so, embed! otherwise, unembed
-        window.embetter.mobileScrollTimeout = setTimeout(function() {
-          for (var i = 0; i < embedsArray.length; i++) {
-            var player = embedsArray[i];
-            var playerRect = player.el.getBoundingClientRect();
-            if(playerRect.bottom < window.innerHeight && playerRect.top > 0) {
-              player.embedMedia();
-            } else {
-              player.stop();
-            }
-          };
-        }, 500)
-      });
-      // force scroll to trigger listener
+      window.addEventListener('scroll', window.embetter.utils.scrollListener);
+      // force scroll to trigger listener on page load
       window.scroll(window.scrollX, window.scrollY+1); 
       window.scroll(window.scrollX, window.scrollY-1);
     };
   },
-  initPlayer: function(embedEl, service, embedsArray) {
+  scrollListener: function() {
+    // throttled scroll listener
+    if(window.embetter.mobileScrollTimeout != null) {
+      window.clearTimeout(window.embetter.mobileScrollTimeout);
+    }
+    // check to see if embeds are on screen. if so, embed! otherwise, unembed
+    window.embetter.mobileScrollTimeout = setTimeout(function() {
+      for (var i = 0; i < window.embetter.curEmbeds.length; i++) {
+        var player = window.embetter.curEmbeds[i];
+        var playerRect = player.el.getBoundingClientRect();
+        if(playerRect.bottom < window.innerHeight && playerRect.top > 0) {
+          player.embedMedia();
+        } else {
+          player.unembedMedia();
+        }
+      };
+    }, 500);
+  },
+  initPlayer: function(embedEl, service) {
     if(embedEl.classList.contains('embetter-player-ready') == true) {
       console.log('already inited: ', embedEl);
       return;
     }
-    embedsArray = embedsArray || window.embetter.curEmbeds;
-    embedsArray.push( new window.embetter.EmbetterPlayer(embedEl, service) );
+    window.embetter.curEmbeds.push( new window.embetter.EmbetterPlayer(embedEl, service) );
   },
-  disposeVideoPlayers: function(embedsArray) {
-    embedsArray = embedsArray || window.embetter.curEmbeds;
-    for (var i = 0; i < embedsArray.length; i++) {
-      embedsArray[i].dispose();
+  disposeVideoPlayers: function() {
+    for (var i = 0; i < window.embetter.curEmbeds.length; i++) {
+      window.embetter.curEmbeds[i].dispose();
     };
+    window.removeEventListener('scroll', window.embetter.utils.scrollListener);
   },
   /////////////////////////////////////////////////////////////
   // BUILD PLAYER FROM PASTE
   /////////////////////////////////////////////////////////////
-  buildPlayerFromServiceURL: function(el, string, services, embedsArray) {
-    embedsArray = embedsArray || window.embetter.curEmbeds;
+  buildPlayerFromServiceURL: function(el, string, services) {
     for (var i = 0; i < services.length; i++) {
       var service = services[i];
       if(string.match(service.regex) != null) {
@@ -356,7 +354,7 @@ window.embetter.EmbetterPlayer = function(el, serviceObj) {
 
 window.embetter.EmbetterPlayer.prototype.buildPlayButton = function() {
   this.playButton = document.createElement('button');
-  this.playButton.innerHTML = 'Play'
+  this.playButton.innerHTML = 'Play';
   this.el.appendChild(this.playButton);
 
   var self = this;
@@ -366,7 +364,7 @@ window.embetter.EmbetterPlayer.prototype.buildPlayButton = function() {
 
 window.embetter.EmbetterPlayer.prototype.play = function() {
   if(window.embetter.curPlayer != null) {
-    window.embetter.curPlayer.stop();
+    window.embetter.curPlayer.unembedMedia();
     window.embetter.curPlayer = null;
   }
 
@@ -376,7 +374,7 @@ window.embetter.EmbetterPlayer.prototype.play = function() {
   window.embetter.curPlayer = this;
 };
 
-window.embetter.EmbetterPlayer.prototype.stop = function() {
+window.embetter.EmbetterPlayer.prototype.unembedMedia = function() {
   if(this.playerEl != null && this.playerEl.parentNode != null) {
     this.playerEl.parentNode.removeChild(this.playerEl);
   }
@@ -392,7 +390,7 @@ window.embetter.EmbetterPlayer.prototype.embedMedia = function() {
 };
 
 window.embetter.EmbetterPlayer.prototype.dispose = function() {
-  this.stop();
+  this.unembedMedia();
   this.playButton.removeEventListener('click', this.playHandler);
 };
 
