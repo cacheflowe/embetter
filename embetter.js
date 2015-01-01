@@ -13,8 +13,9 @@ window.embetter.utils = {
   // REGEX HELPERS
   /////////////////////////////////////////////////////////////
   buildRegex: function(regexStr) {
-    var optionalPrefix = '(?:https?:\/\/)?(?:w{3}\.)?';
-    return new RegExp(optionalPrefix + regexStr);
+    var optionalPrefix = '(?:https?:\\/\\/)?(?:w{3}\\.)?';
+    var terminator = '(?:\\/?|$|\\s|\\?|#)';
+    return new RegExp(optionalPrefix + regexStr + terminator);
   },
   /////////////////////////////////////////////////////////////
   // BUILD HTML TEMPLATES
@@ -168,7 +169,7 @@ window.embetter.services.vimeo = {
       url: 'http://vimeo.com/api/v2/video/'+ videoId +'.json',
       type: 'jsonp',
       error: function (err) { 
-        console.log('vimeo error');
+        // console.log('vimeo error');
       }, 
       success: function (data) {
         callback(data[0].thumbnail_large);
@@ -211,7 +212,7 @@ window.embetter.services.vimeo = {
 window.embetter.services.soundcloud = {
   type: 'soundcloud',
   dataAttribute: 'data-soundcloud-id',
-  regex: window.embetter.utils.buildRegex('(?:soundcloud.com|snd.sc)\/(\\S*)(?:\\s|\\?|#)'),
+  regex: window.embetter.utils.buildRegex('(?:soundcloud.com|snd.sc)\\/([a-zA-Z_\\-]*\\/[a-zA-Z_\\-]*)'),
   embed: function(id, w, h, autoplay) { 
     var autoplayQuery = (autoplay == true) ? '&amp;auto_play=true' : '';
     return '<iframe width="100%" height="600" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/'+ id + autoplayQuery +'&amp;hide_related=false&amp;color=373737&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe>';
@@ -221,7 +222,7 @@ window.embetter.services.soundcloud = {
       url: 'http://api.soundcloud.com/resolve.json?url='+ mediaUrl +'&client_id=YOUR_CLIENT_ID&callback=jsonpResponse',
       type: 'jsonp',
       error: function (err) { 
-        console.log('soundcloud error');
+        // console.log('soundcloud error');
       }, 
       success: function (data) {
         callback(data);
@@ -239,7 +240,7 @@ window.embetter.services.soundcloud = {
         var thumbnail = data.artwork_url;
         if(thumbnail) {
           thumbnail = thumbnail.replace('large.jpg', 't500x500.jpg')
-          console.warn('Soundcloud thumbnail string replacement should validate that larger image exists');
+          // console.warn('Soundcloud thumbnail string replacement should validate that larger image exists');
           var soundId = data.id;
           var newEmbedHTML = window.embetter.utils.playerHTML(self, soundURL, thumbnail, soundId);
           var newEmbedEl = window.embetter.utils.stringToDomElement(newEmbedHTML);
@@ -250,7 +251,7 @@ window.embetter.services.soundcloud = {
           var newEmbedCodeEl = window.embetter.utils.stringToDomElement(newEmbedCode);
           containerEl.appendChild(newEmbedCodeEl);
         } else {
-          console.log('There was a problem with your Soundcloud link.');
+          // console.log('There was a problem with your Soundcloud link.');
         }
       });
     }
@@ -268,7 +269,7 @@ window.embetter.services.soundcloud = {
 window.embetter.services.instagram = {
   type: 'instagram',
   dataAttribute: 'data-instagram-id',
-  regex: window.embetter.utils.buildRegex('instagram.com\/p\/([a-zA-Z0-9-]*)\/?'),
+  regex: window.embetter.utils.buildRegex('instagram.com\/p\/([a-zA-Z0-9-]*)'),
   embed: function(id, w, h, autoplay) { 
     return '<iframe width="100%" height="600" scrolling="no" frameborder="no" src="https://instagram.com/p/'+ id +'/embed/"></iframe>';
   },
@@ -303,7 +304,7 @@ window.embetter.services.instagram = {
 window.embetter.services.dailymotion = {
   type: 'dailymotion',
   dataAttribute: 'data-dailymotion-id',
-  regex: window.embetter.utils.buildRegex('dailymotion.com\/video\/([a-zA-Z0-9-]*)'),
+  regex: window.embetter.utils.buildRegex('dailymotion.com\/video\/([a-zA-Z0-9-_]*)'),
   embed: function(id, w, h, autoplay) {
     var autoplayQuery = (autoplay == true) ? '?autoPlay=1' : '';
     return '<iframe class="video" width="'+ w +'" height="'+ h +'" src="//www.dailymotion.com/embed/video/'+ id + autoplayQuery +'" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
