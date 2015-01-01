@@ -96,6 +96,17 @@
       };
       window.removeEventListener('scroll', embetter.utils.scrollListener);
     },
+    disposeDetachedPlayers: function() {
+      // dispose any players no longer in the DOM
+      for (var i = embetter.curEmbeds.length - 1; i >= 0; i--) {
+        var embed = embetter.curEmbeds[i];
+        if(document.body.contains(embed.el) == false) {
+          embed.dispose();
+          delete embetter.curEmbeds.splice(i,1);
+        }
+      };
+    },
+
     /////////////////////////////////////////////////////////////
     // BUILD PLAYER FROM PASTE
     /////////////////////////////////////////////////////////////
