@@ -84,10 +84,7 @@
       }, 500);
     },
     initPlayer: function(embedEl, service) {
-      if(embedEl.classList.contains('embetter-player-ready') == true) {
-        if(document.body.contains(embedEl) == false) 
-        return;
-      }
+      if(embedEl.classList.contains('embetter-player-ready') == true) return;
       embetter.curEmbeds.push( new embetter.EmbetterPlayer(embedEl, service) );
     },
     disposeVideoPlayers: function() {
