@@ -60,11 +60,16 @@
   border: 0;
   outline: 0;
   background-color: transparent;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="70" viewBox="0 0 100 70"><path d="M.651 13.662c.532-6.599 6.364-12.374 12.959-12.834 0 0 11.877-.828 35.8-.828 23.924 0 36.976.867 36.976.867 6.596.438 12.457 6.193 13.024 12.789 0 0 .59 6.863.59 20.735s-.651 21.944-.651 21.944c-.532 6.599-6.364 12.375-12.958 12.835 0 0-11.878.829-35.802.829s-36.976-.868-36.976-.868c-6.596-.439-12.457-6.195-13.023-12.79 0 0-.589-6.863-.589-20.735-.001-13.872.65-21.944.65-21.944z"/><path fill="#fff" d="M39.157 21.078l26.632 13.921-26.632 13.923z"/></svg>');
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="86.227" height="60" viewBox="0 0 86.227 60"><path fill="#010101" d="M0 0h86.227v60h-86.227z"/><path fill="#fff" d="M35.422 17.6v24.8l22.263-12.048z"/></svg>');
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: 18%;
   cursor: pointer;
+}
+
+/* Audio services have a round play button */
+.embetter-container[data-soundcloud-id] button {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="65" height="65" viewBox="0 0 65 65"><circle fill="#010101" cx="32.5" cy="32.5" r="32.5"/><path fill="#fff" d="M25.095 20.932v23.136l20.769-11.24z"/></svg>');
 }
 
 .embetter-container:hover button {
