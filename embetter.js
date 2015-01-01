@@ -437,7 +437,7 @@
     this.el.classList.remove('playing');
   };
 
-    // embed if mobile
+  // embed if mobile
   embetter.EmbetterPlayer.prototype.embedMedia = function() {
     if(this.el.classList.contains('playing') == true) return;
     if(this.id != null) this.playerEl = embetter.utils.stringToDomElement(this.serviceObj.embed(this.id, this.thumbnail.width, this.thumbnail.height, false));
@@ -446,7 +446,11 @@
   };
 
   embetter.EmbetterPlayer.prototype.dispose = function() {
+    this.el.classList.remove('embetter-player-ready');
     this.unembedMedia();
     this.playButton.removeEventListener('click', this.playHandler);
+    if(this.playButton != null && this.playButton.parentNode != null) {
+      this.playButton.parentNode.removeChild(this.playButton);
+    }
   };
 })();
