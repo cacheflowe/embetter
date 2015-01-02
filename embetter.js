@@ -10,6 +10,7 @@
   embetter.debug = true;
   embetter.curEmbeds = [];
   embetter.mobileScrollTimeout = null;
+  embetter.mobileScrollSetup = false;
 
   embetter.utils = {
     /////////////////////////////////////////////////////////////
@@ -58,8 +59,9 @@
         }
       }
       // handle mobile auto-embed on scroll
-      if(navigator.userAgent.toLowerCase().match(/iphone|ipad|ipod|android/)) {
+      if(navigator.userAgent.toLowerCase().match(/iphone|ipad|ipod|android/) && embetter.mobileScrollSetup == false) {
         window.addEventListener('scroll', embetter.utils.scrollListener);
+        embetter.mobileScrollSetup = true;
         // force scroll to trigger listener on page load
         window.scroll(window.scrollX, window.scrollY+1); 
         window.scroll(window.scrollX, window.scrollY-1);
