@@ -89,6 +89,11 @@
       if(embedEl.classList.contains('embetter-player-ready') == true) return;
       embetter.curEmbeds.push( new embetter.EmbetterPlayer(embedEl, service) );
     },
+    unembedVideoPlayers: function() {
+      for (var i = 0; i < embetter.curEmbeds.length; i++) {
+        embetter.curEmbeds[i].unembedMedia();
+      };
+    },
     disposeVideoPlayers: function() {
       for (var i = 0; i < embetter.curEmbeds.length; i++) {
         embetter.curEmbeds[i].dispose();
