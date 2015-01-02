@@ -114,6 +114,9 @@
 .embetter-container[data-instagram-id] {
   max-width: 600px;
 }
+.embetter-container[data-rdio-id] {
+  max-width: 400px;
+}
 .embetter-container[data-instagram-id].playing img {
   padding-bottom: 80px;
 }
