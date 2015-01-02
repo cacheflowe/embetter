@@ -89,16 +89,17 @@
       if(embedEl.classList.contains('embetter-player-ready') == true) return;
       embetter.curEmbeds.push( new embetter.EmbetterPlayer(embedEl, service) );
     },
-    unembedVideoPlayers: function() {
+    unembedPlayers: function() {
       for (var i = 0; i < embetter.curEmbeds.length; i++) {
         embetter.curEmbeds[i].unembedMedia();
       };
     },
-    disposeVideoPlayers: function() {
+    disposePlayers: function() {
       for (var i = 0; i < embetter.curEmbeds.length; i++) {
         embetter.curEmbeds[i].dispose();
       };
       window.removeEventListener('scroll', embetter.utils.scrollListener);
+      embetter.curEmbeds.splice(0, embetter.curEmbeds.length-1);
     },
     disposeDetachedPlayers: function() {
       // dispose any players no longer in the DOM
