@@ -42,12 +42,12 @@
   opacity: 0;
 }
 
-.embetter-container button {
-  -webkit-transition: opacity 300ms linear, -webkit-transform 300ms linear;
-  -moz-transition: opacity 300ms linear, -webkit-transform 300ms linear;
-  -ms-transition: opacity 300ms linear, -webkit-transform 300ms linear;
-  -o-transition: opacity 300ms linear, -webkit-transform 300ms linear;
-  transition: opacity 300ms linear, -webkit-transform 300ms linear;
+.embetter-container div {
+  -webkit-transition: opacity 200ms linear, -webkit-transform 200ms linear;
+  -moz-transition: opacity 200ms linear, -moz-transform 200ms linear;
+  -ms-transition: opacity 200ms linear, -ms-transform 200ms linear;
+  -o-transition: opacity 200ms linear, -o-transform 200ms linear;
+  transition: opacity 200ms linear, transform 200ms linear;
 
   position: absolute;
   top: 0;
