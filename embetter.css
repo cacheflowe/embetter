@@ -54,25 +54,32 @@
   left: 0;
   width: 100%;
   height: 100%;
-  display: block;
-  text-indent: -200%;
   overflow: hidden;
-  border: 0;
-  outline: 0;
-  background-color: transparent;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="86.227" height="60" viewBox="0 0 86.227 60"><path fill="#010101" d="M0 0h86.227v60h-86.227z"/><path fill="#fff" d="M35.422 17.6v24.8l22.263-12.048z"/></svg>');
+  cursor: pointer;
+}
+.embetter-container div:before {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2286%22%20height%3D%2260%22%20viewBox%3D%220%200%2086%2060%22%3E%3Cpath%20fill%3D%22%23010101%22%20d%3D%22M0%200h86v60h-86z%22/%3E%3Cpath%20fill%3D%22%23fff%22%20d%3D%22M35.422%2017.6v24.8l22.263-12.048z%22/%3E%3C/svg%3E');
+  /* <svg xmlns="http://www.w3.org/2000/svg" width="86" height="60" viewBox="0 0 86 60"><path fill="#010101" d="M0 0h86v60h-86z"/><path fill="#fff" d="M35.422 17.6v24.8l22.263-12.048z"/></svg> */
   background-repeat: no-repeat;
   background-position: 50% 50%;
-  background-size: 18%;
-  cursor: pointer;
+  background-size: 33.333% auto;
+  width: 100%;
+  max-width: 258px;
+  height: 100%;
+  min-height: 100%;
+  content: " ";
+  margin: 0 auto;
+  display: block;
 }
 
 /* Audio services have a round play button */
-.embetter-container[data-soundcloud-id] button {
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="65" height="65" viewBox="0 0 65 65"><circle fill="#010101" cx="32.5" cy="32.5" r="32.5"/><path fill="#fff" d="M25.095 20.932v23.136l20.769-11.24z"/></svg>');
+.embetter-container[data-soundcloud-id] div:before {
+  background-image: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2265%22%20height%3D%2265%22%20viewBox%3D%220%200%2065%2065%22%3E%3Ccircle%20fill%3D%22%23010101%22%20cx%3D%2232.5%22%20cy%3D%2232.5%22%20r%3D%2232.5%22/%3E%3Cpath%20fill%3D%22%23fff%22%20d%3D%22M25.095%2020.932v23.136l20.769-11.24z%22/%3E%3C/svg%3E');
+  /* <svg xmlns="http://www.w3.org/2000/svg" width="65" height="65" viewBox="0 0 65 65"><circle fill="#010101" cx="32.5" cy="32.5" r="32.5"/><path fill="#fff" d="M25.095 20.932v23.136l20.769-11.24z"/></svg> */
+  max-width: 195px;
 }
 
-.embetter-container:hover button {
+.embetter-container:hover div {
   -webkit-transform: scale(1.04);
   -moz-transform: scale(1.04);
   -ms-transform: scale(1.04);
@@ -80,7 +87,7 @@
   transform: scale(1.04);
 }
 
-.embetter-container.playing button {
+.embetter-container.playing div {
   opacity: 0;
 }
 

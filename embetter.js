@@ -425,8 +425,7 @@
   };
 
   embetter.EmbetterPlayer.prototype.buildPlayButton = function() {
-    this.playButton = document.createElement('button');
-    this.playButton.innerHTML = 'Play';
+    this.playButton = document.createElement('div');
     this.el.appendChild(this.playButton);
 
     var self = this;
