@@ -30,7 +30,7 @@
       return div.firstChild;
     },
     playerHTML: function(service, mediaUrl, thumbnail, id) {
-      return '<div class="embetter-container" ' + service.dataAttribute + '="' + id + '">\
+      return '<div class="embetter" ' + service.dataAttribute + '="' + id + '">\
           <a href="' + mediaUrl + '" target="_blank"><img src="' + thumbnail + '"></a>\
         </div>';
     },
