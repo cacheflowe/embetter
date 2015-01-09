@@ -86,7 +86,7 @@
       }, 500);
     },
     initPlayer: function(embedEl, service) {
-      if(embedEl.classList.contains('ready') == true) return;
+      if(embedEl.classList.contains('embetter-ready') == true) return;
       embetter.curEmbeds.push( new embetter.EmbetterPlayer(embedEl, service) );
     },
     unembedPlayers: function() {
@@ -417,8 +417,7 @@
     embed: function(id, w, h, autoplay) { 
       var autoplayQuery = (autoplay == true) ? '&amp;autoplay=true' : '';
       console.log(id);
-      // return '<iframe width="300" height="300" src="https://www.mixcloud.com/widget/iframe/?feed=http%3A%2F%2Fwww.mixcloud.com%2F' + escape(id) + '&amp;replace=0&amp;hide_cover=&amp;light=&amp;hide_artwork=&amp;stylecolor=#ffffff&amp;embed_type=widget_standard&amp;hide_tracklist='+ autoplayQuery +'" frameborder="0"></iframe>';
-      return '<iframe width="660" height="360" src="https://www.mixcloud.com/widget/iframe/?feed=http%3A%2F%2Fwww.mixcloud.com%2F' + escape(id) + '%2F&amp;replace=0&amp;hide_cover=1&amp;stylecolor=ffffff&amp;embed_type=widget_standard&amp;'+ autoplayQuery +'" frameborder="0"></iframe>';
+      return '<iframe width="660" height="180" src="https://www.mixcloud.com/widget/iframe/?feed=http%3A%2F%2Fwww.mixcloud.com%2F' + escape(id) + '%2F&amp;replace=0&amp;hide_cover=1&amp;stylecolor=ffffff&amp;embed_type=widget_standard&amp;'+ autoplayQuery +'" frameborder="0"></iframe>';
     },
     getData: function(mediaUrl, callback) {
       reqwest({
@@ -441,7 +440,6 @@
       var soundURL = this.link(soundId);
       if(soundURL != null) {
         this.getData(soundURL, function(data) {
-          console.log('data', data);
           var thumbnail = data.image;
           if(thumbnail) {
             var newEmbedHTML = embetter.utils.playerHTML(self, soundURL, thumbnail, soundId);
@@ -469,7 +467,7 @@
 
   embetter.EmbetterPlayer = function(el, serviceObj) {
     this.el = el;
-    this.el.classList.add('ready');
+    this.el.classList.add('embetter-ready');
     this.serviceObj = serviceObj;
     this.id = this.el.getAttribute(serviceObj.dataAttribute);
     this.thumbnail = this.el.querySelector('img');
@@ -479,6 +477,11 @@
 
   embetter.EmbetterPlayer.prototype.buildPlayButton = function() {
     this.playButton = document.createElement('div');
+    this.playButton.classList.add('embetter-loading');
+    this.el.appendChild(this.playButton);
+
+    this.playButton = document.createElement('div');
+    this.playButton.classList.add('embetter-play-button');
     this.el.appendChild(this.playButton);
 
     var self = this;
@@ -494,7 +497,7 @@
 
     if(this.id != null) this.playerEl = embetter.utils.stringToDomElement(this.serviceObj.embed(this.id, this.thumbnail.width, this.thumbnail.height, true));
     this.el.appendChild(this.playerEl);
-    this.el.classList.add('playing');
+    this.el.classList.add('embetter-playing');
     embetter.curPlayer = this;
   };
 
@@ -502,19 +505,19 @@
     if(this.playerEl != null && this.playerEl.parentNode != null) {
       this.playerEl.parentNode.removeChild(this.playerEl);
     }
-    this.el.classList.remove('playing');
+    this.el.classList.remove('embetter-playing');
   };
 
   // embed if mobile
   embetter.EmbetterPlayer.prototype.embedMedia = function() {
-    if(this.el.classList.contains('playing') == true) return;
+    if(this.el.classList.contains('embetter-playing') == true) return;
     if(this.id != null) this.playerEl = embetter.utils.stringToDomElement(this.serviceObj.embed(this.id, this.thumbnail.width, this.thumbnail.height, false));
     this.el.appendChild(this.playerEl);
-    this.el.classList.add('playing');
+    this.el.classList.add('embetter-playing');
   };
 
   embetter.EmbetterPlayer.prototype.dispose = function() {
-    this.el.classList.remove('ready');
+    this.el.classList.remove('embetter-ready');
     this.unembedMedia();
     this.playButton.removeEventListener('click', this.playHandler);
     if(this.playButton != null && this.playButton.parentNode != null) {
