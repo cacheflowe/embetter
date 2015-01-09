@@ -1,9 +1,9 @@
 .embetter {
-  -webkit-transition: background-color 200ms linear, max-width 200ms linear, max-height 200ms linear;
-  -moz-transition: background-color 200ms linear, max-width 200ms linear, max-height 200ms linear;
-  -ms-transition: background-color 200ms linear, max-width 200ms linear, max-height 200ms linear;
-  -o-transition: background-color 200ms linear, max-width 200ms linear, max-height 200ms linear;
-  transition: background-color 200ms linear, max-width 200ms linear, max-height 200ms linear;
+  -webkit-transition: background-color 0.25s linear, max-width 0.25s linear, max-height 0.25s linear;
+  -moz-transition: background-color 0.25s linear, max-width 0.25s linear, max-height 0.25s linear;
+  -ms-transition: background-color 0.25s linear, max-width 0.25s linear, max-height 0.25s linear;
+  -o-transition: background-color 0.25s linear, max-width 0.25s linear, max-height 0.25s linear;
+  transition: background-color 0.25s linear, max-width 0.25s linear, max-height 0.25s linear;
 
   background-color: transparent;
   position: relative;
@@ -41,11 +41,11 @@
 }
 
 .embetter img {
-  -webkit-transition: opacity 200ms linear, padding 200ms linear, max-width 200ms linear;
-  -moz-transition: opacity 200ms linear, padding 200ms linear, max-width 200ms linear;
-  -ms-transition: opacity 200ms linear, padding 200ms linear, max-width 200ms linear;
-  -o-transition: opacity 200ms linear, padding 200ms linear, max-width 200ms linear;
-  transition: opacity 200ms linear, padding 200ms linear, max-width 200ms linear;
+  -webkit-transition: opacity 0.25s linear, padding 0.25s linear, max-width 0.25s linear, -webkit-transform 0.25s linear;
+  -moz-transition: opacity 0.25s linear, padding 0.25s linear, max-width 0.25s linear, -moz-transform 0.25s linear;
+  -ms-transition: opacity 0.25s linear, padding 0.25s linear, max-width 0.25s linear, -ms-transform 0.25s linear;
+  -o-transition: opacity 0.25s linear, padding 0.25s linear, max-width 0.25s linear, -o-transform 0.25s linear;
+  transition: opacity 0.25s linear, padding 0.25s linear, max-width 0.25s linear, transform 0.25s linear;
 
   width: 100%;
   margin: 0;
@@ -53,6 +53,11 @@
 
 .embetter:hover img {
   opacity: 0.8;
+  -webkit-transform: scale(1.01);
+  -moz-transform: scale(1.01);
+  -ms-transform: scale(1.01);
+  -o-transform: scale(1.01);
+  transform: scale(1.01);
 }
 
 .embetter.playing img {
@@ -60,11 +65,11 @@
 }
 
 .embetter > div {
-  -webkit-transition: opacity 200ms linear, -webkit-transform 200ms linear;
-  -moz-transition: opacity 200ms linear, -moz-transform 200ms linear;
-  -ms-transition: opacity 200ms linear, -ms-transform 200ms linear;
-  -o-transition: opacity 200ms linear, -o-transform 200ms linear;
-  transition: opacity 200ms linear, transform 200ms linear;
+  -webkit-transition: opacity 0.25s linear, -webkit-transform 0.25s linear;
+  -moz-transition: opacity 0.25s linear, -moz-transform 0.25s linear;
+  -ms-transition: opacity 0.25s linear, -ms-transform 0.25s linear;
+  -o-transition: opacity 0.25s linear, -o-transform 0.25s linear;
+  transition: opacity 0.25s linear, transform 0.25s linear;
 
   position: absolute;
   top: 0;
@@ -113,11 +118,11 @@
 
 
 .embetter:hover > div {
-  -webkit-transform: scale(1.04);
-  -moz-transform: scale(1.04);
-  -ms-transform: scale(1.04);
-  -o-transform: scale(1.04);
-  transform: scale(1.04);
+  -webkit-transform: scale(1.00);
+  -moz-transform: scale(1.00);
+  -ms-transform: scale(1.00);
+  -o-transform: scale(1.00);
+  transform: scale(1.00);
 }
 
 .embetter.playing > div {
