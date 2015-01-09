@@ -40,6 +40,15 @@
   transform: scale(1.02);
 }
 
+.embetter.embetter-static:hover img {
+  opacity: 1;
+  -webkit-transform: none;
+  -moz-transform: none;
+  -ms-transform: none;
+  -o-transform: none;
+  transform: none;
+}
+
 .embetter.embetter-playing img {
   opacity: 0;
 }
