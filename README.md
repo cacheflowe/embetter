@@ -17,5 +17,7 @@ Check out the [demo](http://cacheflowe.github.io/embetter) with the embed builde
 * YouTube
 * Vimeo
 * Soundcloud
+* Mixcloud
 * Instagram
 * Dailymotion
+

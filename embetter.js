@@ -86,7 +86,7 @@
       }, 500);
     },
     initPlayer: function(embedEl, service) {
-      if(embedEl.classList.contains('embetter-player-ready') == true) return;
+      if(embedEl.classList.contains('ready') == true) return;
       embetter.curEmbeds.push( new embetter.EmbetterPlayer(embedEl, service) );
     },
     unembedPlayers: function() {
@@ -144,7 +144,7 @@
     regex: /(?:.+?)?(?:\/v\/|watch\/|\?v=|\&v=|youtu\.be\/|\/v=|^youtu\.be\/)([a-zA-Z0-9_-]{11})+/,
     embed: function(id, w, h, autoplay) {
       var autoplayQuery = (autoplay == true) ? '&autoplay=1' : '';
-      return '<iframe class="video" width="'+ w +'" height="'+ h +'" src="http://www.youtube.com/embed/'+ id +'?rel=0&suggestedQuality=hd720'+ autoplayQuery +'" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+      return '<iframe class="video" width="'+ w +'" height="'+ h +'" src="https://www.youtube.com/embed/'+ id +'?rel=0&suggestedQuality=hd720'+ autoplayQuery +'" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
     },
     getData: function(id) {
       return 'http://img.youtube.com/vi/'+ id +'/0.jpg';
@@ -407,6 +407,59 @@
   };
 
 
+  /////////////////////////////////////////////////////////////
+  // MIXCLOUD
+  /////////////////////////////////////////////////////////////
+  embetter.services.mixcloud = {
+    type: 'mixcloud',
+    dataAttribute: 'data-mixcloud-id',
+    regex: embetter.utils.buildRegex('(?:mixcloud.com)\\/([a-zA-Z0-9_\\-]*\\/[a-zA-Z0-9_\\-]*)'),
+    embed: function(id, w, h, autoplay) { 
+      var autoplayQuery = (autoplay == true) ? '&amp;autoplay=true' : '';
+      console.log(id);
+      // return '<iframe width="300" height="300" src="https://www.mixcloud.com/widget/iframe/?feed=http%3A%2F%2Fwww.mixcloud.com%2F' + escape(id) + '&amp;replace=0&amp;hide_cover=&amp;light=&amp;hide_artwork=&amp;stylecolor=#ffffff&amp;embed_type=widget_standard&amp;hide_tracklist='+ autoplayQuery +'" frameborder="0"></iframe>';
+      return '<iframe width="660" height="360" src="https://www.mixcloud.com/widget/iframe/?feed=http%3A%2F%2Fwww.mixcloud.com%2F' + escape(id) + '%2F&amp;replace=0&amp;hide_cover=1&amp;stylecolor=ffffff&amp;embed_type=widget_standard&amp;'+ autoplayQuery +'" frameborder="0"></iframe>';
+    },
+    getData: function(mediaUrl, callback) {
+      reqwest({
+        url: 'http://www.mixcloud.com/oembed/?url='+ mediaUrl +'&format=jsonp',
+        type: 'jsonp',
+        error: function (err) { 
+          console.log('mixcloud error', err);
+        }, 
+        success: function (data) {
+          callback(data);
+        }
+      })
+    },
+    link: function(id) {
+      return 'https://www.mixcloud.com/' + id;
+    },
+    buildFromText: function(text, containerEl) {
+      var self = this;
+      var soundId = text.match(this.regex)[1];
+      var soundURL = this.link(soundId);
+      if(soundURL != null) {
+        this.getData(soundURL, function(data) {
+          console.log('data', data);
+          var thumbnail = data.image;
+          if(thumbnail) {
+            var newEmbedHTML = embetter.utils.playerHTML(self, soundURL, thumbnail, soundId);
+            var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
+            containerEl.appendChild(newEmbedEl);
+            embetter.utils.initPlayer(newEmbedEl, self, embetter.curEmbeds);
+            // show embed code
+            var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
+            var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
+            containerEl.appendChild(newEmbedCodeEl);
+          } else {
+            // console.log('There was a problem with your mixcloud link.');
+          }
+        });
+      }
+    }
+  };
+
 
   /////////////////////////////////////////////////////////////
   // MEDIA PLAYER INSTANCE
@@ -416,7 +469,7 @@
 
   embetter.EmbetterPlayer = function(el, serviceObj) {
     this.el = el;
-    this.el.classList.add('embetter-player-ready');
+    this.el.classList.add('ready');
     this.serviceObj = serviceObj;
     this.id = this.el.getAttribute(serviceObj.dataAttribute);
     this.thumbnail = this.el.querySelector('img');
@@ -461,7 +514,7 @@
   };
 
   embetter.EmbetterPlayer.prototype.dispose = function() {
-    this.el.classList.remove('embetter-player-ready');
+    this.el.classList.remove('ready');
     this.unembedMedia();
     this.playButton.removeEventListener('click', this.playHandler);
     if(this.playButton != null && this.playButton.parentNode != null) {
