@@ -151,8 +151,8 @@
 }
 
 .embetter[data-mixcloud-id] {
-  max-width: 240px;
-  max-height: 240px;
+  max-width: 600px;
+  max-height: 600px;
 }
 .embetter[data-mixcloud-id].playing {
   max-width: 660px;
