@@ -63,7 +63,7 @@
         window.addEventListener('scroll', embetter.utils.scrollListener);
         embetter.mobileScrollSetup = true;
         // force scroll to trigger listener on page load
-        window.scroll(window.scrollX, window.scrollY+1); 
+        window.scroll(window.scrollX, window.scrollY+1);
         window.scroll(window.scrollX, window.scrollY-1);
       };
     },
@@ -87,6 +87,7 @@
     },
     initPlayer: function(embedEl, service) {
       if(embedEl.classList.contains('embetter-ready') == true) return;
+      if(embedEl.classList.contains('embetter-static') == true) return;
       embetter.curEmbeds.push( new embetter.EmbetterPlayer(embedEl, service) );
     },
     unembedPlayers: function() {
@@ -179,7 +180,7 @@
     type: 'vimeo',
     dataAttribute: 'data-vimeo-id',
     regex: embetter.utils.buildRegex('vimeo.com\/(\\S*)'),
-    embed: function(id, w, h, autoplay) { 
+    embed: function(id, w, h, autoplay) {
       var autoplayQuery = (autoplay == true) ? '&amp;autoplay=1' : '';
       return '<iframe src="//player.vimeo.com/video/'+ id +'?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff'+ autoplayQuery +'" width="'+ w +'" height="'+ h +'" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
     },
@@ -188,9 +189,9 @@
       reqwest({
         url: 'http://vimeo.com/api/v2/video/'+ videoId +'.json',
         type: 'jsonp',
-        error: function (err) { 
+        error: function (err) {
           // console.log('vimeo error');
-        }, 
+        },
         success: function (data) {
           callback(data[0].thumbnail_large);
         }
@@ -232,8 +233,8 @@
   embetter.services.soundcloud = {
     type: 'soundcloud',
     dataAttribute: 'data-soundcloud-id',
-    regex: embetter.utils.buildRegex('(?:soundcloud.com|snd.sc)\\/([a-zA-Z0-9_\\-]*\\/[a-zA-Z0-9_\\-]*)'),
-    embed: function(id, w, h, autoplay) { 
+    regex: embetter.utils.buildRegex('(?:soundcloud.com|snd.sc)\\/([a-zA-Z0-9_-]*\\/[a-zA-Z0-9_-]*)'),
+    embed: function(id, w, h, autoplay) {
       var autoplayQuery = (autoplay == true) ? '&amp;auto_play=true' : '';
       return '<iframe width="100%" height="600" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/'+ id + autoplayQuery +'&amp;hide_related=false&amp;color=373737&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe>';
     },
@@ -241,9 +242,9 @@
       reqwest({
         url: 'http://api.soundcloud.com/resolve.json?url='+ mediaUrl +'&client_id=YOUR_CLIENT_ID&callback=jsonpResponse',
         type: 'jsonp',
-        error: function (err) { 
+        error: function (err) {
           // console.log('soundcloud error');
-        }, 
+        },
         success: function (data) {
           callback(data);
         }
@@ -258,6 +259,8 @@
       if(soundURL != null) {
         this.getData(soundURL, function(data) {
           var thumbnail = data.artwork_url;
+          var userAvatar = (data.user) ? data.user.avatar_url : null;
+          if(thumbnail == null) thumbnail = userAvatar;
           if(thumbnail) {
             thumbnail = thumbnail.replace('large.jpg', 't500x500.jpg')
             // console.warn('Soundcloud thumbnail string replacement should validate that larger image exists');
@@ -290,7 +293,7 @@
     type: 'instagram',
     dataAttribute: 'data-instagram-id',
     regex: embetter.utils.buildRegex('instagram.com\/p\/([a-zA-Z0-9-]*)'),
-    embed: function(id, w, h, autoplay) { 
+    embed: function(id, w, h, autoplay) {
       return '<iframe width="100%" height="600" scrolling="no" frameborder="no" src="https://instagram.com/p/'+ id +'/embed/"></iframe>';
     },
     getData: function(id) {
@@ -361,7 +364,7 @@
     type: 'rdio',
     dataAttribute: 'data-rdio-id',
     regex: embetter.utils.buildRegex('rdio.com\/(\\S*)'),
-    embed: function(id, w, h, autoplay) { 
+    embed: function(id, w, h, autoplay) {
       // var autoplayQuery = (autoplay == true) ? '?autoplay=' : '';
       var autoplayQuery = '';
       return '<iframe width="100%" height="400" src="https://rd.io/i/'+ id + '/' + autoplayQuery +'" frameborder="0"></iframe>';
@@ -370,9 +373,9 @@
       reqwest({
         url: 'http://www.rdio.com/api/oembed/?format=json&url='+ mediaUrl,
         type: 'jsonp',
-        error: function (err) { 
+        error: function (err) {
           // console.log('rdio error');
-        }, 
+        },
         success: function (data) {
           callback(data);
         }
@@ -414,7 +417,7 @@
     type: 'mixcloud',
     dataAttribute: 'data-mixcloud-id',
     regex: embetter.utils.buildRegex('(?:mixcloud.com)\\/([a-zA-Z0-9_\\-]*\\/[a-zA-Z0-9_\\-]*)'),
-    embed: function(id, w, h, autoplay) { 
+    embed: function(id, w, h, autoplay) {
       var autoplayQuery = (autoplay == true) ? '&amp;autoplay=true' : '';
       console.log(id);
       return '<iframe width="660" height="180" src="https://www.mixcloud.com/widget/iframe/?feed=http%3A%2F%2Fwww.mixcloud.com%2F' + escape(id) + '%2F&amp;replace=0&amp;hide_cover=1&amp;stylecolor=ffffff&amp;embed_type=widget_standard&amp;'+ autoplayQuery +'" frameborder="0"></iframe>';
@@ -423,9 +426,9 @@
       reqwest({
         url: 'http://www.mixcloud.com/oembed/?url='+ mediaUrl +'&format=jsonp',
         type: 'jsonp',
-        error: function (err) { 
+        error: function (err) {
           console.log('mixcloud error', err);
-        }, 
+        },
         success: function (data) {
           callback(data);
         }
