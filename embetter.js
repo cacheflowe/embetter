@@ -233,7 +233,7 @@
   embetter.services.soundcloud = {
     type: 'soundcloud',
     dataAttribute: 'data-soundcloud-id',
-    regex: embetter.utils.buildRegex('(?:soundcloud.com|snd.sc)\\/([a-zA-Z0-9_-]*(?:\\/sets)?\\/[a-zA-Z0-9_-]*)'),
+    regex: embetter.utils.buildRegex('(?:soundcloud.com|snd.sc)\\/([a-zA-Z0-9_-]*(?:\\/sets)?(?:\\/groups)?\\/[a-zA-Z0-9_-]*)'),
     embed: function(id, w, h, autoplay) {
       var autoplayQuery = (autoplay == true) ? '&amp;auto_play=true' : '';
       return '<iframe width="100%" height="600" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/'+ id + autoplayQuery +'&amp;hide_related=false&amp;color=373737&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe>';
@@ -253,17 +253,34 @@
     link: function(id) {
       return 'https://soundcloud.com/' + id;
     },
+    largerThumbnail: function(thumbnail) {
+      return thumbnail.replace('large.jpg', 't500x500.jpg');
+    },
     buildFromText: function(text, containerEl) {
       var self = this;
       var soundURL = this.link(text.match(this.regex)[1]);
       if(soundURL != null) {
         this.getData(soundURL, function(data) {
+          // progressively fall back from sound image to user image to group creator image. grab larger image where possible
           var thumbnail = data.artwork_url;
-          var userAvatar = (data.user) ? data.user.avatar_url : null;
-          if(thumbnail == null) thumbnail = userAvatar;
+          if(thumbnail) thumbnail = self.largerThumbnail(thumbnail);
+
+          if(thumbnail == null) {
+            thumbnail = (data.user) ? data.user.avatar_url : null;
+            if(thumbnail) thumbnail = self.largerThumbnail(thumbnail);
+          }
+
+          if(thumbnail == null) {
+            thumbnail = (data.creator) ? data.creator.avatar_url : null;
+            if(thumbnail) thumbnail = self.largerThumbnail(thumbnail);
+          }
+
           if(thumbnail) {
-            thumbnail = thumbnail.replace('large.jpg', 't500x500.jpg')
-            var soundId = (soundURL.indexOf('/sets/') == -1) ? data.id : 'playlists/' + data.id;
+            var soundId = data.id;
+            if(soundURL.indexOf('/sets/') != -1) soundId = 'playlists/' + soundId;
+            else if(soundURL.indexOf('/groups/') != -1) soundId = 'groups/' + soundId;
+            else soundId = 'tracks/' + soundId;
+
             var newEmbedHTML = embetter.utils.playerHTML(self, soundURL, thumbnail, soundId);
             var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
             containerEl.appendChild(newEmbedEl);
