@@ -233,10 +233,10 @@
   embetter.services.soundcloud = {
     type: 'soundcloud',
     dataAttribute: 'data-soundcloud-id',
-    regex: embetter.utils.buildRegex('(?:soundcloud.com|snd.sc)\\/([a-zA-Z0-9_-]*\\/[a-zA-Z0-9_-]*)'),
+    regex: embetter.utils.buildRegex('(?:soundcloud.com|snd.sc)\\/([a-zA-Z0-9_-]*(?:\\/sets)?\\/[a-zA-Z0-9_-]*)'),
     embed: function(id, w, h, autoplay) {
       var autoplayQuery = (autoplay == true) ? '&amp;auto_play=true' : '';
-      return '<iframe width="100%" height="600" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/'+ id + autoplayQuery +'&amp;hide_related=false&amp;color=373737&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe>';
+      return '<iframe width="100%" height="600" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/'+ id + autoplayQuery +'&amp;hide_related=false&amp;color=373737&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe>';
     },
     getData: function(mediaUrl, callback) {
       reqwest({
@@ -263,8 +263,7 @@
           if(thumbnail == null) thumbnail = userAvatar;
           if(thumbnail) {
             thumbnail = thumbnail.replace('large.jpg', 't500x500.jpg')
-            // console.warn('Soundcloud thumbnail string replacement should validate that larger image exists');
-            var soundId = data.id;
+            var soundId = (soundURL.indexOf('/sets/') == -1) ? data.id : 'playlists/' + data.id;
             var newEmbedHTML = embetter.utils.playerHTML(self, soundURL, thumbnail, soundId);
             var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
             containerEl.appendChild(newEmbedEl);
