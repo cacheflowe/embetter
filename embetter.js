@@ -145,7 +145,7 @@
     regex: /(?:.+?)?(?:\/v\/|watch\/|\?v=|\&v=|youtu\.be\/|\/v=|^youtu\.be\/)([a-zA-Z0-9_-]{11})+/,
     embed: function(id, w, h, autoplay) {
       var autoplayQuery = (autoplay == true) ? '&autoplay=1' : '';
-      return '<iframe class="video" width="'+ w +'" height="'+ h +'" src="https://www.youtube.com/embed/'+ id +'?rel=0&suggestedQuality=hd720'+ autoplayQuery +'" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+      return '<iframe class="video" width="'+ w +'" height="'+ h +'" src="https://www.youtube.com/embed/'+ id +'?rel=0&suggestedQuality=hd720'+ autoplayQuery +'" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
     },
     getData: function(id) {
       return 'http://img.youtube.com/vi/'+ id +'/0.jpg';
@@ -182,7 +182,7 @@
     regex: embetter.utils.buildRegex('vimeo.com\/(\\S*)'),
     embed: function(id, w, h, autoplay) {
       var autoplayQuery = (autoplay == true) ? '&amp;autoplay=1' : '';
-      return '<iframe src="//player.vimeo.com/video/'+ id +'?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff'+ autoplayQuery +'" width="'+ w +'" height="'+ h +'" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+      return '<iframe src="//player.vimeo.com/video/'+ id +'?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff'+ autoplayQuery +'" width="'+ w +'" height="'+ h +'" frameborder="0" scrolling="no" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
     },
     getData: function(mediaUrl, callback) {
       var videoId = mediaUrl.split('vimeo.com/')[1];
@@ -346,7 +346,7 @@
     regex: embetter.utils.buildRegex('dailymotion.com\/video\/([a-zA-Z0-9-_]*)'),
     embed: function(id, w, h, autoplay) {
       var autoplayQuery = (autoplay == true) ? '?autoPlay=1' : '';
-      return '<iframe class="video" width="'+ w +'" height="'+ h +'" src="//www.dailymotion.com/embed/video/'+ id + autoplayQuery +'" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+      return '<iframe class="video" width="'+ w +'" height="'+ h +'" src="//www.dailymotion.com/embed/video/'+ id + autoplayQuery +'" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
     },
     getData: function(id) {
       return 'http://www.dailymotion.com/thumbnail/video/'+ id;
@@ -383,7 +383,7 @@
     embed: function(id, w, h, autoplay) {
       // var autoplayQuery = (autoplay == true) ? '?autoplay=' : '';
       var autoplayQuery = '';
-      return '<iframe width="100%" height="400" src="https://rd.io/i/'+ id + '/' + autoplayQuery +'" frameborder="0"></iframe>';
+      return '<iframe width="100%" height="400" src="https://rd.io/i/'+ id + '/' + autoplayQuery +'" frameborder="0" scrolling="no"></iframe>';
     },
     getData: function(mediaUrl, callback) {
       reqwest({
@@ -432,11 +432,10 @@
   embetter.services.mixcloud = {
     type: 'mixcloud',
     dataAttribute: 'data-mixcloud-id',
-    regex: embetter.utils.buildRegex('(?:mixcloud.com)\\/([a-zA-Z0-9_\\-]*\\/[a-zA-Z0-9_\\-]*)'),
+    regex: embetter.utils.buildRegex('(?:mixcloud.com)\\/([a-zA-Z0-9_\\-%]*\\/[a-zA-Z0-9_\\-%]*)'),
     embed: function(id, w, h, autoplay) {
       var autoplayQuery = (autoplay == true) ? '&amp;autoplay=true' : '';
-      console.log(id);
-      return '<iframe width="660" height="180" src="https://www.mixcloud.com/widget/iframe/?feed=http%3A%2F%2Fwww.mixcloud.com%2F' + escape(id) + '%2F&amp;replace=0&amp;hide_cover=1&amp;stylecolor=ffffff&amp;embed_type=widget_standard&amp;'+ autoplayQuery +'" frameborder="0"></iframe>';
+      return '<iframe width="660" height="180" src="https://www.mixcloud.com/widget/iframe/?feed=http%3A%2F%2Fwww.mixcloud.com%2F' + escape(id) + '%2F&amp;replace=0&amp;hide_cover=1&amp;stylecolor=ffffff&amp;embed_type=widget_standard&amp;'+ autoplayQuery +'" frameborder="0" scrolling="no"></iframe>';
     },
     getData: function(mediaUrl, callback) {
       reqwest({
