@@ -90,9 +90,11 @@
       if(embedEl.classList.contains('embetter-static') == true) return;
       embetter.curEmbeds.push( new embetter.EmbetterPlayer(embedEl, service) );
     },
-    unembedPlayers: function() {
+    unembedPlayers: function(containerEl) {
       for (var i = 0; i < embetter.curEmbeds.length; i++) {
-        embetter.curEmbeds[i].unembedMedia();
+        if(containerEl.contains(embetter.curEmbeds[i].el)) {
+          embetter.curEmbeds[i].unembedMedia();
+        }
       };
     },
     disposePlayers: function() {
