@@ -73,14 +73,17 @@
         window.clearTimeout(embetter.mobileScrollTimeout);
       }
       // check to see if embeds are on screen. if so, embed! otherwise, unembed
+      // exclude codepen since we don't know what might execute
       embetter.mobileScrollTimeout = setTimeout(function() {
         for (var i = 0; i < embetter.curEmbeds.length; i++) {
           var player = embetter.curEmbeds[i];
-          var playerRect = player.el.getBoundingClientRect();
-          if(playerRect.bottom < window.innerHeight && playerRect.top > 0) {
-            player.embedMedia();
-          } else {
-            player.unembedMedia();
+          if(player.getType() != 'codepen') {
+            var playerRect = player.el.getBoundingClientRect();
+            if(playerRect.bottom < window.innerHeight && playerRect.top > 0) {
+              player.embedMedia();
+            } else {
+              player.unembedMedia();
+            }
           }
         };
       }, 500);
@@ -102,6 +105,7 @@
         embetter.curEmbeds[i].dispose();
       };
       window.removeEventListener('scroll', embetter.utils.scrollListener);
+      embetter.mobileScrollSetup = false;
       embetter.curEmbeds.splice(0, embetter.curEmbeds.length-1);
     },
     disposeDetachedPlayers: function() {
@@ -481,6 +485,58 @@
 
 
   /////////////////////////////////////////////////////////////
+  // CODEPEN
+  /////////////////////////////////////////////////////////////
+  embetter.services.codepen = {
+    type: 'codepen',
+    dataAttribute: 'data-codepen-id',
+    regex: embetter.utils.buildRegex('(?:codepen.io)\\/([a-zA-Z0-9_\\-%]*\\/[a-zA-Z0-9_\\-%]*\\/[a-zA-Z0-9_\\-%]*)'),
+    embed: function(id, w, h, autoplay) {
+     id = id.replace('/pen/', '/embed/');
+     var user = id.split('/')[0];
+     var slugHash = id.split('/')[2];
+     return '<iframe src="//codepen.io/' + id + '?height=' + h + '&amp;theme-id=0&amp;slug-hash=' + slugHash + '&amp;default-tab=result&amp;user=' + user + '" frameborder="0" scrolling="no" allowtransparency="true" allowfullscreen="true"</iframe>';
+    },
+    getData: function(mediaUrl, callback) {
+      reqwest({
+        url: 'http://codepen.io/api/oembed?url='+ mediaUrl +'&format=json',
+        type: 'json',
+        error: function (err) {
+          console.log('codepen error', err);
+        },
+        success: function (data) {
+          callback(data);
+        }
+      })
+    },
+    link: function(id) {
+      return 'http://codepen.io/' + id;
+    },
+    buildFromText: function(text, containerEl) {
+      var self = this;
+      var penId = text.match(this.regex)[1].replace('/pen/', '/embed/');
+      var penId = text.match(this.regex)[1];
+      var penURL = this.link(penId);
+      if(penURL != null) {
+        this.getData(penURL, function(data) {
+          var thumbnail = data.thumbnail_url;
+          if(thumbnail) {
+            var newEmbedHTML = embetter.utils.playerHTML(self, penURL, thumbnail, soundId);
+            var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
+            containerEl.appendChild(newEmbedEl);
+            embetter.utils.initPlayer(newEmbedEl, self, embetter.curEmbeds);
+            // show embed code
+            var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
+            var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
+            containerEl.appendChild(newEmbedCodeEl);
+          } else {
+            // console.log('There was a problem with your codepen link.');
+          }
+        });
+      }
+    }
+  };
+
   // MEDIA PLAYER INSTANCE
   /////////////////////////////////////////////////////////////
 
@@ -508,6 +564,10 @@
     var self = this;
     this.playHandler = function() { self.play(); }; // for event listener removal
     this.playButton.addEventListener('click', this.playHandler);
+  };
+
+  embetter.EmbetterPlayer.prototype.getType = function() {
+    return this.serviceObj.type;
   };
 
   embetter.EmbetterPlayer.prototype.play = function() {

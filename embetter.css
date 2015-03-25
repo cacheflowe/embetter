@@ -163,6 +163,10 @@
   max-height: 180px;
 }
 
+.embetter[data-codepen-id] {
+  max-width: 700px;
+}
+
 .embetter[data-instagram-id] {
   max-width: 640px;
 }
