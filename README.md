@@ -6,7 +6,7 @@ Media embeds can quickly bog your site down, so why not lazy-load them? The basi
 
 #### Mobile-happy
 
-Since media generally can't autoplay on mobile devices, we can work around that by requesting the iframe embed when an Embetter player is fully visible in the mobile viewport. By doing this, we still lazy-load as much as possible, but each embed only needs a single tap to start playing. 
+Since media generally can't autoplay on mobile devices, we can work around that by requesting the iframe embed when an Embetter player is fully visible in the mobile viewport. By doing this, we still lazy-load as much as possible, but each embed only needs a single tap to start playing.
 
 #### Demo
 
@@ -20,4 +20,4 @@ Check out the [demo](http://cacheflowe.github.io/embetter) with the embed builde
 * Mixcloud
 * Instagram
 * Dailymotion
-
+* CodePen

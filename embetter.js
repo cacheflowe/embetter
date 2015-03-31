@@ -497,42 +497,31 @@
      var slugHash = id.split('/')[2];
      return '<iframe src="//codepen.io/' + id + '?height=' + h + '&amp;theme-id=0&amp;slug-hash=' + slugHash + '&amp;default-tab=result&amp;user=' + user + '" frameborder="0" scrolling="no" allowtransparency="true" allowfullscreen="true"</iframe>';
     },
-    getData: function(mediaUrl, callback) {
-      reqwest({
-        url: 'http://codepen.io/api/oembed?url='+ mediaUrl +'&format=json',
-        type: 'json',
-        error: function (err) {
-          console.log('codepen error', err);
-        },
-        success: function (data) {
-          callback(data);
-        }
-      })
+    getData: function(id) {
+      return 'http://codepen.io/' + id + '/image/large.png';
     },
     link: function(id) {
       return 'http://codepen.io/' + id;
     },
     buildFromText: function(text, containerEl) {
-      var self = this;
-      var penId = text.match(this.regex)[1].replace('/pen/', '/embed/');
       var penId = text.match(this.regex)[1];
-      var penURL = this.link(penId);
-      if(penURL != null) {
-        this.getData(penURL, function(data) {
-          var thumbnail = data.thumbnail_url;
-          if(thumbnail) {
-            var newEmbedHTML = embetter.utils.playerHTML(self, penURL, thumbnail, soundId);
-            var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
-            containerEl.appendChild(newEmbedEl);
-            embetter.utils.initPlayer(newEmbedEl, self, embetter.curEmbeds);
-            // show embed code
-            var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
-            var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
-            containerEl.appendChild(newEmbedCodeEl);
-          } else {
-            // console.log('There was a problem with your codepen link.');
-          }
-        });
+      if(penId != null) {
+        // build embed
+        var videoURL = this.link(penId);
+        var videoThumbnail = this.getData(penId);
+        var newEmbedHTML = embetter.utils.playerHTML(this, videoURL, videoThumbnail, penId);
+        var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
+        embetter.utils.initPlayer(newEmbedEl, this, embetter.curEmbeds);
+        containerEl.appendChild(newEmbedEl);
+        // show embed code
+        var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
+        var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
+        containerEl.appendChild(newEmbedCodeEl);
+      }
+    }
+  };
+
+
       }
     }
   };
@@ -564,13 +553,6 @@
     var self = this;
     this.playHandler = function() { self.play(); }; // for event listener removal
     this.playButton.addEventListener('click', this.playHandler);
-
-    // codepen hack to fix changing thumbnail URLs
-    if(this.serviceObj.type == 'codepen') {
-      if(this.thumbnail.height < 50) {
-        this.thumbnail.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArwAAAGaBAMAAAAfiY3GAAAAMFBMVEUwMDD///8lJSUtLS0pKSllZWXc3NycnJw3NzfKysrv7+9UVFS1tbVFRUV6enqKiorEPXaKAAAESElEQVR42u3YT2ibZRzA8Zckijd5DqY0FA2ZpYcpC61gdyiGbgehqKzaeZgKERY33AYdYgWRSeufHLx0sEmdCjkNHTqcZcPdWifKvM0iiANt2RxsMtYdFBTE532Tst1SYT35+RySPG/eXr48/PrkTRIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGBdClUNNrDuSEGEjfPw+WObVLjThqrt9+1XQ+lGWY87Kl+5J5ft2dzF0Gr1nspaj1YqD2bfVqJN6U2VSi0uB9N1vGN79ofidVd7rrHv15iu8GTr5Oo39ZO5eK3w7NTUtTRhcmVqaur1WjLy59Sh+WqS/yUup35Ikl3xD0YOzajXTe6nEELvUhy8C72nlhcvhnT8Vuvx4vdxTozF9/BAORmIbz35JLearueTsdKp+F1pSb5uxlq9l38vzSePXC3dqCwvbv+tdKOWDNf3ztVL40nSH+bm5o7UkoHS3NFwM8lNfhLXS/Hy/pq865C/uzReqUzU8u/FbTu4uliNm/jLmHe8clf9RC3pL01ns3egr7Jpck81N3k4m739ofctedczG5bvK6f/qXI7ihcKj7V6pnNbw8E0bzL4Y1+at51woK+c++JELebNlv2lcK4q7zp27+zBduYdYffm2d70pZM3btH5bPfWsryVyvJnad50Lyf9xdWesrzdPdEa7+TdG86XLu0M54uznbzD9ZWY95/rT6d5e69faS3G2Xvg+rVqmvfRsCJvd2Nxi7bzHl4I+8vlhbBntZM3N3sz7uAQXkzzxvfiUsybnSNi3sLsic3yds/bWsv7cSscn763FU5OdvIWZleyk8Mrad7S3NwbtezkEM8RMe/0O8Wf5e1quH6zkzf0nQkHZuPL2uwdi3Pj9tkbh+6t2TuzuXVM3q5yk3tivqGYt3SpcjrEl52dvPmHijO3nxzad3dODsWZeNT4VN5uCmf7ckODzWrhbGmlVl74qDx4OlzKzr3lyfvLt5171/K2z72x/JZg93a3JRxpvv1hPhmb7buQW17MvRt2p7/a/p74I5xLD7iXJyaer97K+/LExMRMljc3Ke86psNqaNTDM0n8TfH56PJif71nOp3I8aRwPJ9kJ4fsmcNa3vYzhzRvfqu83eX7PwilI9X4rPGr8N3y15PF8Vq8+Gqj8X76aHLkaKPROFBLnnqplo2SnXHZiI909sWHZY9/W5Wvq8LYC7tG0w/b/iouzIXXsm063GwOpkHz9zSbzTfjh2b75ni92ews89vkXU/fzpPzfPw9HHZ3Pg8Ntb8citKKnWU+Xd9a8l86p490ZNgwg2fSwctGGVUXAAAAAOD/7V+iFBKVw6oUoAAAAABJRU5ErkJggg=='
-      }
-    }
   };
 
   embetter.EmbetterPlayer.prototype.getType = function() {
