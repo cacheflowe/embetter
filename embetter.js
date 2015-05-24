@@ -495,7 +495,7 @@
      id = id.replace('/pen/', '/embed/');
      var user = id.split('/')[0];
      var slugHash = id.split('/')[2];
-     return '<iframe src="//codepen.io/' + id + '?height=' + h + '&amp;theme-id=0&amp;slug-hash=' + slugHash + '&amp;default-tab=result&amp;user=' + user + '" frameborder="0" scrolling="no" allowtransparency="true" allowfullscreen="true"</iframe>';
+     return '<iframe src="//codepen.io/' + id + '?height=' + h + '&amp;theme-id=0&amp;slug-hash=' + slugHash + '&amp;default-tab=result&amp;user=' + user + '" frameborder="0" scrolling="no" allowtransparency="true" allowfullscreen="true"></iframe>';
     },
     getData: function(id) {
       return 'http://codepen.io/' + id + '/image/large.png';
