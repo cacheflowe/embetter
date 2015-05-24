@@ -522,6 +522,47 @@
   };
 
 
+  /////////////////////////////////////////////////////////////
+  // BANDCAMP
+  // https://swindleuk.bandcamp.com/album/swindle-walters-call
+  // <meta property="twitter:player" content="https://bandcamp.com/EmbeddedPlayer/v=2/album=2659930103/size=large/linkcol=0084B4/notracklist=true/twittercard=true/" />
+  // <link rel="image_src" href="https://f1.bcbits.com/img/a0883249002_16.jpg">
+  // <meta property="og:image" content="https://f1.bcbits.com/img/a0883249002_16.jpg">
+  // https://swindleuk.bandcamp.com/track/walters-call
+  // <meta property="twitter:player" content="https://bandcamp.com/EmbeddedPlayer/v=2/track=1572756071/size=large/linkcol=0084B4/notracklist=true/twittercard=true/" />
+  // <meta property="twitter:image" content="https://f1.bcbits.com/img/a0883249002_2.jpg" />
+  // https://f1.bcbits.com/img/a0883249002_16.jpg
+  /////////////////////////////////////////////////////////////
+  embetter.services.bandcamp = {
+    type: 'bandcamp',
+    dataAttribute: 'data-bandcamp-id',
+    regex: embetter.utils.buildRegex('([a-zA-Z0-9_\\-]*.bandcamp.com\\/(album|track)\\/[a-zA-Z0-9_\\-%]*)'),
+    embed: function(id, w, h, autoplay) {
+      return '<iframe src="https://bandcamp.com/EmbeddedPlayer/' + id + '/size=large/bgcol=ffffff/linkcol=333333/tracklist=true/artwork=small/transparent=true/" frameborder="0" scrolling="no" allowtransparency="true" allowfullscreen="true" seamless></iframe>';
+    },
+    link: function(id) {
+      return 'https://'+id;
+    },
+    buildFromText: function(text, containerEl) {
+      console.warn('Bandcamp embeds don\'t work without a backend scraper. Hardcoded values will be used.');
+      var bandcampId = text.match(this.regex)[1];
+      if(bandcampId != null) {
+        // build embed
+        var videoURL = this.link(bandcampId);
+        var videoThumbnail = 'https://f1.bcbits.com/img/a0883249002_16.jpg';
+        var newEmbedHTML = embetter.utils.playerHTML(this, videoURL, videoThumbnail, 'album=2659930103');
+        var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
+        embetter.utils.initPlayer(newEmbedEl, this, embetter.curEmbeds);
+        containerEl.appendChild(newEmbedEl);
+        // show embed code
+        var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
+        var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
+        containerEl.appendChild(newEmbedCodeEl);
+      }
+    }
+  };
+
+
 
   /////////////////////////////////////////////////////////////
   // MEDIA PLAYER INSTANCE

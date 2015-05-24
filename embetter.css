@@ -150,7 +150,8 @@
   margin: -9.4% 0;
 }
 
-.embetter[data-soundcloud-id] {
+.embetter[data-soundcloud-id],
+.embetter[data-bandcamp-id] {
   max-width: 600px;
 }
 
