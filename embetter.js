@@ -192,7 +192,7 @@
     },
     getData: function(mediaUrl, callback) {
       var videoId = mediaUrl.split('vimeo.com/')[1];
-      reqwest({
+      window.reqwest({
         url: 'http://vimeo.com/api/v2/video/'+ videoId +'.json',
         type: 'jsonp',
         error: function (err) {
@@ -393,7 +393,7 @@
       return '<iframe width="100%" height="400" src="https://rd.io/i/'+ id + '/' + autoplayQuery +'" frameborder="0" scrolling="no"></iframe>';
     },
     getData: function(mediaUrl, callback) {
-      reqwest({
+      window.reqwest({
         url: 'http://www.rdio.com/api/oembed/?format=json&url='+ mediaUrl,
         type: 'jsonp',
         error: function (err) {
@@ -445,7 +445,7 @@
       return '<iframe width="660" height="180" src="https://www.mixcloud.com/widget/iframe/?feed=http%3A%2F%2Fwww.mixcloud.com%2F' + escape(id) + '%2F&amp;replace=0&amp;hide_cover=1&amp;stylecolor=ffffff&amp;embed_type=widget_standard&amp;'+ autoplayQuery +'" frameborder="0" scrolling="no"></iframe>';
     },
     getData: function(mediaUrl, callback) {
-      reqwest({
+      window.reqwest({
         url: 'http://www.mixcloud.com/oembed/?url='+ mediaUrl +'&format=jsonp',
         type: 'jsonp',
         error: function (err) {
@@ -454,7 +454,7 @@
         success: function (data) {
           callback(data);
         }
-      })
+      });
     },
     link: function(id) {
       return 'https://www.mixcloud.com/' + id;
