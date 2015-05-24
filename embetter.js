@@ -537,6 +537,7 @@
     this.thumbnail = this.el.querySelector('img');
     this.playerEl = null;
     this.buildPlayButton();
+    this.checkForBadThumbnail();
   };
 
   embetter.EmbetterPlayer.prototype.buildPlayButton = function() {
@@ -551,6 +552,24 @@
     var self = this;
     this.playHandler = function() { self.play(); }; // for event listener removal
     this.playButton.addEventListener('click', this.playHandler);
+  };
+  
+  embetter.EmbetterPlayer.prototype.checkForBadThumbnail = function() {
+    var self = this;
+    // try to detect onerror
+    this.thumbnail.onerror = function() {
+      self.fallbackThumbnail();
+    };
+    // if onerror already happened but we still have a broken image, give it 4 seconds to load, then replace
+    setTimeout(function() {
+      if(self.thumbnail.height < 50) {
+        self.fallbackThumbnail();
+      }
+    }, 4000);
+  };
+  
+  embetter.EmbetterPlayer.prototype.fallbackThumbnail = function() {
+    this.thumbnail.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArwAAAGcAQMAAAABMOGrAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAADUExURQAAAKd6PdoAAAA6SURBVHja7cGBAAAAAMOg+VPf4ARVAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAN488AAGP4e1mAAAAAElFTkSuQmCC';
   };
 
   embetter.EmbetterPlayer.prototype.getType = function() {
