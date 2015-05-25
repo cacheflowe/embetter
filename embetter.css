@@ -168,6 +168,10 @@
   max-width: 700px;
 }
 
+.embetter[data-ustream-id] {
+  max-width: 640px;
+ }
+
 .embetter[data-instagram-id] {
   max-width: 640px;
 }

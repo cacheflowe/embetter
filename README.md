@@ -21,3 +21,9 @@ Check out the [demo](http://cacheflowe.github.io/embetter) with the embed builde
 * Instagram
 * Dailymotion
 * CodePen
+* Bandcamp
+* Ustream
+
+##### TODO
+
+* Handle errors with bad media URLs : https://vimeo.com/cacheflowe/videos

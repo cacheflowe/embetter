@@ -563,6 +563,62 @@
   };
 
 
+  /////////////////////////////////////////////////////////////
+  // USTREAM
+  // https://ustream.zendesk.com/entries/52568684-Using-URL-Parameters-and-the-Ustream-Embed-API-for-Custom-Players
+  // http://www.ustream.tv/recorded/*
+  // http://www.ustream.tv/*
+  // http://ustre.am/*
+  /////////////////////////////////////////////////////////////
+  embetter.services.ustream = {
+    type: 'ustream',
+    dataAttribute: 'data-ustream-id',
+    regex: embetter.utils.buildRegex('(?:ustream.tv|ustre.am)\\/((?:(recorded|channel)\\/)?[a-zA-Z0-9_\\-%]*)'),
+    embed: function(id, w, h, autoplay) {
+      var autoplayQuery = (autoplay == true) ? '&amp;autoplay=true' : '';      
+      return '<iframe width="480" height="300" src="http://www.ustream.tv/embed/' + id + '?v=3&amp;wmode=direct' + autoplayQuery + '" frameborder="0" scrolling="no" allowtransparency="true" allowfullscreen="true"></iframe>';
+    },
+    link: function(id) {
+      return 'http://www.ustream.tv/'+id;
+    },
+    getData: function(mediaUrl, callback) {
+      window.reqwest({
+        url: 'http://localhost/embetter/vendor/proxy.php?csurl=' + 'http://www.ustream.tv/oembed?url='+ mediaUrl,
+        type: 'json',
+        error: function (err) {
+           // console.log('ustream error', err);
+        },
+        success: function (data) {
+          callback(data);
+        }
+      })
+    },
+    buildFromText: function(text, containerEl) {
+      var self = this;
+      var streamId = text.match(this.regex)[1];
+      var streamURL = this.link(streamId);
+      if(streamURL != null) {
+        this.getData(streamURL, function(data) {
+          var thumbnail = data.thumbnail_url;
+          if(thumbnail) {
+            var channelId = data.html.match(/cid=([0-9]*)/);
+            streamId = (channelId) ? channelId[1] : streamId;
+            var newEmbedHTML = embetter.utils.playerHTML(self, streamURL, thumbnail, streamId);
+            var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
+            containerEl.appendChild(newEmbedEl);
+            embetter.utils.initPlayer(newEmbedEl, self, embetter.curEmbeds);
+            // show embed code
+            var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
+            var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
+            containerEl.appendChild(newEmbedCodeEl);
+          } else {
+            // console.log('There was a problem with your Ustream link.');
+          }
+        });
+      }
+    }
+  };
+
 
   /////////////////////////////////////////////////////////////
   // MEDIA PLAYER INSTANCE
