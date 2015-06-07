@@ -31,7 +31,7 @@
       <div class="row">
         <div class="twelve columns">
           <label for="pasteMediaUrl">Paste a media URL to build an Embetter player:</label>
-          <input class="u-full-width" type="email" placeholder="Vimeo, YouTube, Instagram, Soundcloud, Dailymotion, or CodePen" id="pasteMediaUrl">
+          <input class="u-full-width" type="email" placeholder="Vimeo, YouTube, Instagram, Soundcloud, Dailymotion, Imgur, or CodePen" id="pasteMediaUrl">
         </div>
       </div>
       <div class="row">
@@ -58,7 +58,8 @@
         window.embetter.services.dailymotion,
         window.embetter.services.codepen,
         window.embetter.services.bandcamp,
-        window.embetter.services.ustream
+        window.embetter.services.ustream,
+        window.embetter.services.imgur
       ];
       window.embetter.utils.initMediaPlayers(pageEl, curServices);
 
@@ -72,6 +73,8 @@
       window.embetter.services.instagram.buildFromText('http://instagram.com/p/xekoQiQY3-/', testEmbedsEl);
       window.embetter.services.dailymotion.buildFromText('http://www.dailymotion.com/video/x14y6rv_the-ultimate-drunk-fails-compilation_fun', testEmbedsEl);
       window.embetter.services.codepen.buildFromText('http://codepen.io/nicoptere/pen/mgpxB', testEmbedsEl);
+      window.embetter.services.imgur.buildFromText('http://imgur.com/INfXs5g', testEmbedsEl);
+      window.embetter.services.imgur.buildFromText('http://imgur.com/qM6KaEy', testEmbedsEl);
       window.embetter.services.bandcamp.buildFromText('https://swindleuk.bandcamp.com/album/swindle-walters-call', testEmbedsEl);
 
       /////////////////////////////////////////////////////////////

@@ -621,6 +621,76 @@
 
 
   /////////////////////////////////////////////////////////////
+  // IMGUR
+  // 
+  // http://api.imgur.com/oembed.json?url=http://imgur.com/gallery/u063r
+  /////////////////////////////////////////////////////////////
+  embetter.services.imgur = {
+    type: 'imgur',
+    dataAttribute: 'data-imgur-id',
+    regex: embetter.utils.buildRegex('(?:imgur.com)(?:\\/gallery)?\\/([a-zA-Z0-9_\\-%]*)'),
+    embed: function(id, w, h, autoplay) {
+      return '<iframe width="'+ w +'" height="'+ h +'" src="https://www.imgur.com/'+ id +'/embed" " frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+    },
+    getData: function(mediaUrl, callback) {
+      window.reqwest({
+        url: 'http://localhost/embetter/vendor/proxy.php?csurl=' + 'http://api.imgur.com/oembed.json?url='+ mediaUrl,
+        type: 'json',
+        error: function (err) {
+          console.log('imgur error', err);
+        },
+        success: function (data) {
+          callback(data);
+        }
+      });
+    },
+    getThumbnail: function(id) {
+      return 'https://i.imgur.com/'+ id +'m.jpg';
+    },
+    link: function(id) {
+      return 'https://imgur.com/' + id;
+    },
+    buildFromText: function(text, containerEl) {
+      var imgId = text.match(this.regex)[1];
+      if(imgId != null) {
+        /*
+        // don't really need the endpoint, since oembed doesn't give us the gallery embed code *and* a thumbnail. we need to scrape og tags and check for gallery, then prepend "/a/" before the image ID embed 
+        var self = this;
+        // build embed
+        var mediaURL = this.link(imgId);
+        this.getData(mediaURL, function(data) {
+          console.log(data);
+          var imgId = data.html.match(/data-id="([a-zA-Z0-9\-\/]*)/)[1];
+          console.log('imgId',imgId);
+          var thumbnail = self.getThumbnail(imgId);
+          if(thumbnail) {
+            var imgURL = self.link(imgId);            
+            var newEmbedHTML = embetter.utils.playerHTML(self, imgURL, thumbnail, imgId);
+            var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
+            containerEl.appendChild(newEmbedEl);
+            embetter.utils.initPlayer(newEmbedEl, self, embetter.curEmbeds);
+            // show embed code
+            var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
+            var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
+            containerEl.appendChild(newEmbedCodeEl);
+          }
+        });
+        */
+        var mediaURL = this.link(imgId);
+        var thumbnail = this.getThumbnail(imgId);
+        var newEmbedHTML = embetter.utils.playerHTML(this, mediaURL, thumbnail, imgId);
+        var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
+        embetter.utils.initPlayer(newEmbedEl, this, embetter.curEmbeds);
+        containerEl.appendChild(newEmbedEl);
+        // show embed code
+        var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
+        var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
+        containerEl.appendChild(newEmbedCodeEl);
+      }
+    }
+  };
+
+  /////////////////////////////////////////////////////////////
   // MEDIA PLAYER INSTANCE
   /////////////////////////////////////////////////////////////
 

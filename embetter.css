@@ -172,6 +172,13 @@
   max-width: 640px;
  }
 
+.embetter[data-imgur-id] {
+  max-width: 480px;
+}
+.embetter[data-imgur-id].embetter-playing {
+  max-width: 480px;
+}
+
 .embetter[data-instagram-id] {
   max-width: 640px;
 }
