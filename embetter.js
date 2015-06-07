@@ -745,6 +745,59 @@
     }
   };
 
+
+  /////////////////////////////////////////////////////////////
+  // SLIDESHARE
+  // http://www.slideshare.net/developers/oembed
+  // http://www.slideshare.net/api/oembed/2?url=http://www.slideshare.net/tedxseoul/the-inaugural-tedxseoul-teaser&format=json
+  /////////////////////////////////////////////////////////////
+  embetter.services.slideshare = {
+    type: 'slideshare',
+    dataAttribute: 'data-slideshare-id',
+    regex: embetter.utils.buildRegex('slideshare.net\\/([a-zA-Z0-9_\\-%]*\\/[a-zA-Z0-9_\\-%]*)'),
+    embed: function(id, w, h, autoplay) {
+      return '<iframe width="427" height="356" src="https://www.slideshare.net/slideshow/embed_code/key/'+ id + '" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+    },
+    getData: function(imgId, callback) {
+      window.reqwest({
+        url: 'http://localhost/embetter/vendor/proxy.php?csurl=' + 'http://www.slideshare.net/api/oembed/2?url=https://www.slideshare.net/' + imgId + '&format=json',
+        type: 'json',
+        error: function (err) {
+          console.log('slideshare error', err);
+        },
+        success: function (data) {
+          callback(data);
+        }
+      });
+    },
+    link: function(id) {
+      return 'https://www.slideshare.net/' + id;
+    },
+    buildFromText: function(text, containerEl) {
+      var videoId = text.match(this.regex)[1];
+      if(videoId != null) {
+        var self = this;
+        // build embed
+        this.getData(videoId, function(data) {
+          var thumbnail = data.thumbnail;
+          if(thumbnail) {
+            var imgId = data.html.match(/embed_code\/key\/([a-zA-Z0-9\-\/]*)/)[1];
+            var slideshareURL = self.link(videoId);            
+            var newEmbedHTML = embetter.utils.playerHTML(self, slideshareURL, thumbnail, imgId);
+            var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
+            containerEl.appendChild(newEmbedEl);
+            embetter.utils.initPlayer(newEmbedEl, self, embetter.curEmbeds);
+            // show embed code
+            var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
+            var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
+            containerEl.appendChild(newEmbedCodeEl);
+          }
+        });
+      }
+    }
+  };
+
+
   /////////////////////////////////////////////////////////////
   // MEDIA PLAYER INSTANCE
   /////////////////////////////////////////////////////////////

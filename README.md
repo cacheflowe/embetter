@@ -25,6 +25,7 @@ Check out the [demo](http://cacheflowe.github.io/embetter) with the embed builde
 * Ustream
 * Imgur
 * Vine
+* Slideshare
 
 ##### TODO
 
