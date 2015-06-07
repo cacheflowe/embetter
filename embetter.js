@@ -622,13 +622,19 @@
 
   /////////////////////////////////////////////////////////////
   // IMGUR
-  // 
+  // look at this URL: http://imgur.com/gallery/u063r and remove "gallery/" to get a completely different embed
   // http://api.imgur.com/oembed.json?url=http://imgur.com/gallery/u063r
+  // look for: <meta name="twitter:card" content="gallery"/> - this lets us prepend "a/" before id to get the gallery embed
+  // gallery mode indicator: <meta name="twitter:card" content="gallery"/>
+  // gallery embed id: a/u063r
+  // gallery embed thumb: first og:image
+  // image embed id: u063r
+  // image embed thumb: u063r
   /////////////////////////////////////////////////////////////
   embetter.services.imgur = {
     type: 'imgur',
     dataAttribute: 'data-imgur-id',
-    regex: embetter.utils.buildRegex('(?:imgur.com)(?:\\/gallery)?\\/([a-zA-Z0-9_\\-%]*)'),
+    regex: embetter.utils.buildRegex('(?:imgur.com)\\/((?:gallery\\/)?[a-zA-Z0-9_\\-%]*)'),
     embed: function(id, w, h, autoplay) {
       return '<iframe width="'+ w +'" height="'+ h +'" src="https://www.imgur.com/'+ id +'/embed" " frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
     },
