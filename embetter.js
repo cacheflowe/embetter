@@ -695,6 +695,55 @@
       }
     }
   };
+  
+  
+  /////////////////////////////////////////////////////////////
+  // VINE
+  /////////////////////////////////////////////////////////////
+  embetter.services.vine = {
+    type: 'vine',
+    dataAttribute: 'data-vine-id',
+    regex: embetter.utils.buildRegex('vine.co\\/v\\/([a-zA-Z0-9-]*)'),
+    embed: function(id, w, h, autoplay) {
+      return '<iframe width="'+ w +'" height="'+ h +'" src="https://vine.co/v/'+ id +'/card?mute=1" " frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+    },
+    getData: function(imgId, callback) {
+      window.reqwest({
+        url: 'http://localhost/embetter/vendor/proxy.php?csurl=' + 'https://vine.co/oembed/' + imgId + '.json',
+        type: 'json',
+        error: function (err) {
+          console.log('imgur error', err);
+        },
+        success: function (data) {
+          callback(data);
+        }
+      });
+    },
+    link: function(id) {
+      return 'https://vine.co/v/' + id;
+    },
+    buildFromText: function(text, containerEl) {
+      var videoId = text.match(this.regex)[1];
+      if(videoId != null) {
+        var self = this;
+        // build embed
+        this.getData(videoId, function(data) {
+          var thumbnail = data.thumbnail_url;
+          if(thumbnail) {
+            var vineURL = self.link(videoId);            
+            var newEmbedHTML = embetter.utils.playerHTML(self, vineURL, thumbnail, videoId);
+            var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
+            containerEl.appendChild(newEmbedEl);
+            embetter.utils.initPlayer(newEmbedEl, self, embetter.curEmbeds);
+            // show embed code
+            var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
+            var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
+            containerEl.appendChild(newEmbedCodeEl);
+          }
+        });
+      }
+    }
+  };
 
   /////////////////////////////////////////////////////////////
   // MEDIA PLAYER INSTANCE

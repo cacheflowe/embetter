@@ -151,7 +151,8 @@
 }
 
 .embetter[data-soundcloud-id],
-.embetter[data-bandcamp-id] {
+.embetter[data-bandcamp-id],
+.embetter[data-vine-id] {
   max-width: 600px;
 }
 
