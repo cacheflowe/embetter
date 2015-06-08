@@ -169,7 +169,8 @@
   max-width: 700px;
 }
 
-.embetter[data-ustream-id] {
+.embetter[data-ustream-id],
+.embetter[data-slideshare-id] {
   max-width: 640px;
  }
 
