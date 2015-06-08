@@ -108,7 +108,7 @@
     },
     unembedPlayers: function(containerEl) {
       for (var i = 0; i < embetter.curEmbeds.length; i++) {
-        if(containerEl.contains(embetter.curEmbeds[i].el)) {
+        if(containerEl && containerEl.contains(embetter.curEmbeds[i].el)) {
           embetter.curEmbeds[i].unembedMedia();
         }
       };
