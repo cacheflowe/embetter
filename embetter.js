@@ -47,6 +47,19 @@
       htmlStr = htmlStr.replace(/\>\s+\</g,'><'); // remove whitespace between tags
       return '<p>Embed code:<textarea class="u-full-width">' + escapeHtml(htmlStr) + '</textarea></p>';
     },
+    embedPlayerInContainer: function(containerEl, serviceObj, mediaUrl, thumbnail, id) {
+        // create service title
+        containerEl.appendChild(embetter.utils.stringToDomElement('<h3>' + serviceObj.type.toUpperCase() + '</h3>'));
+        // create embed
+        var newEmbedHTML = embetter.utils.playerHTML(serviceObj, mediaUrl, thumbnail, id);
+        var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
+        embetter.utils.initPlayer(newEmbedEl, serviceObj, embetter.curEmbeds);
+        containerEl.appendChild(newEmbedEl);
+        // show embed code
+        var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
+        var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
+        containerEl.appendChild(newEmbedCodeEl);
+    },
     /////////////////////////////////////////////////////////////
     // MEDIA PLAYERS PAGE MANAGEMENT
     /////////////////////////////////////////////////////////////
@@ -165,14 +178,7 @@
         // build embed
         var videoURL = this.link(videoId);
         var videoThumbnail = this.getData(videoId);
-        var newEmbedHTML = embetter.utils.playerHTML(this, videoURL, videoThumbnail, videoId);
-        var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
-        embetter.utils.initPlayer(newEmbedEl, this, embetter.curEmbeds);
-        containerEl.appendChild(newEmbedEl);
-        // show embed code
-        var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
-        var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
-        containerEl.appendChild(newEmbedCodeEl);
+        embetter.utils.embedPlayerInContainer(containerEl, this, videoURL, videoThumbnail, videoId);
       }
     }
   };
@@ -195,9 +201,7 @@
       window.reqwest({
         url: 'http://vimeo.com/api/v2/video/'+ videoId +'.json',
         type: 'jsonp',
-        error: function (err) {
-          // console.log('vimeo error');
-        },
+        error: function (err) {},
         success: function (data) {
           callback(data[0].thumbnail_large);
         }
@@ -214,14 +218,7 @@
       if(videoId != null) {
         var videoURL = this.link(videoId);
         this.getData(videoURL, function(videoThumbnail) {
-          var newEmbedHTML = embetter.utils.playerHTML(self, videoURL, videoThumbnail, videoId);
-          var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
-          containerEl.appendChild(newEmbedEl);
-          embetter.utils.initPlayer(newEmbedEl, self, embetter.curEmbeds);
-          // show embed code
-          var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
-          var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
-          containerEl.appendChild(newEmbedCodeEl);
+          embetter.utils.embedPlayerInContainer(containerEl, self, videoURL, videoThumbnail, videoId);
         });
       }
     }
@@ -249,9 +246,7 @@
       reqwest({
         url: 'http://api.soundcloud.com/resolve.json?url='+ mediaUrl +'&client_id=YOUR_CLIENT_ID&callback=jsonpResponse',
         type: 'jsonp',
-        error: function (err) {
-          // console.log('soundcloud error');
-        },
+        error: function (err) {},
         success: function (data) {
           callback(data);
         }
@@ -283,21 +278,14 @@
           }
 
           if(thumbnail) {
+            // handle special soundcloud ids
             var soundId = data.id;
             if(soundURL.indexOf('/sets/') != -1) soundId = 'playlists/' + soundId;
             else if(soundURL.indexOf('/groups/') != -1) soundId = 'groups/' + soundId;
             else soundId = 'tracks/' + soundId;
 
-            var newEmbedHTML = embetter.utils.playerHTML(self, soundURL, thumbnail, soundId);
-            var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
-            containerEl.appendChild(newEmbedEl);
-            embetter.utils.initPlayer(newEmbedEl, self, embetter.curEmbeds);
-            // show embed code
-            var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
-            var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
-            containerEl.appendChild(newEmbedCodeEl);
-          } else {
-            // console.log('There was a problem with your Soundcloud link.');
+            // create embed
+            embetter.utils.embedPlayerInContainer(containerEl, self, soundURL, thumbnail, soundId);
           }
         });
       }
@@ -330,14 +318,7 @@
       var mediaURL = this.link(mediaId);
       if(mediaURL != null) {
         var thumbnail = this.getData(mediaId);
-        var newEmbedHTML = embetter.utils.playerHTML(this, mediaURL, thumbnail, mediaId);
-        var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
-        containerEl.appendChild(newEmbedEl);
-        embetter.utils.initPlayer(newEmbedEl, this, embetter.curEmbeds);
-        // show embed code
-        var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
-        var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
-        containerEl.appendChild(newEmbedCodeEl);
+        embetter.utils.embedPlayerInContainer(containerEl, this, mediaURL, thumbnail, mediaId);
       }
     }
   };
@@ -367,14 +348,7 @@
       if(videoId != null) {
         var videoURL = this.link(videoId);
         var videoThumbnail = this.getData(videoId);
-        var newEmbedHTML = embetter.utils.playerHTML(this, videoURL, videoThumbnail, videoId);
-        var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
-        embetter.utils.initPlayer(newEmbedEl, this, embetter.curEmbeds);
-        containerEl.appendChild(newEmbedEl);
-        // show embed code
-        var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
-        var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
-        containerEl.appendChild(newEmbedCodeEl);
+        embetter.utils.embedPlayerInContainer(containerEl, this, videoURL, videoThumbnail, videoId);
       }
     }
   };
@@ -396,9 +370,7 @@
       window.reqwest({
         url: 'http://www.rdio.com/api/oembed/?format=json&url='+ mediaUrl,
         type: 'jsonp',
-        error: function (err) {
-          // console.log('rdio error');
-        },
+        error: function (err) {},
         success: function (data) {
           callback(data);
         }
@@ -412,20 +384,9 @@
       var soundURL = text; // this.link(text.match(this.regex)[1]);
       if(soundURL != null) {
         this.getData(soundURL, function(data) {
-          var thumbnail = data.thumbnail_url;
-          var embedCode = data.html;
-          var soundId = embedCode.match(/https:\/\/rd.io\/i\/(\S*)\//)[1];
-          if(thumbnail && soundId) {
-            var newEmbedHTML = embetter.utils.playerHTML(self, soundURL, thumbnail, soundId);
-            var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
-            containerEl.appendChild(newEmbedEl);
-            embetter.utils.initPlayer(newEmbedEl, self, embetter.curEmbeds);
-            // show embed code
-            var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
-            var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
-            containerEl.appendChild(newEmbedCodeEl);
-          } else {
-            // console.log('There was a problem with your Rdio link.');
+          var soundId = data.html.match(/https:\/\/rd.io\/i\/(\S*)\//)[1];
+          if(data.thumbnail_url && soundId) {
+            embetter.utils.embedPlayerInContainer(containerEl, self, soundURL, data.thumbnail_url, soundId);
           }
         });
       }
@@ -448,9 +409,7 @@
       window.reqwest({
         url: 'http://www.mixcloud.com/oembed/?url='+ mediaUrl +'&format=jsonp',
         type: 'jsonp',
-        error: function (err) {
-          console.log('mixcloud error', err);
-        },
+        error: function (err) {},
         success: function (data) {
           callback(data);
         }
@@ -465,18 +424,8 @@
       var soundURL = this.link(soundId);
       if(soundURL != null) {
         this.getData(soundURL, function(data) {
-          var thumbnail = data.image;
-          if(thumbnail) {
-            var newEmbedHTML = embetter.utils.playerHTML(self, soundURL, thumbnail, soundId);
-            var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
-            containerEl.appendChild(newEmbedEl);
-            embetter.utils.initPlayer(newEmbedEl, self, embetter.curEmbeds);
-            // show embed code
-            var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
-            var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
-            containerEl.appendChild(newEmbedCodeEl);
-          } else {
-            // console.log('There was a problem with your mixcloud link.');
+          if(data.image) {
+            embetter.utils.embedPlayerInContainer(containerEl, self, soundURL, data.image, soundId);
           }
         });
       }
@@ -506,17 +455,9 @@
     buildFromText: function(text, containerEl) {
       var penId = text.match(this.regex)[1];
       if(penId != null) {
-        // build embed
-        var videoURL = this.link(penId);
-        var videoThumbnail = this.getData(penId);
-        var newEmbedHTML = embetter.utils.playerHTML(this, videoURL, videoThumbnail, penId);
-        var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
-        embetter.utils.initPlayer(newEmbedEl, this, embetter.curEmbeds);
-        containerEl.appendChild(newEmbedEl);
-        // show embed code
-        var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
-        var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
-        containerEl.appendChild(newEmbedCodeEl);
+        var penURL = this.link(penId);
+        var penThumbnail = this.getData(penId);
+        embetter.utils.embedPlayerInContainer(containerEl, this, penURL, penThumbnail, penId);
       }
     }
   };
@@ -528,7 +469,6 @@
   // <meta property="twitter:player" content="https://bandcamp.com/EmbeddedPlayer/v=2/album=2659930103/size=large/linkcol=0084B4/notracklist=true/twittercard=true/" />
   // <link rel="image_src" href="https://f1.bcbits.com/img/a0883249002_16.jpg">
   // <meta property="og:image" content="https://f1.bcbits.com/img/a0883249002_16.jpg">
-  // https://swindleuk.bandcamp.com/track/walters-call
   // <meta property="twitter:player" content="https://bandcamp.com/EmbeddedPlayer/v=2/track=1572756071/size=large/linkcol=0084B4/notracklist=true/twittercard=true/" />
   // <meta property="twitter:image" content="https://f1.bcbits.com/img/a0883249002_2.jpg" />
   // https://f1.bcbits.com/img/a0883249002_16.jpg
@@ -544,20 +484,12 @@
       return 'https://'+id;
     },
     buildFromText: function(text, containerEl) {
-      console.warn('Bandcamp embeds don\'t work without a backend scraper. Hardcoded values will be used.');
+      console.warn('Bandcamp embeds don\'t work without an opengraph metatag scraper. Hardcoded values will be used.');
       var bandcampId = text.match(this.regex)[1];
       if(bandcampId != null) {
-        // build embed
-        var videoURL = this.link(bandcampId);
-        var videoThumbnail = 'https://f1.bcbits.com/img/a0883249002_16.jpg';
-        var newEmbedHTML = embetter.utils.playerHTML(this, videoURL, videoThumbnail, 'album=2659930103');
-        var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
-        embetter.utils.initPlayer(newEmbedEl, this, embetter.curEmbeds);
-        containerEl.appendChild(newEmbedEl);
-        // show embed code
-        var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
-        var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
-        containerEl.appendChild(newEmbedCodeEl);
+        var soundURL = this.link(bandcampId);
+        var soundThumbnail = 'https://f1.bcbits.com/img/a0883249002_16.jpg';
+        embetter.utils.embedPlayerInContainer(containerEl, this, soundURL, soundThumbnail, 'album=2659930103');
       }
     }
   };
@@ -585,9 +517,7 @@
       window.reqwest({
         url: 'http://localhost/embetter/vendor/proxy.php?csurl=' + 'http://www.ustream.tv/oembed?url='+ mediaUrl,
         type: 'json',
-        error: function (err) {
-           // console.log('ustream error', err);
-        },
+        error: function (err) {},
         success: function (data) {
           callback(data);
         }
@@ -599,20 +529,10 @@
       var streamURL = this.link(streamId);
       if(streamURL != null) {
         this.getData(streamURL, function(data) {
-          var thumbnail = data.thumbnail_url;
-          if(thumbnail) {
+          if(data.thumbnail_url) {
             var channelId = data.html.match(/cid=([0-9]*)/);
             streamId = (channelId) ? channelId[1] : streamId;
-            var newEmbedHTML = embetter.utils.playerHTML(self, streamURL, thumbnail, streamId);
-            var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
-            containerEl.appendChild(newEmbedEl);
-            embetter.utils.initPlayer(newEmbedEl, self, embetter.curEmbeds);
-            // show embed code
-            var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
-            var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
-            containerEl.appendChild(newEmbedCodeEl);
-          } else {
-            // console.log('There was a problem with your Ustream link.');
+            embetter.utils.embedPlayerInContainer(containerEl, self, streamURL, data.thumbnail_url, streamId);
           }
         });
       }
@@ -665,33 +585,17 @@
         // build embed
         var mediaURL = this.link(imgId);
         this.getData(mediaURL, function(data) {
-          console.log(data);
           var imgId = data.html.match(/data-id="([a-zA-Z0-9\-\/]*)/)[1];
-          console.log('imgId',imgId);
           var thumbnail = self.getThumbnail(imgId);
           if(thumbnail) {
             var imgURL = self.link(imgId);            
-            var newEmbedHTML = embetter.utils.playerHTML(self, imgURL, thumbnail, imgId);
-            var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
-            containerEl.appendChild(newEmbedEl);
-            embetter.utils.initPlayer(newEmbedEl, self, embetter.curEmbeds);
-            // show embed code
-            var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
-            var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
-            containerEl.appendChild(newEmbedCodeEl);
+            embetter.utils.embedPlayerInContainer(containerEl, self, imgURL, thumbnail, imgId);
           }
         });
         */
         var mediaURL = this.link(imgId);
         var thumbnail = this.getThumbnail(imgId);
-        var newEmbedHTML = embetter.utils.playerHTML(this, mediaURL, thumbnail, imgId);
-        var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
-        embetter.utils.initPlayer(newEmbedEl, this, embetter.curEmbeds);
-        containerEl.appendChild(newEmbedEl);
-        // show embed code
-        var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
-        var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
-        containerEl.appendChild(newEmbedCodeEl);
+        embetter.utils.embedPlayerInContainer(containerEl, this, mediaURL, thumbnail, imgId);
       }
     }
   };
@@ -726,19 +630,10 @@
       var videoId = text.match(this.regex)[1];
       if(videoId != null) {
         var self = this;
-        // build embed
         this.getData(videoId, function(data) {
-          var thumbnail = data.thumbnail_url;
-          if(thumbnail) {
+          if(data.thumbnail_url) {
             var vineURL = self.link(videoId);            
-            var newEmbedHTML = embetter.utils.playerHTML(self, vineURL, thumbnail, videoId);
-            var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
-            containerEl.appendChild(newEmbedEl);
-            embetter.utils.initPlayer(newEmbedEl, self, embetter.curEmbeds);
-            // show embed code
-            var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
-            var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
-            containerEl.appendChild(newEmbedCodeEl);
+            embetter.utils.embedPlayerInContainer(containerEl, self, vineURL, data.thumbnail_url, videoId);
           }
         });
       }
@@ -762,9 +657,7 @@
       window.reqwest({
         url: 'http://localhost/embetter/vendor/proxy.php?csurl=' + 'http://www.slideshare.net/api/oembed/2?url=https://www.slideshare.net/' + imgId + '&format=json',
         type: 'json',
-        error: function (err) {
-          console.log('slideshare error', err);
-        },
+        error: function (err) {},
         success: function (data) {
           callback(data);
         }
@@ -777,20 +670,11 @@
       var videoId = text.match(this.regex)[1];
       if(videoId != null) {
         var self = this;
-        // build embed
         this.getData(videoId, function(data) {
-          var thumbnail = data.thumbnail;
-          if(thumbnail) {
+          if(data.thumbnail) {
             var imgId = data.html.match(/embed_code\/key\/([a-zA-Z0-9\-\/]*)/)[1];
             var slideshareURL = self.link(videoId);            
-            var newEmbedHTML = embetter.utils.playerHTML(self, slideshareURL, thumbnail, imgId);
-            var newEmbedEl = embetter.utils.stringToDomElement(newEmbedHTML);
-            containerEl.appendChild(newEmbedEl);
-            embetter.utils.initPlayer(newEmbedEl, self, embetter.curEmbeds);
-            // show embed code
-            var newEmbedCode = embetter.utils.playerCode(newEmbedHTML);
-            var newEmbedCodeEl = embetter.utils.stringToDomElement(newEmbedCode);
-            containerEl.appendChild(newEmbedCodeEl);
+            embetter.utils.embedPlayerInContainer(containerEl, self, slideshareURL, data.thumbnail, imgId);
           }
         });
       }
