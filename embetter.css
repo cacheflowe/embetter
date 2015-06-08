@@ -169,9 +169,12 @@
   max-width: 700px;
 }
 
-.embetter[data-ustream-id],
-.embetter[data-slideshare-id] {
+.embetter[data-ustream-id] {
   max-width: 640px;
+ }
+ 
+.embetter[data-slideshare-id] {
+  max-width: 1080px;
  }
 
 .embetter[data-imgur-id] {
