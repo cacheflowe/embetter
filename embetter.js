@@ -175,7 +175,6 @@
     buildFromText: function(text, containerEl) {
       var videoId = text.match(this.regex)[1];
       if(videoId != null) {
-        // build embed
         var videoURL = this.link(videoId);
         var videoThumbnail = this.getData(videoId);
         embetter.utils.embedPlayerInContainer(containerEl, this, videoURL, videoThumbnail, videoId);
@@ -578,6 +577,7 @@
     },
     buildFromText: function(text, containerEl) {
       var imgId = text.match(this.regex)[1];
+      imgId = imgId.replace('gallery/', ''); // for testing, don't deal with galleries
       if(imgId != null) {
         /*
         // don't really need the endpoint, since oembed doesn't give us the gallery embed code *and* a thumbnail. we need to scrape og tags and check for gallery, then prepend "/a/" before the image ID embed 
