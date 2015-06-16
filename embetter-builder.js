@@ -23,9 +23,6 @@
 	getData: function(id) {
       return 'http://img.youtube.com/vi/'+ id +'/0.jpg';
     },
-    link: function(id) {
-      return 'https://www.youtube.com/watch?v=' + id;
-    },
     buildFromText: function(text, containerEl) {
       var videoId = text.match(this.regex)[1];
       if(videoId != null) {
@@ -50,9 +47,6 @@
 
       return '';
     },
-    link: function(id) {
-      return 'https://vimeo.com/' + id;
-    },
     buildFromText: function(text, containerEl) {
       var self = this;
       var videoId = text.match(this.regex)[1];
@@ -75,9 +69,6 @@
           callback(data);
         }
       })
-    },
-    link: function(id) {
-      return 'https://soundcloud.com/' + id;
     },
     largerThumbnail: function(thumbnail) {
       return thumbnail.replace('large.jpg', 't500x500.jpg');
@@ -120,9 +111,6 @@
     getData: function(id) {
       return 'https://instagram.com/p/' + id +'/media/?size=l';
     },
-    link: function(id) {
-      return 'https://instagram.com/p/' + id +'/';
-    },
     buildFromText: function(text, containerEl) {
       var mediaId = text.match(this.regex)[1];
       var mediaURL = this.link(mediaId);
@@ -136,9 +124,6 @@
   embetter.utils.copyPropsToObject(embetter.services.dailymotion, {  
     getData: function(id) {
       return 'http://www.dailymotion.com/thumbnail/video/'+ id;
-    },
-    link: function(id) {
-      return 'http://www.dailymotion.com/video/'+ id;
     },
     buildFromText: function(text, containerEl) {
       text = text.split('_')[0];
@@ -161,9 +146,6 @@
           callback(data);
         }
       })
-    },
-    link: function(path) {
-      return 'http://www.rdio.com/' + path;
     },
     buildFromText: function(text, containerEl) {
       var self = this;
@@ -190,9 +172,6 @@
         }
       });
     },
-    link: function(id) {
-      return 'https://www.mixcloud.com/' + id;
-    },
     buildFromText: function(text, containerEl) {
       var self = this;
       var soundId = text.match(this.regex)[1];
@@ -211,9 +190,6 @@
     getData: function(id) {
       return 'http://codepen.io/' + id + '/image/large.png';
     },
-    link: function(id) {
-      return 'http://codepen.io/' + id;
-    },
     buildFromText: function(text, containerEl) {
       var penId = text.match(this.regex)[1];
       if(penId != null) {
@@ -225,9 +201,6 @@
   });
 
   embetter.utils.copyPropsToObject(embetter.services.bandcamp, {  
-    link: function(id) {
-      return 'https://'+id;
-    },
     buildFromText: function(text, containerEl) {
       console.warn('Bandcamp embeds don\'t work without an opengraph metatag scraper. Hardcoded values will be used.');
       var bandcampId = text.match(this.regex)[1];
@@ -240,9 +213,6 @@
   });
 
   embetter.utils.copyPropsToObject(embetter.services.ustream, {  
-    link: function(id) {
-      return 'http://www.ustream.tv/'+id;
-    },
     getData: function(mediaUrl, callback) {
       window.reqwest({
         url: 'http://localhost/embetter/vendor/proxy.php?csurl=' + 'http://www.ustream.tv/oembed?url='+ mediaUrl,
@@ -285,9 +255,6 @@
     getThumbnail: function(id) {
       return 'https://i.imgur.com/'+ id +'m.jpg';
     },
-    link: function(id) {
-      return 'https://imgur.com/' + id;
-    },
     buildFromText: function(text, containerEl) {
       var imgId = text.match(this.regex)[1];
       imgId = imgId.replace('gallery/', ''); // for testing, don't deal with galleries
@@ -326,9 +293,6 @@
         }
       });
     },
-    link: function(id) {
-      return 'https://vine.co/v/' + id;
-    },
     buildFromText: function(text, containerEl) {
       var videoId = text.match(this.regex)[1];
       if(videoId != null) {
@@ -353,9 +317,6 @@
           callback(data);
         }
       });
-    },
-    link: function(id) {
-      return 'https://www.slideshare.net/' + id;
     },
     buildFromText: function(text, containerEl) {
       var videoId = text.match(this.regex)[1];

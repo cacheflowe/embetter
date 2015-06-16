@@ -153,6 +153,9 @@
     embed: function(id, w, h, autoplay) {
       var autoplayQuery = (autoplay == true) ? '&autoplay=1' : '';
       return '<iframe class="video" width="'+ w +'" height="'+ h +'" src="https://www.youtube.com/embed/'+ id +'?rel=0&suggestedQuality=hd720'+ autoplayQuery +'" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+    },
+    link: function(id) {
+      return 'https://www.youtube.com/watch?v=' + id;
     }
   };
 
@@ -167,6 +170,9 @@
     embed: function(id, w, h, autoplay) {
       var autoplayQuery = (autoplay == true) ? '&amp;autoplay=1' : '';
       return '<iframe src="//player.vimeo.com/video/'+ id +'?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff'+ autoplayQuery +'" width="'+ w +'" height="'+ h +'" frameborder="0" scrolling="no" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+    },
+    link: function(id) {
+      return 'https://vimeo.com/' + id;
     }
   };
 
@@ -185,6 +191,9 @@
       var autoplayQuery = (autoplay == true) ? '&amp;auto_play=true' : '';
       if(!id.match(/^(playlist|track|group)/)) id = 'tracks/' + id; // if no tracks/sound-id, prepend tracks/ (mostly for legacy compatibility)
       return '<iframe width="100%" height="600" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/'+ id + autoplayQuery +'&amp;hide_related=false&amp;color=373737&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe>';
+    },
+    link: function(id) {
+      return 'https://soundcloud.com/' + id;
     }
   };
 
@@ -201,6 +210,9 @@
     regex: embetter.utils.buildRegex('instagram.com\/p\/([a-zA-Z0-9-]*)'),
     embed: function(id, w, h, autoplay) {
       return '<iframe width="100%" height="600" scrolling="no" frameborder="no" src="https://instagram.com/p/'+ id +'/embed/"></iframe>';
+    },
+    link: function(id) {
+      return 'https://instagram.com/p/' + id +'/';
     }
   };
 
@@ -215,6 +227,9 @@
     embed: function(id, w, h, autoplay) {
       var autoplayQuery = (autoplay == true) ? '?autoPlay=1' : '';
       return '<iframe class="video" width="'+ w +'" height="'+ h +'" src="//www.dailymotion.com/embed/video/'+ id + autoplayQuery +'" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+    },
+    link: function(id) {
+      return 'http://www.dailymotion.com/video/'+ id;
     }
   };
 
@@ -230,6 +245,9 @@
       // var autoplayQuery = (autoplay == true) ? '?autoplay=' : '';
       var autoplayQuery = '';
       return '<iframe width="100%" height="400" src="https://rd.io/i/'+ id + '/' + autoplayQuery +'" frameborder="0" scrolling="no"></iframe>';
+    },
+    link: function(path) {
+      return 'http://www.rdio.com/' + path;
     }
   };
 
@@ -244,6 +262,9 @@
     embed: function(id, w, h, autoplay) {
       var autoplayQuery = (autoplay == true) ? '&amp;autoplay=true' : '';
       return '<iframe width="660" height="180" src="https://www.mixcloud.com/widget/iframe/?feed=' + window.escape('http://www.mixcloud.com/' + id) + '&amp;replace=0&amp;hide_cover=1&amp;stylecolor=ffffff&amp;embed_type=widget_standard&amp;'+ autoplayQuery +'" frameborder="0" scrolling="no"></iframe>';
+    },
+    link: function(id) {
+      return 'https://www.mixcloud.com/' + id;
     }
   };
 
@@ -260,6 +281,9 @@
      var user = id.split('/')[0];
      var slugHash = id.split('/')[2];
      return '<iframe src="//codepen.io/' + id + '?height=' + h + '&amp;theme-id=0&amp;slug-hash=' + slugHash + '&amp;default-tab=result&amp;user=' + user + '" frameborder="0" scrolling="no" allowtransparency="true" allowfullscreen="true"></iframe>';
+    },
+    link: function(id) {
+      return 'http://codepen.io/' + id;
     }
   };
 
@@ -280,6 +304,9 @@
     regex: embetter.utils.buildRegex('([a-zA-Z0-9_\\-]*.bandcamp.com\\/(album|track)\\/[a-zA-Z0-9_\\-%]*)'),
     embed: function(id, w, h, autoplay) {
       return '<iframe src="https://bandcamp.com/EmbeddedPlayer/' + id + '/size=large/bgcol=ffffff/linkcol=333333/tracklist=true/artwork=small/transparent=true/" frameborder="0" scrolling="no" allowtransparency="true" allowfullscreen="true" seamless></iframe>';
+    },
+    link: function(id) {
+      return 'https://'+id;
     }
   };
 
@@ -298,6 +325,9 @@
     embed: function(id, w, h, autoplay) {
       var autoplayQuery = (autoplay == true) ? '&amp;autoplay=true' : '';      
       return '<iframe width="480" height="300" src="https://www.ustream.tv/embed/' + id + '?v=3&amp;wmode=direct' + autoplayQuery + '" frameborder="0" scrolling="no" allowtransparency="true" allowfullscreen="true"></iframe>';
+    },
+    link: function(id) {
+      return 'http://www.ustream.tv/'+id;
     }
   };
 
@@ -319,6 +349,9 @@
     regex: embetter.utils.buildRegex('(?:imgur.com)\\/((?:gallery\\/)?[a-zA-Z0-9_\\-%]*)'),
     embed: function(id, w, h, autoplay) {
       return '<iframe width="'+ w +'" height="'+ h +'" src="https://www.imgur.com/'+ id +'/embed" " frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+    },
+    link: function(id) {
+      return 'https://imgur.com/' + id;
     }
   };
   
@@ -332,6 +365,9 @@
     regex: embetter.utils.buildRegex('vine.co\\/v\\/([a-zA-Z0-9-]*)'),
     embed: function(id, w, h, autoplay) {
       return '<iframe width="'+ w +'" height="'+ h +'" src="https://vine.co/v/'+ id +'/card?mute=1" " frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+    },
+    link: function(id) {
+      return 'https://vine.co/v/' + id;
     }
   };
 
@@ -347,6 +383,9 @@
     regex: embetter.utils.buildRegex('slideshare.net\\/([a-zA-Z0-9_\\-%]*\\/[a-zA-Z0-9_\\-%]*)'),
     embed: function(id, w, h, autoplay) {
       return '<iframe width="427" height="356" src="https://www.slideshare.net/slideshow/embed_code/key/'+ id + '" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+    },
+    link: function(id) {
+      return 'https://www.slideshare.net/' + id;
     }
   };
 
