@@ -36,6 +36,7 @@
       </div>
       <div class="row">
         <div id="new-embeds"></div>
+        <div id="playlist-embeds" data-embetter-playlist="true"></div>
         <div id="test-embeds"></div>
         <div id="static-embeds"></div>
       </div>
@@ -45,9 +46,40 @@
     <script src="./embetter-builder.js"></script>
     <script>
       /////////////////////////////////////////////////////////////
+      // scroll to next player when API callback starts playing it
+      // modified from: http://stackoverflow.com/questions/21474678/scrolltop-animation-without-jquery
+      /////////////////////////////////////////////////////////////
+      var scrollToY = function(scrollDuration, scrollAmount) {
+        var scrollHeight = window.scrollY,
+            scrollStep = Math.PI / ( scrollDuration / 15 ),
+            cosParameter = scrollAmount / 2;
+            destY = scrollHeight - scrollAmount,
+            scrollCount = 0,
+            scrollProgress;
+        function step () {
+          setTimeout(function() {
+            scrollCount = scrollCount + 1;
+            scrollProgress = cosParameter - cosParameter * Math.cos( scrollCount * scrollStep );
+            window.scrollTo( 0, ( scrollHeight - scrollProgress ) );
+            if ( Math.abs(window.scrollY - destY) > 1.1 && scrollCount * scrollStep < Math.PI ) {
+              requestAnimationFrame(step);
+            }
+          }, 15 );
+        }
+        requestAnimationFrame(step);
+      };
+
+      // enable API callbacks and scroll on next load
+      window.embetter.apiEnabled = true;
+      window.embetter.apiAutoplayCallback = function(playerEl) {
+        scrollToY(1000, window.scrollY - playerEl.offsetTop + 50);
+      };
+
+      /////////////////////////////////////////////////////////////
       // SET UP SERVICES/PLAYERS PER PAGE
       /////////////////////////////////////////////////////////////
       var pageEl = document.querySelector('.container');
+      var playlistEmbedsEl = document.getElementById('playlist-embeds');
       var testEmbedsEl = document.getElementById('test-embeds');
 
       var curServices = [
@@ -69,10 +101,10 @@
       /////////////////////////////////////////////////////////////
       // TEST CREATE EMBEDS FROM URL
       /////////////////////////////////////////////////////////////
-      window.embetter.services.mixcloud.buildFromText('https://www.mixcloud.com/Davealex/ebm-mixtape-dj-davealex/', testEmbedsEl);
-      window.embetter.services.youtube.buildFromText('https://www.youtube.com/watch?v=l9XdkPsaynk', testEmbedsEl);
-      window.embetter.services.vimeo.buildFromText('http://vimeo.com/99276873', testEmbedsEl);
-      window.embetter.services.soundcloud.buildFromText('https://soundcloud.com/plasticsoundsupply/drop-logik-time-lost', testEmbedsEl);
+      // window.embetter.services.mixcloud.buildFromText('https://www.mixcloud.com/Davealex/ebm-mixtape-dj-davealex/', testEmbedsEl);
+      window.embetter.services.youtube.buildFromText('https://www.youtube.com/watch?v=l9XdkPsaynk', playlistEmbedsEl);
+      window.embetter.services.vimeo.buildFromText('http://vimeo.com/99276873', playlistEmbedsEl);
+      window.embetter.services.soundcloud.buildFromText('https://soundcloud.com/plasticsoundsupply/drop-logik-time-lost', playlistEmbedsEl);
       window.embetter.services.instagram.buildFromText('http://instagram.com/p/xekoQiQY3-/', testEmbedsEl);
       window.embetter.services.dailymotion.buildFromText('http://www.dailymotion.com/video/x14y6rv_the-ultimate-drunk-fails-compilation_fun', testEmbedsEl);
       window.embetter.services.codepen.buildFromText('http://codepen.io/nicoptere/pen/mgpxB', testEmbedsEl);
