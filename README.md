@@ -10,7 +10,7 @@ Since media generally can't autoplay on mobile devices, we can work around that 
 
 #### Demo
 
-Check out the [demo](http://cacheflowe.github.io/embetter) with the embed builder, or see it out [in the wild](http://plasticsoundsupply.com/video).
+Check out the [demo](http://cacheflowe.github.io/embetter) with the embed builder, see an [auto-playthrough playlist](http://cacheflowe.github.io/embetter/playlist/#/2-step-chunes/oG_La5R9HQk|C4xDtB_9SZM|QFxdkHRpz7Q|lH306YTzPY0|0Yt_Ts26PLM|VIOMoOYOTQQ|IlNNrXzi60o|F73WxhZPvJ4|4_uggscguzs|5sDW7AMoHVs|gXCN1DhHTZA|xy3RjUX3UeQ|ewHYBOCypXc|uNWTlETtuGM|B1JK9FJf0cE|mIE92NdE4ww|qpa09-OuZek|IqrYbXNnGmc|yUrOSCkoJ6w|VDqBbSBjsuw|nves7T9ThZI|OhKypM3H0iY|Z7nvb8kTPl8|Shtc5vtjui0|Aw4I7-jHw7s|YDi9i5JT5Co|lZ3KM5E8wl8|E48rwBeHf-A|MFu-PSawX1k|SgaHZIobQms|oG_La5R9HQk|mapbdUAbcrY) or see it out [in the wild](http://plasticsoundsupply.com/video).
 
 ##### Supported services & URL formats:
 
