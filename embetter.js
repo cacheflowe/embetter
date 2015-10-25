@@ -214,7 +214,9 @@
           events: {
             'onReady': function() {},
             'onPlaybackQualityChange': function() {},
-            'onError': function() {},
+            'onError': function() {
+              embetter.utils.mediaComplete();
+            },
             'onStateChange': function(e) {
               /* -1 (unstarted) | 0 (ended) | 1 (playing) | 2 (paused) | 3 (buffering) | 5 (video cued) */
               if(e.data == 0) {

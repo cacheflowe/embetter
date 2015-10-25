@@ -53,9 +53,9 @@
         var scrollHeight = window.scrollY,
             scrollStep = Math.PI / ( scrollDuration / 15 ),
             cosParameter = scrollAmount / 2;
-            destY = scrollHeight - scrollAmount,
+        var destY = scrollHeight - scrollAmount,
             scrollCount = 0,
-            scrollProgress;
+            scrollProgress = 0;
         function step () {
           setTimeout(function() {
             scrollCount = scrollCount + 1;
