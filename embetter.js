@@ -90,7 +90,7 @@
           var player = embetter.curEmbeds[i];
           if(player.getType() != 'codepen') {
             var playerRect = player.el.getBoundingClientRect();
-            if(playerRect.bottom < window.innerHeight && playerRect.top > 0) {
+            if(playerRect.top < window.innerHeight && playerRect.bottom > 0) {
               player.embedMedia(false);
             } else {
               player.unembedMedia();
