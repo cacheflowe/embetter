@@ -370,24 +370,6 @@
 
 
   /////////////////////////////////////////////////////////////
-  // RDIO
-  /////////////////////////////////////////////////////////////
-  embetter.services.rdio = {
-    type: 'rdio',
-    dataAttribute: 'data-rdio-id',
-    regex: embetter.utils.buildRegex('rdio.com\/(\\S*)'),
-    embed: function(id, w, h, autoplay) {
-      // var autoplayQuery = (autoplay == true) ? '?autoplay=' : '';
-      var autoplayQuery = '';
-      return '<iframe width="100%" height="400" src="https://rd.io/i/'+ id + '/' + autoplayQuery +'" frameborder="0" scrolling="no"></iframe>';
-    },
-    link: function(path) {
-      return 'http://www.rdio.com/' + path;
-    }
-  };
-
-
-  /////////////////////////////////////////////////////////////
   // MIXCLOUD
   /////////////////////////////////////////////////////////////
   embetter.services.mixcloud = {

@@ -164,31 +164,6 @@
     }
   });
 
-  embetter.utils.copyPropsToObject(embetter.services.rdio, {
-    getData: function(mediaUrl, callback) {
-      window.reqwest({
-        url: 'http://www.rdio.com/api/oembed/?format=json&url='+ mediaUrl,
-        type: 'jsonp',
-        error: function (err) {},
-        success: function (data) {
-          callback(data);
-        }
-      })
-    },
-    buildFromText: function(text, containerEl) {
-      var self = this;
-      var soundURL = text; // this.link(text.match(this.regex)[1]);
-      if(soundURL != null) {
-        this.getData(soundURL, function(data) {
-          var soundId = data.html.match(/https:\/\/rd.io\/i\/(\S*)\//)[1];
-          if(data.thumbnail_url && soundId) {
-            embetter.utils.embedPlayerInContainer(containerEl, self, soundURL, data.thumbnail_url, soundId);
-          }
-        });
-      }
-    }
-  });
-
   embetter.utils.copyPropsToObject(embetter.services.mixcloud, {
     getData: function(mediaUrl, callback) {
       window.reqwest({
