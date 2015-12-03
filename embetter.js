@@ -88,13 +88,13 @@
       embetter.mobileScrollTimeout = setTimeout(function() {
         for (var i = 0; i < embetter.curEmbeds.length; i++) {
           var player = embetter.curEmbeds[i];
-          if(player.getType() != 'codepen') {
-            var playerRect = player.el.getBoundingClientRect();
-            if(playerRect.top < window.innerHeight && playerRect.bottom > 0) {
+          var playerRect = player.el.getBoundingClientRect();
+          if(playerRect.top < window.innerHeight && playerRect.bottom > 0) {
+            if(player.getType() != 'codepen') {
               player.embedMedia(false);
-            } else {
-              player.unembedMedia();
             }
+          } else {
+            player.unembedMedia();
           }
         };
       }, 500);
