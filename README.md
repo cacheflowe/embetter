@@ -2,15 +2,19 @@
 
 #### Because iframes are janky
 
-Media embeds can quickly bog your site down, so why not lazy-load them? The basic Embetter "player" consists of a tiny template with a thumbnail image, a play button, and the essential data needed to construct the responsive iframe embed code for each service. Add a dash of javascript & css to your web page, and you have a simple, lightweight media player.
+Media embeds can quickly bog your site down, so let's lazy-load them! The basic Embetter player consists of a tiny template with a progressively-enhanced thumbnail image, a play button, and the essential data needed to construct the responsive iframe embed code. Add a dash of javascript &amp; css to your web page, and you have a simple, lightweight media player.
 
 #### Mobile-happy
 
-Since media generally can't autoplay on mobile devices, we can work around that by requesting the iframe embed when an Embetter player is fully visible in the mobile viewport. By doing this, we still lazy-load as much as possible, but each embed only needs a single tap to start playing.
+Since media generally can't autoplay on mobile devices, we work around that by populating the embed's iframe when an Embetter player is at least partially visible in the mobile viewport. By doing this, we still lazy-load (and unload) as much as possible, but each embed only needs a single tap to start playing.
+
+#### Demo
+
+Check out the [demo](http://cacheflowe.github.io/embetter) with the embed builder, see an [auto-playthrough playlist](http://cacheflowe.github.io/embetter/playlist/#/2-step-chunes/oG_La5R9HQk|C4xDtB_9SZM|QFxdkHRpz7Q|0Yt_Ts26PLM|VIOMoOYOTQQ|IlNNrXzi60o|F73WxhZPvJ4|4_uggscguzs|5sDW7AMoHVs|gXCN1DhHTZA|xy3RjUX3UeQ|ewHYBOCypXc|uNWTlETtuGM|B1JK9FJf0cE|mIE92NdE4ww|qpa09-OuZek|IqrYbXNnGmc|yUrOSCkoJ6w|VDqBbSBjsuw|nves7T9ThZI|OhKypM3H0iY|Z7nvb8kTPl8|Shtc5vtjui0|Aw4I7-jHw7s|YDi9i5JT5Co|lZ3KM5E8wl8|E48rwBeHf-A|MFu-PSawX1k|SgaHZIobQms|oG_La5R9HQk|mapbdUAbcrY) or see it out [in the wild](http://plasticsoundsupply.com/video).
 
 #### Usage
 
-Step 1: Add Embetter embed codes to your markup:
+Add Embetter embed codes to your markup:
 
 ```
 <div class="embetter" data-vimeo-id="99276873">
@@ -18,7 +22,7 @@ Step 1: Add Embetter embed codes to your markup:
 </div>
 ```
 
-Step 2: Tell Embetter's JavaScript to activate any players on the page, or within a specific container. Be sure to pass in the 3rd-party services you'd like to enable:
+Tell Embetter's JavaScript to activate any players on the page, or within a specific container. Be sure to pass in the 3rd-party services you'd like to enable:
 
 ```
 var embedServices = [
@@ -29,21 +33,22 @@ var embedServices = [
 window.embetter.utils.initMediaPlayers(document.body, embedServices);
 ```
 
-Step 3: Dispose any existing players before you switch pages in your single-page app:
+Dispose any existing players before you switch pages in your single-page app:
 
 ```
 window.embetter.utils.disposePlayers();
 ```
 
-Step 4: Stop all active embeds, in case you need to:
+Stop all active embeds, in case you need to:
 
 ```
 window.embetter.utils.unembedPlayers(document.body)
 ```
 
-#### Demo
+#### How it works
 
-Check out the [demo](http://cacheflowe.github.io/embetter) with the embed builder, see an [auto-playthrough playlist](http://cacheflowe.github.io/embetter/playlist/#/2-step-chunes/oG_La5R9HQk|C4xDtB_9SZM|QFxdkHRpz7Q|0Yt_Ts26PLM|VIOMoOYOTQQ|IlNNrXzi60o|F73WxhZPvJ4|4_uggscguzs|5sDW7AMoHVs|gXCN1DhHTZA|xy3RjUX3UeQ|ewHYBOCypXc|uNWTlETtuGM|B1JK9FJf0cE|mIE92NdE4ww|qpa09-OuZek|IqrYbXNnGmc|yUrOSCkoJ6w|VDqBbSBjsuw|nves7T9ThZI|OhKypM3H0iY|Z7nvb8kTPl8|Shtc5vtjui0|Aw4I7-jHw7s|YDi9i5JT5Co|lZ3KM5E8wl8|E48rwBeHf-A|MFu-PSawX1k|SgaHZIobQms|oG_La5R9HQk|mapbdUAbcrY) or see it out [in the wild](http://plasticsoundsupply.com/video).
+On it's own, an Embetter embed code is just a clickable thumbnail that takes you to the source 3rd-party media page. After activation via `initMediaPlayers`, each Embetter player becomes clickable and has all of the data it needs to construct an iframe, which stretches to match the size of the preview thumbnail. This information is stored as a data attribute on the `.embetter` wrapper div and is extracted via API calls, regex capturing, or metatag scraping. Additional operations on this data helps us handle special cases per service. The `embetter-builder.js` file contains the logic to properly extract the necessary data for each type of embed, and operates on URLs, CORS-enabled APIs (usually oembed services), or locally-`curl`ed demo files to explain and test the behavior. Most likely, you'd want to port this behavior to your backend if you need to do this on the fly. Some services have several types of embeds that require different data to be stored, and some have extra css that adds custom layout and state behavior. When it comes down to it, however, we only need a single string (an id of some kind) to interpolate into a predefined iframe src template per service.
+
 
 ## Supported services & URL formats:
 
