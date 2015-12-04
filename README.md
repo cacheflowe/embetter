@@ -45,6 +45,16 @@ Stop all active embeds, in case you need to:
 window.embetter.utils.unembedPlayers(document.body)
 ```
 
+Get media complete callbacks from YouTube, Vimeo and Soundcloud embeds via their iframe .js APIs. This is useful to scroll your page to the next player contained in an element with `data-embetter-playlist="true"`.
+
+```
+window.embetter.apiEnabled = true;
+window.embetter.apiAutoplayCallback = function(playerEl) {
+  window.scrollTo(0, window.scrollY - playerEl.offsetTop + 50);
+};
+
+```
+
 #### How it works
 
 On it's own, an Embetter embed code is just a clickable thumbnail that takes you to the source 3rd-party media page. After activation via `initMediaPlayers`, each Embetter player becomes clickable and has all of the data it needs to construct an iframe, which stretches to match the size of the preview thumbnail. This information is stored as a data attribute on the `.embetter` wrapper div and is extracted via API calls, regex capturing, or metatag scraping. Additional operations on this data helps us handle special cases per service. The `embetter-builder.js` file contains the logic to properly extract the necessary data for each type of embed, and operates on URLs, CORS-enabled APIs (usually oembed services), or locally-`curl`ed demo files to explain and test the behavior. Most likely, you'd want to port this behavior to your backend if you need to do this on the fly. Some services have several types of embeds that require different data to be stored, and some have extra css that adds custom layout and state behavior. When it comes down to it, however, we only need a single string (an id of some kind) to interpolate into a predefined iframe src template per service.
