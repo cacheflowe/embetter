@@ -1,0 +1,19 @@
+
+{
+  "version": 1.0,
+  "type": "video",
+  "cache_age": 3153600000,
+  "provider_name": "Vine",
+  "provider_url": "https://vine.co/",
+  "author_name": "FailArmy",
+  "author_url": "https://vine.co/u/1016179226531278848",
+
+  "title": "Break dancing \ud83d\ude02\ud83d\udc4c",
+
+  "thumbnail_url": "https://v.cdn.vine.co/r/videos/0266FE4BB71204999348434731008_3fcec68b040.3.0.16658995501335644033.mp4.jpg?versionId=E6Bcf.1cHN.hQKyVXYOzuO8o5b3qd5zM",
+  "thumbnail_width": 480,
+  "thumbnail_height": 480,
+  "html": "<iframe class=\"vine-embed\" src=\"https://vine.co/v/eWlADOIAEAd/embed/simple\" width=\"600\" height=\"600\" frameborder=\"0\"><\/iframe><script async src=\"//platform.vine.co/static/scripts/embed.js\"><\/script>",
+  "width": 600,
+  "height": 600
+}

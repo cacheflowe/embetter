@@ -6,7 +6,7 @@
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
     <meta content="no" name="imagetoolbar" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <link rel="icon" href="./favicon.ico"> 
+    <link rel="icon" href="./favicon.ico">
     <link rel="stylesheet" href="./vendor/normalize.css">
     <link rel="stylesheet" href="./vendor/skeleton.css">
     <link rel="stylesheet" href="./embetter.css">
@@ -102,18 +102,22 @@
       /////////////////////////////////////////////////////////////
       // TEST CREATE EMBEDS FROM URL
       /////////////////////////////////////////////////////////////
-      // window.embetter.services.mixcloud.buildFromText('https://www.mixcloud.com/Davealex/ebm-mixtape-dj-davealex/', testEmbedsEl);
       window.embetter.services.youtube.buildFromText('https://www.youtube.com/watch?v=l9XdkPsaynk', playlistEmbedsEl);
-      window.embetter.services.vimeo.buildFromText('http://vimeo.com/99276873', playlistEmbedsEl);
-      window.embetter.services.soundcloud.buildFromText('https://soundcloud.com/plasticsoundsupply/drop-logik-time-lost', playlistEmbedsEl);
+      window.embetter.services.vimeo.buildFromText('http://vimeo.com/99276873', playlistEmbedsEl);  // './sample-data/vimeo.json'
+      window.embetter.services.soundcloud.buildFromText('https://soundcloud.com/plasticsoundsupply/drop-logik-time-lost', playlistEmbedsEl, './sample-data/soundcloud-track.json');
+      window.embetter.services.soundcloud.buildFromText('https://soundcloud.com/cacheflowe/sets/automate-everything-2005', playlistEmbedsEl, './sample-data/soundcloud-set.json');
       window.embetter.services.instagram.buildFromText('http://instagram.com/p/xekoQiQY3-/', testEmbedsEl);
+      window.embetter.services.mixcloud.buildFromText('https://www.mixcloud.com/Davealex/davealex-30m-electro-2010/', testEmbedsEl);  // './sample-data/mixcloud.json'
       window.embetter.services.dailymotion.buildFromText('http://www.dailymotion.com/video/x14y6rv_the-ultimate-drunk-fails-compilation_fun', testEmbedsEl);
       window.embetter.services.codepen.buildFromText('http://codepen.io/nicoptere/pen/mgpxB', testEmbedsEl);
-      window.embetter.services.imgur.buildFromText('http://imgur.com/INfXs5g', testEmbedsEl);
-      window.embetter.services.imgur.buildFromText('http://imgur.com/qM6KaEy', testEmbedsEl);
-      window.embetter.services.bandcamp.buildFromText('https://swindleuk.bandcamp.com/album/swindle-walters-call', testEmbedsEl);
-      window.embetter.services.vine.buildFromText('https://vine.co/v/eWlADOIAEAd', testEmbedsEl);
-      window.embetter.services.slideshare.buildFromText('http://www.slideshare.net/HunterLoftis1/forwardjs-we-will-all-be-game-developers', testEmbedsEl);
+      window.embetter.services.imgur.buildFromText('http://imgur.com/gallery/iKQET', testEmbedsEl, './sample-data/imgur-gallery.html');
+      window.embetter.services.imgur.buildFromText('http://imgur.com/qM6KaEy', testEmbedsEl, './sample-data/imgur-gifv.html');
+      window.embetter.services.imgur.buildFromText('http://imgur.com/gallery/JT7SP0M', testEmbedsEl, './sample-data/imgur.html');
+      window.embetter.services.bandcamp.buildFromText('https://swindleuk.bandcamp.com/album/swindle-walters-call', testEmbedsEl, './sample-data/bandcamp-album.html');
+      window.embetter.services.ustream.buildFromText('http://www.ustream.tv/channel/almost-home-adoptions-cat-cam', testEmbedsEl, './sample-data/ustream.json');
+      window.embetter.services.ustream.buildFromText('http://www.ustream.tv/recorded/58564970', testEmbedsEl, './sample-data/ustream-recorded.json');
+      window.embetter.services.vine.buildFromText('https://vine.co/v/eWlADOIAEAd', testEmbedsEl, './sample-data/vine.json');
+      window.embetter.services.slideshare.buildFromText('http://www.slideshare.net/HunterLoftis1/forwardjs-we-will-all-be-game-developers', testEmbedsEl, './sample-data/slideshare.json');
 
       /////////////////////////////////////////////////////////////
       // LISTEN FOR URL PASTE INTO INPUT FIELD FOR DEMO

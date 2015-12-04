@@ -62,11 +62,11 @@
   });
 
   embetter.utils.copyPropsToObject(embetter.services.vimeo, {
-    getData: function(mediaUrl, callback) {
+    getData: function(mediaUrl, callback, sampleData) {
       var videoId = mediaUrl.split('vimeo.com/')[1];
       window.reqwest({
-        url: 'https://vimeo.com/api/v2/video/'+ videoId +'.json',
-        type: 'jsonp',
+        url: sampleData || 'https://vimeo.com/api/v2/video/'+ videoId +'.json',
+        type: (sampleData) ? 'json' : 'jsonp',
         error: function (err) {},
         success: function (data) {
           callback(data[0].thumbnail_large);
@@ -75,23 +75,25 @@
 
       return '';
     },
-    buildFromText: function(text, containerEl) {
+    buildFromText: function(text, containerEl, sampleData) {
       var self = this;
       var videoId = text.match(this.regex)[1];
       if(videoId != null) {
         var videoURL = this.link(videoId);
         this.getData(videoURL, function(videoThumbnail) {
           embetter.utils.embedPlayerInContainer(containerEl, self, videoURL, videoThumbnail, videoId);
-        });
+        }, sampleData);
       }
     }
   });
 
   embetter.utils.copyPropsToObject(embetter.services.soundcloud, {
-    getData: function(mediaUrl, callback) {
+    getData: function(mediaUrl, callback, sampleData) {
       reqwest({
-        url: 'http://api.soundcloud.com/resolve.json?url='+ mediaUrl +'&client_id=YOUR_CLIENT_ID&callback=jsonpResponse',
-        type: 'jsonp',
+        // url: 'http://soundcloud.com/oembed?url='+ mediaUrl +'&format=json',
+        // http://soundcloud.com/oembed?url=https://soundcloud.com/cacheflowe/sets/automate-everything-2005&format=json
+        url: sampleData || 'http://api.soundcloud.com/resolve.json?url='+ mediaUrl +'&client_id=YOUR_CLIENT_ID&callback=jsonpResponse',
+        type: (sampleData) ? 'json' : 'jsonp',
         error: function (err) {},
         success: function (data) {
           callback(data);
@@ -101,7 +103,7 @@
     largerThumbnail: function(thumbnail) {
       return thumbnail.replace('large.jpg', 't500x500.jpg');
     },
-    buildFromText: function(text, containerEl) {
+    buildFromText: function(text, containerEl, sampleData) {
       var self = this;
       var soundURL = this.link(text.match(this.regex)[1]);
       if(soundURL != null) {
@@ -130,7 +132,7 @@
             // create embed
             embetter.utils.embedPlayerInContainer(containerEl, self, soundURL, thumbnail, soundId);
           }
-        });
+        }, sampleData);
       }
     }
   });
@@ -165,17 +167,17 @@
   });
 
   embetter.utils.copyPropsToObject(embetter.services.mixcloud, {
-    getData: function(mediaUrl, callback) {
+    getData: function(mediaUrl, callback, sampleData) {
       window.reqwest({
-        url: 'http://www.mixcloud.com/oembed/?url='+ mediaUrl +'&format=jsonp',
-        type: 'jsonp',
+        url: sampleData || 'http://www.mixcloud.com/oembed/?url='+ mediaUrl +'&format=jsonp',
+        type: (sampleData) ? 'json' : 'jsonp',
         error: function (err) {},
         success: function (data) {
           callback(data);
         }
       });
     },
-    buildFromText: function(text, containerEl) {
+    buildFromText: function(text, containerEl, sampleData) {
       var self = this;
       var soundId = text.match(this.regex)[1];
       var soundURL = this.link(soundId);
@@ -184,7 +186,7 @@
           if(data.image) {
             embetter.utils.embedPlayerInContainer(containerEl, self, soundURL, data.image, soundId);
           }
-        });
+        }, sampleData);
       }
     }
   });
@@ -205,49 +207,68 @@
   });
 
   embetter.utils.copyPropsToObject(embetter.services.bandcamp, {
-    buildFromText: function(text, containerEl) {
-      console.warn('Bandcamp embeds don\'t work without an opengraph metatag scraper. Hardcoded values will be used.');
-      var bandcampId = text.match(this.regex)[1];
-      if(bandcampId != null) {
-        var soundURL = this.link(bandcampId);
-        var soundThumbnail = 'https://f1.bcbits.com/img/a0883249002_16.jpg';
-        embetter.utils.embedPlayerInContainer(containerEl, this, soundURL, soundThumbnail, 'album=2659930103');
-      }
-    }
-  });
-
-  embetter.utils.copyPropsToObject(embetter.services.ustream, {
-    getData: function(mediaUrl, callback) {
+    getData: function(bandcampURL, callback, sampleData) {
       window.reqwest({
-        url: 'http://localhost/embetter/vendor/proxy.php?csurl=' + 'http://www.ustream.tv/oembed?url='+ mediaUrl,
-        type: 'json',
+        url: sampleData || bandcampURL,
+        type: 'html',
         error: function (err) {},
         success: function (data) {
           callback(data);
         }
       })
     },
-    buildFromText: function(text, containerEl) {
+    regexForId: /((?:album|track)=[0-9]*)/,
+    regexForThumb: /https:\/\/(.)*_16.jpg/,
+    buildFromText: function(text, containerEl, sampleData) {
+      var self = this;
+      var bandcampId = text.match(this.regex)[1];
+      if(bandcampId != null) {
+        var bandcampURL = this.link(bandcampId);
+        this.getData(bandcampURL, function(html) {
+          if(html.match(self.regexForId) != null) {
+            var streamId = html.match(self.regexForId)[0];
+            var thumbnailUrl = html.match(self.regexForThumb)[0];
+            embetter.utils.embedPlayerInContainer(containerEl, self, bandcampURL, thumbnailUrl, streamId);
+          }
+        }, sampleData);
+      }
+    }
+  });
+
+  embetter.utils.copyPropsToObject(embetter.services.ustream, {
+    getData: function(mediaUrl, callback, sampleData) {
+      window.reqwest({
+        url: sampleData || 'https://www.ustream.tv/oembed?url='+ mediaUrl,
+        type: 'json',
+        error: function (err) {},
+        success: function (data) {
+          callback(data);
+        }
+      });
+    },
+    buildFromText: function(text, containerEl, sampleData) {
       var self = this;
       var streamId = text.match(this.regex)[1];
       var streamURL = this.link(streamId);
       if(streamURL != null) {
         this.getData(streamURL, function(data) {
           if(data.thumbnail_url) {
-            var channelId = data.html.match(/cid=([0-9]*)/);
-            streamId = (channelId) ? channelId[1] : streamId;
+            var channelId = data.html.match(/http:\/\/www.ustream.tv\/embed\/([0-9]*)/);
+            var recordedId = data.html.match(/http:\/\/www.ustream.tv\/embed\/recorded\/([0-9]*)/);
+            streamId = (recordedId != null) ? 'recorded/' + recordedId[1] : channelId[1];
             embetter.utils.embedPlayerInContainer(containerEl, self, streamURL, data.thumbnail_url, streamId);
           }
-        });
+        }, sampleData);
       }
     }
   });
 
   embetter.utils.copyPropsToObject(embetter.services.imgur, {
-    getData: function(mediaUrl, callback) {
+    getData: function(mediaUrl, callback, sampleData) {
       window.reqwest({
-        url: 'http://localhost/embetter/vendor/proxy.php?csurl=' + 'http://api.imgur.com/oembed.json?url='+ mediaUrl,
-        type: 'json',
+        // url: 'http://api.imgur.com/oembed.json?url='+ mediaUrl, // oembed URL doesn't return a thumbnail for us, so it's useless here
+        url: sampleData || bandcampURL,
+        type: 'html',
         error: function (err) {
           console.log('imgur error', err);
         },
@@ -256,49 +277,48 @@
         }
       });
     },
-    getThumbnail: function(id) {
-      return 'https://i.imgur.com/'+ id +'m.jpg';
-    },
-    buildFromText: function(text, containerEl) {
-      var imgId = text.match(this.regex)[1];
-      imgId = imgId.replace('gallery/', ''); // for testing, don't deal with galleries
-      if(imgId != null) {
-        /*
-        // <meta name="twitter:card" content="gallery"/>
-        // don't really need the endpoint, since oembed doesn't give us the gallery embed code *and* a thumbnail. we need to scrape og tags and check for gallery, then prepend "/a/" before the image ID embed
-        var self = this;
-        // build embed
-        var mediaURL = this.link(imgId);
+    buildFromText: function(text, containerEl, sampleData) {
+      var self = this;
+      var imgurId = text.match(this.regex)[1];
+      if(imgurId != null) {
+        var mediaURL = this.link(imgurId);
         this.getData(mediaURL, function(data) {
-          var imgId = data.html.match(/data-id="([a-zA-Z0-9\-\/]*)/)[1];
-          var thumbnail = self.getThumbnail(imgId);
-          if(thumbnail) {
-            var imgURL = self.link(imgId);
-            embetter.utils.embedPlayerInContainer(containerEl, self, imgURL, thumbnail, imgId);
+          if(data.match('content="gallery"') != null) {
+            var thumbMatch = data.match(/image_src(?:.)*(http(.)*jpg)/);
+            var thumbnail = thumbMatch[1];
+            if(thumbMatch && thumbMatch.length) {
+              // check for gallery, then prepend "/a/" before the image ID embed
+              var embedId = imgurId.replace('gallery', 'a');
+              embetter.utils.embedPlayerInContainer(containerEl, self, mediaURL, thumbnail, embedId);
+            }
+          } else if(data.match('twitter:image:src') != null) {
+            var thumbMatch = data.match(/twitter:image:src(?:.)*(http(.)*jpg)/);
+            var thumbnail = thumbMatch[1];
+            if(thumbMatch && thumbMatch.length) {
+              // if not an actual gallery, remove gallery/ from the url for a proper embed ID
+              var embedId = imgurId.replace('gallery/', '');
+              embetter.utils.embedPlayerInContainer(containerEl, self, mediaURL, thumbnail, embedId);
+            }
           }
-        });
-        */
-        var mediaURL = this.link(imgId);
-        var thumbnail = this.getThumbnail(imgId);
-        embetter.utils.embedPlayerInContainer(containerEl, this, mediaURL, thumbnail, imgId);
+        }, sampleData);
       }
     }
   });
 
   embetter.utils.copyPropsToObject(embetter.services.vine, {
-    getData: function(imgId, callback) {
+    getData: function(imgId, callback, sampleData) {
       window.reqwest({
-        url: 'http://localhost/embetter/vendor/proxy.php?csurl=' + 'https://vine.co/oembed/' + imgId + '.json',
+        url: sampleData || 'https://vine.co/oembed/' + imgId + '.json',
         type: 'json',
         error: function (err) {
-          console.log('imgur error', err);
+          console.log('vine error', err);
         },
         success: function (data) {
           callback(data);
         }
       });
     },
-    buildFromText: function(text, containerEl) {
+    buildFromText: function(text, containerEl, sampleData) {
       var videoId = text.match(this.regex)[1];
       if(videoId != null) {
         var self = this;
@@ -307,15 +327,15 @@
             var vineURL = self.link(videoId);
             embetter.utils.embedPlayerInContainer(containerEl, self, vineURL, data.thumbnail_url, videoId);
           }
-        });
+        }, sampleData);
       }
     }
   });
 
   embetter.utils.copyPropsToObject(embetter.services.slideshare, {
-    getData: function(imgId, callback) {
+    getData: function(imgId, callback, sampleData) {
       window.reqwest({
-        url: 'http://localhost/embetter/vendor/proxy.php?csurl=' + 'http://www.slideshare.net/api/oembed/2?url=https://www.slideshare.net/' + imgId + '&format=json',
+        url: sampleData || 'http://www.slideshare.net/api/oembed/2?url=https://www.slideshare.net/' + imgId + '&format=json',
         type: 'json',
         error: function (err) {},
         success: function (data) {
@@ -323,7 +343,7 @@
         }
       });
     },
-    buildFromText: function(text, containerEl) {
+    buildFromText: function(text, containerEl, sampleData) {
       var videoId = text.match(this.regex)[1];
       if(videoId != null) {
         var self = this;
@@ -333,7 +353,7 @@
             var slideshareURL = self.link(videoId);
             embetter.utils.embedPlayerInContainer(containerEl, self, slideshareURL, data.thumbnail, imgId);
           }
-        });
+        }, sampleData);
       }
     }
   });
