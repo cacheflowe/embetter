@@ -48,7 +48,7 @@
   };
 
   embetter.utils.copyPropsToObject(embetter.services.youtube, {
-	getData: function(id) {
+	  getData: function(id) {
       return 'http://img.youtube.com/vi/'+ id +'/0.jpg';
     },
     buildFromText: function(text, containerEl) {
@@ -358,5 +358,23 @@
     }
   });
 
+  embetter.utils.copyPropsToObject(embetter.services.giphy, {
+    getData: function(id) {
+      return 'https://media.giphy.com/media/' + id + '/giphy_s.gif';
+    },
+    buildFromText: function(text, containerEl, sampleData) {
+      var self = this;
+      var splitPath = text.split('/');
+      var longId = splitPath[splitPath.length - 1]; // get id, with extra dashed data
+      var dashedId = longId.split('-');
+      var giphyId = dashedId[dashedId.length - 1]; // get id without extra dashed data
+      if(giphyId != null) {
+        var giphyURL = this.link(longId);
+        var thumbnailUrl = this.getData(giphyId);
+        var gifURL = 'https://media.giphy.com/media/' + giphyId + '/giphy.gif'; // not used for now
+        embetter.utils.embedPlayerInContainer(containerEl, self, giphyURL, thumbnailUrl, giphyId);
+      }
+    }
+  });
 
 })();

@@ -33,7 +33,7 @@
       <div class="row">
         <div class="twelve columns">
           <label for="pasteMediaUrl">Paste a media URL to build an Embetter player:</label>
-          <input class="u-full-width" type="email" placeholder="Vimeo, YouTube, Instagram, Dailymotion, or CodePen URL" id="pasteMediaUrl">
+          <input class="u-full-width" type="email" placeholder="Vimeo, YouTube, Instagram, Giphy, Dailymotion, or CodePen URL" id="pasteMediaUrl">
         </div>
       </div>
       <div class="row">
@@ -78,7 +78,8 @@
         window.embetter.services.ustream,
         window.embetter.services.imgur,
         window.embetter.services.slideshare,
-        window.embetter.services.vine
+        window.embetter.services.vine,
+        window.embetter.services.giphy
       ];
       window.embetter.utils.initMediaPlayers(pageEl, curServices);
 
@@ -90,6 +91,7 @@
       window.embetter.services.soundcloud.buildFromText('https://soundcloud.com/plasticsoundsupply/drop-logik-time-lost', playlistEmbedsEl, './sample-data/soundcloud-track.json');
       window.embetter.services.soundcloud.buildFromText('https://soundcloud.com/cacheflowe/sets/automate-everything-2005', playlistEmbedsEl, './sample-data/soundcloud-set.json');
       window.embetter.services.instagram.buildFromText('http://instagram.com/p/xekoQiQY3-/', testEmbedsEl);
+      window.embetter.services.giphy.buildFromText('https://giphy.com/gifs/ken-lee-3ESp1RAn7PjOw', testEmbedsEl);
       window.embetter.services.mixcloud.buildFromText('https://www.mixcloud.com/Davealex/davealex-30m-electro-2010/', testEmbedsEl);  // './sample-data/mixcloud.json'
       window.embetter.services.dailymotion.buildFromText('http://www.dailymotion.com/video/x14y6rv_the-ultimate-drunk-fails-compilation_fun', testEmbedsEl);
       window.embetter.services.codepen.buildFromText('http://codepen.io/nicoptere/pen/mgpxB', testEmbedsEl);

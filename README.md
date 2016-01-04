@@ -112,6 +112,18 @@ On it's own, an Embetter embed code is just a clickable thumbnail that takes you
   * Thumbnail aspect ratio:
     * 1:1
 
+##### Giphy
+  * Formats:
+    * `https://giphy.com/gifs/ken-lee-3ESp1RAn7PjOw`
+    * `https://giphy.com/gifs/3ESp1RAn7PjOw`
+  * Regex:
+    * `/(?:https?:\/\/)?(?:w{3}\.)?giphy.com\/gifs\/([a-zA-Z0-9_\-%]*)(?:\/?|$|\s|\?|#)/`
+    * Captures id: `3ESp1RAn7PjOw`
+  * API URL:
+    * None needed
+  * Thumbnail aspect ratio:
+    * Variable (matches original .gif)
+
 ##### Mixcloud
   * Formats:
     * `https://www.mixcloud.com/Davealex/davealex-30m-electro-2010/`

@@ -509,6 +509,20 @@
 
 
   /////////////////////////////////////////////////////////////
+  // GIPHY
+  /////////////////////////////////////////////////////////////
+  embetter.services.giphy = {
+    type: 'giphy',
+    dataAttribute: 'data-giphy-id',
+    regex: embetter.utils.buildRegex('giphy.com\\/gifs\\/([a-zA-Z0-9_\\-%]*)'),
+    embed: function(id, w, h, autoplay) {
+      return '<iframe width="'+ w +'" height="'+ h +'" src="https://giphy.com/embed/'+ id + '/twitter/iframe" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+    },
+    link: function(dashedId) {
+      return 'https://giphy.com/gifs/' + dashedId;
+    }
+  };
+
   // MEDIA PLAYER INSTANCE
   /////////////////////////////////////////////////////////////
 
