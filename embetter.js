@@ -13,6 +13,7 @@
   embetter.mobileScrollSetup = false;
   embetter.apiEnabled = false;
   embetter.apiAutoplayCallback = null;
+  embetter.defaultThumbnail = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArwAAAGcAQMAAAABMOGrAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAADUExURQAAAKd6PdoAAAA6SURBVHja7cGBAAAAAMOg+VPf4ARVAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAN488AAGP4e1mAAAAAElFTkSuQmCC';
 
   embetter.utils = {
     /////////////////////////////////////////////////////////////
@@ -523,6 +524,23 @@
     }
   };
 
+
+  /////////////////////////////////////////////////////////////
+  // SHADERTOY
+  /////////////////////////////////////////////////////////////
+  embetter.services.shadertoy = {
+    type: 'shadertoy',
+    dataAttribute: 'data-shadertoy-id',
+    regex: embetter.utils.buildRegex('shadertoy.com\\/view\\/([a-zA-Z0-9_\\-%]*)'),
+    embed: function(id, w, h, autoplay) {
+      return '<iframe width="'+ w +'" height="'+ h +'" src="https://www.shadertoy.com/embed/'+ id + '?gui=true&t=10&paused=false&muted=false" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+    },
+    link: function(id) {
+      return 'https://www.shadertoy.com/view/' + id;
+    }
+  };
+
+
   // MEDIA PLAYER INSTANCE
   /////////////////////////////////////////////////////////////
 
@@ -568,7 +586,7 @@
   };
 
   embetter.EmbetterPlayer.prototype.fallbackThumbnail = function() {
-    this.thumbnail.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArwAAAGcAQMAAAABMOGrAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAADUExURQAAAKd6PdoAAAA6SURBVHja7cGBAAAAAMOg+VPf4ARVAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAN488AAGP4e1mAAAAAElFTkSuQmCC';
+    this.thumbnail.src = embetter.defaultThumbnail;
   };
 
   embetter.EmbetterPlayer.prototype.getType = function() {

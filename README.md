@@ -159,6 +159,17 @@ On it's own, an Embetter embed code is just a clickable thumbnail that takes you
   * Thumbnail aspect ratio:
     * 1024:600
 
+##### Shadertoy
+  * Formats:
+    * `https://www.shadertoy.com/view/4dfGzs`
+  * Regex:
+    * `/(?:https?:\/\/)?(?:w{3}\.)?shadertoy.com\/view\/([a-zA-Z0-9_\-%]*)(?:\/?|$|\s|\?|#)/`
+    * Captures id: `4dfGzs`
+  * API URL:
+    * None needed
+  * Thumbnail aspect ratio:
+    * 16:9
+
 ##### Bandcamp
   * Formats:
     * `https://swindleuk.bandcamp.com/album/swindle-walters-call`

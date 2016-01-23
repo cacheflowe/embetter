@@ -377,4 +377,18 @@
     }
   });
 
+  embetter.utils.copyPropsToObject(embetter.services.shadertoy, {
+    getData: function(id) {
+      return 'https://www.shadertoy.com/media/shaders/'+id+'.jpg';
+    },
+    buildFromText: function(text, containerEl) {
+      var shaderId = text.match(this.regex)[1];
+      if(shaderId != null) {
+        var shaderURL = this.link(shaderId);
+        var shaderThumbnail = this.getData(shaderId);
+        embetter.utils.embedPlayerInContainer(containerEl, this, shaderURL, shaderThumbnail, shaderId);
+      }
+    }
+  });
+
 })();
