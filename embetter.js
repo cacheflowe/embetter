@@ -552,7 +552,7 @@
       return '<iframe width="'+ w +'" height="'+ h +'" src="http://www.kuula.co/share/'+ id + '" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
     },
     link: function(id) {
-      return 'https://www.kuula.co/post/' + id;
+      return 'http://www.kuula.co/post/' + id;
     }
   };
 
