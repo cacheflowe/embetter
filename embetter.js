@@ -541,6 +541,21 @@
   };
 
 
+  /////////////////////////////////////////////////////////////
+  // KUULA
+  /////////////////////////////////////////////////////////////
+  embetter.services.kuula = {
+    type: 'kuula',
+    dataAttribute: 'data-kuula-id',
+    regex: embetter.utils.buildRegex('kuula.co\\/post\\/([a-zA-Z0-9_\\-%]*)'),
+    embed: function(id, w, h, autoplay) {
+      return '<iframe width="'+ w +'" height="'+ h +'" src="http://www.kuula.co/share/'+ id + '" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+    },
+    link: function(id) {
+      return 'https://www.kuula.co/post/' + id;
+    }
+  };
+
   // MEDIA PLAYER INSTANCE
   /////////////////////////////////////////////////////////////
 
