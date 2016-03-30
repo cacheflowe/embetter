@@ -234,6 +234,18 @@ On it's own, an Embetter embed code is just a clickable thumbnail that takes you
     * 170:128
     * Variable, but 170px width
 
+##### Kuula
+  * Formats:
+    * `https://kuula.co/post/7fWCb`
+  * Regex:
+    * `/(?:https?:\/\/)?(?:w{3}\.)?kuula.co\/post\/([a-zA-Z0-9_\-%]*)(?:\/?|$|\s|\?|#)/`
+    * Captures id: `7fWCb`
+  * API URL:
+    * None needed
+  * Thumbnail aspect ratio:
+    * 1:1
+
+
 
 ### TODO:
 
