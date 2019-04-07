@@ -47,6 +47,24 @@
     }
   };
 
+  embetter.utils.copyPropsToObject(embetter.services.video, {
+    buildFromText: function(videoURL, containerEl) {
+      var thumbnail = videoURL;
+      thumbnail = thumbnail.replace('.mp4', '-poster.jpg');
+      thumbnail = thumbnail.replace('.mov', '-poster.jpg');
+      thumbnail = thumbnail.replace('.m4v', '-poster.jpg');
+      embetter.utils.embedPlayerInContainer(containerEl, this, videoURL, thumbnail, videoURL);
+    }
+  });
+
+  embetter.utils.copyPropsToObject(embetter.services.gif, {
+    buildFromText: function(gifURL, containerEl) {
+      var thumbnail = gifURL;
+      thumbnail = thumbnail.replace('.gif', '-poster.jpg');
+      embetter.utils.embedPlayerInContainer(containerEl, this, gifURL, thumbnail, gifURL);
+    }
+  });
+
   embetter.utils.copyPropsToObject(embetter.services.youtube, {
 	  getData: function(id) {
       return 'http://img.youtube.com/vi/'+ id +'/0.jpg';

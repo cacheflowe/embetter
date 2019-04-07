@@ -91,7 +91,7 @@
           var player = embetter.curEmbeds[i];
           var playerRect = player.el.getBoundingClientRect();
           if(playerRect.top < window.innerHeight && playerRect.bottom > 0) {
-            if(player.getType() != 'codepen') {
+            if(player.getType() !== 'codepen') { // && player.getType() != 'gif'
               player.embedMedia(false);
             }
           } else {
@@ -115,13 +115,13 @@
     disposePlayers: function() {
       for (var i = 0; i < embetter.curEmbeds.length; i++) {
         embetter.curEmbeds[i].dispose();
-      };
+      }
       window.removeEventListener('scroll', embetter.utils.scrollListener);
       embetter.mobileScrollSetup = false;
       embetter.curEmbeds.splice(0, embetter.curEmbeds.length-1);
     },
     mediaComplete: function() {
-      if(embetter.curPlayer != null) {
+      if(embetter.curPlayer !== null) {
         var playerEl = embetter.curPlayer.el;
         var playlistContainer = this.parentSelector(playerEl, '[data-embetter-playlist]');  // check if we're in a playlist container
         if(playlistContainer) {
@@ -141,7 +141,7 @@
     },
     getPlayerFromEl: function(el) {
       for (var i=0; i < embetter.curEmbeds.length; i++) {
-        if(el == embetter.curEmbeds[i].el) {
+        if(el === embetter.curEmbeds[i].el) {
           return embetter.curEmbeds[i];
         }
       }
@@ -151,11 +151,11 @@
       // dispose any players no longer in the DOM
       for (var i = embetter.curEmbeds.length - 1; i >= 0; i--) {
         var embed = embetter.curEmbeds[i];
-        if(document.body.contains(embed.el) == false || embed.el == null) {
+        if(document.body.contains(embed.el) === false || embed.el === null) {
           embed.dispose();
           delete embetter.curEmbeds.splice(i,1);
         }
-      };
+      }
     },
     loadRemoteScript: function(scriptURL) {
       var tag = document.createElement('script');
@@ -173,6 +173,32 @@
   embetter.services = {};
 
   /////////////////////////////////////////////////////////////
+  // NATIVE VIDEO
+  /////////////////////////////////////////////////////////////
+  embetter.services.video = {
+    type: 'video',
+    dataAttribute: 'data-video-url',
+    regex: embetter.utils.buildRegex('(.mp4|.mov|.m4v)'),
+    embed: function (player) { // this.id, this.thumbnail.width, this.thumbnail.height, this.autoplay, this.thumbnail.src
+      var autoplayAttr = (player.autoplay == true) ? ' autoplay="true" ' : '';
+      var loopsAttr = (player.loops == true) ? ' loop="true" ' : '';
+      return '<video id="' + player.id + '" src="' + player.id + '" poster="' + player.thumbnail.src + '" width="' + player.w + '" height="' + player.h +'" '+ autoplayAttr + loopsAttr +' controls playsinline webkitallowfullscreen mozallowfullscreen allowfullscreen allow=autoplay></iframe>';
+    },
+  };
+
+  /////////////////////////////////////////////////////////////
+  // GIF FILE
+  /////////////////////////////////////////////////////////////
+  embetter.services.gif = {
+    type: 'gif',
+    dataAttribute: 'data-gif-url',
+    regex: embetter.utils.buildRegex('.gif'),
+    embed: function(player) {
+      return '<img class="gif" id="' + player.id + '" src="' + player.id + '" width="' + player.w + '" height="' + player.h +'">';
+    },
+  };
+
+  /////////////////////////////////////////////////////////////
   // YOUTUBE
   // http://stackoverflow.com/questions/2068344/how-do-i-get-a-youtube-video-thumbnail-from-the-youtube-api
   // https://developers.google.com/youtube/iframe_api_reference
@@ -182,9 +208,9 @@
     type: 'youtube',
     dataAttribute: 'data-youtube-id',
     regex: /(?:.+?)?(?:youtube\.com\/v\/|watch\/|\?v=|\&v=|youtu\.be\/|\/v=|^youtu\.be\/)([a-zA-Z0-9_-]{11})+/,
-    embed: function(id, w, h, autoplay) {
-      var autoplayQuery = (autoplay == true) ? '&autoplay=1' : '';
-      return '<iframe class="video" enablejsapi="1" width="'+ w +'" height="'+ h +'" src="https://www.youtube.com/embed/'+ id +'?rel=0&suggestedQuality=hd720&enablejsapi=1'+ autoplayQuery +'" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+    embed: function(player) {
+      var autoplayQuery = (player.autoplay === true) ? '&autoplay=1' : '';
+      return '<iframe class="video" enablejsapi="1" width="' + player.w + '" height="' + player.h + '" src="https://www.youtube.com/embed/' + player.id +'?rel=0&suggestedQuality=hd720&enablejsapi=1'+ autoplayQuery +'" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowfullscreen allow=autoplay></iframe>';
     },
     link: function(id) {
       return 'https://www.youtube.com/watch?v=' + id;
@@ -238,9 +264,10 @@
     type: 'vimeo',
     dataAttribute: 'data-vimeo-id',
     regex: embetter.utils.buildRegex('vimeo.com\/(\\S*)'),
-    embed: function(id, w, h, autoplay) {
-      var autoplayQuery = (autoplay == true) ? '&amp;autoplay=1' : '';
-      return '<iframe id="' + id + '" src="//player.vimeo.com/video/'+ id +'?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff&amp;api=1&amp;player_id=' + id + autoplayQuery +'" width="'+ w +'" height="'+ h +'" frameborder="0" scrolling="no" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+    embed: function(player) {
+      var autoplayQuery = (player.autoplay == true) ? '&amp;autoplay=1&amp;muted=1' : '';
+      var loopQuery = (player.loops == true) ? '&amp;loop=1' : '';
+      return '<iframe id="' + player.id + '" src="//player.vimeo.com/video/' + player.id + '?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff&amp;api=1&amp;player_id=' + player.id + autoplayQuery + loopQuery + '" width="' + player.w + '" height="' + player.h +'" frameborder="0" scrolling="no" webkitallowfullscreen mozallowfullscreen allowfullscreen allow=autoplay></iframe>';
     },
     link: function(id) {
       return 'https://vimeo.com/' + id;
@@ -292,8 +319,9 @@
     type: 'soundcloud',
     dataAttribute: 'data-soundcloud-id',
     regex: embetter.utils.buildRegex('(?:soundcloud.com|snd.sc)\\/([a-zA-Z0-9_-]*(?:\\/sets)?(?:\\/groups)?\\/[a-zA-Z0-9_-]*)'),
-    embed: function(id, w, h, autoplay) {
-      var autoplayQuery = (autoplay == true) ? '&amp;auto_play=true' : '';
+    embed: function(player) {
+      var autoplayQuery = (player.autoplay == true) ? '&amp;auto_play=true' : '';
+      var id = player.id;
       if(!id.match(/^(playlist|track|group)/)) id = 'tracks/' + id; // if no tracks/sound-id, prepend tracks/ (mostly for legacy compatibility)
       return '<iframe id="sc-widget" width="100%" height="600" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/'+ id + autoplayQuery +'&amp;hide_related=false&amp;color=373737&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;visual=true"></iframe>';
     },
@@ -344,8 +372,8 @@
     type: 'instagram',
     dataAttribute: 'data-instagram-id',
     regex: embetter.utils.buildRegex('(?:instagram.com|instagr.am)\/p\/([a-zA-Z0-9-_]*)'),
-    embed: function(id, w, h, autoplay) {
-      return '<iframe width="100%" height="600" scrolling="no" frameborder="no" src="https://instagram.com/p/'+ id +'/embed/"></iframe>';
+    embed: function(player) {
+      return '<iframe width="100%" height="600" scrolling="no" frameborder="no" src="https://instagram.com/p/' + player.id +'/embed/"></iframe>';
     },
     link: function(id) {
       return 'https://instagram.com/p/' + id +'/';
@@ -360,9 +388,9 @@
     type: 'dailymotion',
     dataAttribute: 'data-dailymotion-id',
     regex: embetter.utils.buildRegex('dailymotion.com\/video\/([a-zA-Z0-9-_]*)'),
-    embed: function(id, w, h, autoplay) {
-      var autoplayQuery = (autoplay == true) ? '?autoPlay=1' : '';
-      return '<iframe class="video" width="'+ w +'" height="'+ h +'" src="//www.dailymotion.com/embed/video/'+ id + autoplayQuery +'" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+    embed: function(player) {
+      var autoplayQuery = (player.autoplay == true) ? '?autoPlay=1' : '';
+      return '<iframe class="video" width="' + player.w + '" height="' + player.h + '" src="//www.dailymotion.com/embed/video/' + player.id + autoplayQuery +'" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowfullscreen allow=autoplay></iframe>';
     },
     link: function(id) {
       return 'http://www.dailymotion.com/video/'+ id;
@@ -377,9 +405,9 @@
     type: 'mixcloud',
     dataAttribute: 'data-mixcloud-id',
     regex: embetter.utils.buildRegex('(?:mixcloud.com)\\/(.*\\/.*)'),
-    embed: function(id, w, h, autoplay) {
-      var autoplayQuery = (autoplay == true) ? '&amp;autoplay=true' : '';
-      return '<iframe width="660" height="180" src="https://www.mixcloud.com/widget/iframe/?feed=' + window.escape('http://www.mixcloud.com/' + id) + '&amp;replace=0&amp;hide_cover=1&amp;stylecolor=ffffff&amp;embed_type=widget_standard&amp;'+ autoplayQuery +'" frameborder="0" scrolling="no"></iframe>';
+    embed: function(player) {
+      var autoplayQuery = (player.autoplay == true) ? '&amp;autoplay=true' : '';
+      return '<iframe width="660" height="180" src="https://www.mixcloud.com/widget/iframe/?feed=' + window.escape('http://www.mixcloud.com/' + player.id) + '&amp;replace=0&amp;hide_cover=1&amp;stylecolor=ffffff&amp;embed_type=widget_standard&amp;'+ autoplayQuery +'" frameborder="0" scrolling="no"></iframe>';
     },
     link: function(id) {
       return 'https://www.mixcloud.com/' + id;
@@ -394,11 +422,11 @@
     type: 'codepen',
     dataAttribute: 'data-codepen-id',
     regex: embetter.utils.buildRegex('(?:codepen.io)\\/([a-zA-Z0-9_\\-%]*\\/[a-zA-Z0-9_\\-%]*\\/[a-zA-Z0-9_\\-%]*)'),
-    embed: function(id, w, h, autoplay) {
-     id = id.replace('/pen/', '/embed/');
-     var user = id.split('/')[0];
-     var slugHash = id.split('/')[2];
-     return '<iframe src="//codepen.io/' + id + '?height=' + h + '&amp;theme-id=0&amp;slug-hash=' + slugHash + '&amp;default-tab=result&amp;user=' + user + '" frameborder="0" scrolling="no" allowtransparency="true" allowfullscreen="true"></iframe>';
+    embed: function(player) {
+      var id = player.id.replace('/pen/', '/embed/');
+      var user = id.split('/')[0];
+      var slugHash = id.split('/')[2];
+      return '<iframe src="//codepen.io/' + id + '?height=' + player.h + '&amp;theme-id=0&amp;slug-hash=' + slugHash + '&amp;default-tab=result&amp;user=' + user + '" frameborder="0" scrolling="no" allowtransparency="true" allowfullscreen allow=autoplay="true"></iframe>';
     },
     link: function(id) {
       id = id.replace('/embed/', '/pen/');
@@ -421,8 +449,8 @@
     type: 'bandcamp',
     dataAttribute: 'data-bandcamp-id',
     regex: embetter.utils.buildRegex('([a-zA-Z0-9_\\-]*.bandcamp.com\\/(album|track)\\/[a-zA-Z0-9_\\-%]*)'),
-    embed: function(id, w, h, autoplay) {
-      return '<iframe src="https://bandcamp.com/EmbeddedPlayer/' + id + '/size=large/bgcol=ffffff/linkcol=333333/tracklist=true/artwork=small/transparent=true/" frameborder="0" scrolling="no" allowtransparency="true" allowfullscreen="true" seamless></iframe>';
+    embed: function(player) {
+      return '<iframe src="https://bandcamp.com/EmbeddedPlayer/' + player.id + '/size=large/bgcol=ffffff/linkcol=333333/tracklist=true/artwork=small/transparent=true/" frameborder="0" scrolling="no" allowtransparency="true" allowfullscreen allow=autoplay="true" seamless></iframe>';
     },
     link: function(id) {
       return 'https://'+id;
@@ -441,9 +469,9 @@
     type: 'ustream',
     dataAttribute: 'data-ustream-id',
     regex: embetter.utils.buildRegex('(?:ustream.tv|ustre.am)\\/((?:(recorded|channel)\\/)?[a-zA-Z0-9_\\-%]*)'),
-    embed: function(id, w, h, autoplay) {
-      var autoplayQuery = (autoplay == true) ? '&amp;autoplay=true' : '';
-      return '<iframe width="480" height="300" src="http://www.ustream.tv/embed/' + id + '?' + autoplayQuery + '" frameborder="0" scrolling="no" allowtransparency="true" allowfullscreen="true"></iframe>';
+    embed: function(player) {
+      var autoplayQuery = (player.autoplay == true) ? '&amp;autoplay=true' : '';
+      return '<iframe width="480" height="300" src="http://www.ustream.tv/embed/' + player.id + '?' + autoplayQuery + '" frameborder="0" scrolling="no" allowtransparency="true" allowfullscreen allow=autoplay="true"></iframe>';
     },
     link: function(id) {
       return 'http://www.ustream.tv/'+id;
@@ -466,8 +494,8 @@
     type: 'imgur',
     dataAttribute: 'data-imgur-id',
     regex: embetter.utils.buildRegex('(?:imgur.com)\\/((?:gallery\\/)?[a-zA-Z0-9_\\-%]*)'),
-    embed: function(id, w, h, autoplay) {
-      return '<iframe width="'+ w +'" height="'+ h +'" src="https://www.imgur.com/'+ id +'/embed" " frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+    embed: function(player) {
+      return '<iframe width="' + player.w + '" height="' + player.h + '" src="https://www.imgur.com/' + player.id +'/embed" " frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen allow=autoplay></iframe>';
     },
     link: function(id) {
       return 'https://imgur.com/' + id;
@@ -482,8 +510,8 @@
     type: 'vine',
     dataAttribute: 'data-vine-id',
     regex: embetter.utils.buildRegex('vine.co\\/v\\/([a-zA-Z0-9-]*)'),
-    embed: function(id, w, h, autoplay) {
-      return '<iframe width="'+ w +'" height="'+ h +'" src="https://vine.co/v/'+ id +'/card?mute=1" " frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+    embed: function(player) {
+      return '<iframe width="' + player.w + '" height="' + player.h + '" src="https://vine.co/v/' + player.id +'/card?mute=1" " frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen allow=autoplay></iframe>';
     },
     link: function(id) {
       return 'https://vine.co/v/' + id;
@@ -500,8 +528,8 @@
     type: 'slideshare',
     dataAttribute: 'data-slideshare-id',
     regex: embetter.utils.buildRegex('slideshare.net\\/([a-zA-Z0-9_\\-%]*\\/[a-zA-Z0-9_\\-%]*)'),
-    embed: function(id, w, h, autoplay) {
-      return '<iframe width="427" height="356" src="https://www.slideshare.net/slideshow/embed_code/key/'+ id + '" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+    embed: function(player) {
+      return '<iframe width="427" height="356" src="https://www.slideshare.net/slideshow/embed_code/key/' + player.id + '" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen allow=autoplay></iframe>';
     },
     link: function(id) {
       return 'https://www.slideshare.net/' + id;
@@ -516,8 +544,8 @@
     type: 'giphy',
     dataAttribute: 'data-giphy-id',
     regex: embetter.utils.buildRegex('giphy.com\\/gifs\\/([a-zA-Z0-9_\\-%]*)'),
-    embed: function(id, w, h, autoplay) {
-      return '<iframe width="'+ w +'" height="'+ h +'" src="https://giphy.com/embed/'+ id + '/twitter/iframe" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+    embed: function(player) {
+      return '<iframe width="' + player.w + '" height="' + player.h + '" src="https://giphy.com/embed/' + player.id + '/twitter/iframe" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen allow=autoplay></iframe>';
     },
     link: function(dashedId) {
       return 'https://giphy.com/gifs/' + dashedId;
@@ -532,8 +560,8 @@
     type: 'shadertoy',
     dataAttribute: 'data-shadertoy-id',
     regex: embetter.utils.buildRegex('shadertoy.com\\/view\\/([a-zA-Z0-9_\\-%]*)'),
-    embed: function(id, w, h, autoplay) {
-      return '<iframe width="'+ w +'" height="'+ h +'" src="https://www.shadertoy.com/embed/'+ id + '?gui=true&t=10&paused=false&muted=false" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+    embed: function(player) {
+      return '<iframe width="' + player.w + '" height="' + player.h + '" src="https://www.shadertoy.com/embed/' + player.id + '?gui=true&t=10&paused=false&muted=false" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen allow=autoplay></iframe>';
     },
     link: function(id) {
       return 'https://www.shadertoy.com/view/' + id;
@@ -548,14 +576,16 @@
     type: 'kuula',
     dataAttribute: 'data-kuula-id',
     regex: embetter.utils.buildRegex('kuula.co\\/post\\/([a-zA-Z0-9_\\-%]*)'),
-    embed: function(id, w, h, autoplay) {
-      return '<iframe width="'+ w +'" height="'+ h +'" src="http://www.kuula.co/share/'+ id + '" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen></iframe>';
+    embed: function(player) {
+      return '<iframe width="' + player.w + '" height="' + player.h + '" src="http://www.kuula.co/share/' + player.id + '" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowfullscreen allow=autoplay></iframe>';
     },
     link: function(id) {
       return 'http://www.kuula.co/post/' + id;
     }
   };
 
+
+  /////////////////////////////////////////////////////////////
   // MEDIA PLAYER INSTANCE
   /////////////////////////////////////////////////////////////
 
@@ -566,6 +596,7 @@
     this.el.classList.add('embetter-ready');
     this.serviceObj = serviceObj;
     this.id = this.el.getAttribute(serviceObj.dataAttribute);
+    this.loops = this.el.getAttribute('data-loops') == 'true';
     this.thumbnail = this.el.querySelector('img');
     this.playerEl = null;
     this.buildPlayButton();
@@ -634,12 +665,17 @@
     this.el.classList.remove('embetter-playing');
   };
 
-  // embed if mobile
   embetter.EmbetterPlayer.prototype.embedMedia = function(autoplay) {
     if(this.el.classList.contains('embetter-playing') == true) return;
-    if(this.id != null) this.playerEl = embetter.utils.stringToDomElement(this.serviceObj.embed(this.id, this.thumbnail.width, this.thumbnail.height, autoplay));
-    this.el.appendChild(this.playerEl);
-    this.el.classList.add('embetter-playing');
+    this.autoplay = autoplay;
+    this.w = this.thumbnail.width;
+    this.h = this.thumbnail.height;
+    if(this.id != null) {
+      var embedStr = this.serviceObj.embed(this);
+      this.playerEl = embetter.utils.stringToDomElement(embedStr);
+      this.el.appendChild(this.playerEl);
+      this.el.classList.add('embetter-playing');
+    }
   };
 
   embetter.EmbetterPlayer.prototype.dispose = function() {
