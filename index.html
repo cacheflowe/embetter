@@ -9,6 +9,7 @@
     <link rel="icon" href="./favicon.ico" />
     <link rel="stylesheet" href="./vendor/pico.min.css" />
     <link rel="stylesheet" href="./embetter.css" />
+    <!-- TODO: remove this -->
     <style>
       html,
       body {
@@ -27,16 +28,31 @@
     <div class="container">
       <h1>Embetter</h1>
       <h5>Because iframes are janky.</h5>
-      <p>Media embeds can quickly bog your site down, so let's lazy-load them! The basic Embetter player consists of a tiny template with a progressively-enhanced thumbnail image, a play button, and the essential data needed to construct the responsive iframe embed code. Add a dash of javascript &amp; css to your web page, and you have a simple, lightweight media player.</p>
+      <p>
+        Media embeds can quickly bog your site down, so let's lazy-load them! The basic Embetter player consists of a
+        tiny template with a progressively-enhanced thumbnail image, a play button, and the essential data needed to
+        construct the responsive iframe embed code. Add a dash of javascript &amp; css to your web page, and you have a
+        simple, lightweight media player.
+      </p>
       <p>Find the <a href="https://github.com/cacheflowe/embetter">Embetter code &amp; instructions on GitHub</a>.</p>
       <div class="row">
         <div class="twelve columns">
           <label for="pasteMediaUrl">Paste a media URL to build an Embetter player:</label>
-          <input class="u-full-width" type="email" placeholder="Vimeo, YouTube, Instagram, Giphy, Shadertoy, Mixcloud Dailymotion, Kuula, or CodePen URL" id="pasteMediaUrl">
+          <input
+            type="text"
+            placeholder="Vimeo, YouTube, Instagram, Giphy, Shadertoy, Mixcloud Dailymotion, Kuula, or CodePen URL"
+            id="pasteMediaUrl"
+          />
         </div>
       </div>
       <div class="row">
-        <div id="new-embeds"></div>
+        <div id="new-embeds">
+          <embetter-media youtube-id="l9XdkPsaynk"></embetter-media>
+          <embetter-media
+            vimeo-id="99276873"
+            poster="https://i.vimeocdn.com/video/480405928-48d6aa0161af27e47a14177e7d791cbad2ae022e21321786c58c81e14bfee75c-d_640?region=us"
+          ></embetter-media>
+        </div>
         <div id="playlist-embeds" data-embetter-playlist="true"></div>
         <div id="test-embeds"></div>
         <div id="static-embeds"></div>
@@ -45,25 +61,20 @@
     <script src="./vendor/reqwest.min.js"></script>
     <script src="./embetter.js"></script>
     <script src="./embetter-builder.js"></script>
-    <script>
-
-      /////////////////////////////////////////////////////////////
-      // scroll to next player when API callback starts playing it
-      /////////////////////////////////////////////////////////////
-      // add easy-scroll.js
-      !function(){function o(o,n,r,t){return(o/=t/2)<1?r/2*o*o+n:-r/2*(--o*(o-2)-1)+n}function n(){i++,c>=i&&requestAnimationFrame(n);var r=i/c,e=l*o(r,0,1,1);window.scrollTo(0,Math.round(t-e))}var r={};window.easyScroll=r;var t,l,i,c;r.scrollByY=function(o,r){t=window.scrollY,l=r,i=0,c=Math.floor(o/16),requestAnimationFrame(n)},r.scrollToEl=function(o,n,t){r.scrollByY(o,-n.getBoundingClientRect().top+t)}}();
+    <script type="module">
+      import EmbetterMedia from "./src/embetter-media.js";
 
       window.embetter.apiEnabled = true;
-      window.embetter.apiAutoplayCallback = function(playerEl) {
+      window.embetter.apiAutoplayCallback = function (playerEl) {
         window.easyScroll.scrollToEl(700, playerEl, 50);
       };
 
       /////////////////////////////////////////////////////////////
       // SET UP SERVICES/PLAYERS FOR PAGE
       /////////////////////////////////////////////////////////////
-      var pageEl = document.querySelector('.container');
-      var playlistEmbedsEl = document.getElementById('playlist-embeds');
-      var testEmbedsEl = document.getElementById('test-embeds');
+      var pageEl = document.querySelector(".container");
+      var playlistEmbedsEl = document.getElementById("playlist-embeds");
+      var testEmbedsEl = document.getElementById("test-embeds");
 
       var curServices = [
         window.embetter.services.mixcloud,
@@ -82,46 +93,83 @@
         window.embetter.services.shadertoy,
         window.embetter.services.kuula,
         window.embetter.services.video,
-        window.embetter.services.gif
+        window.embetter.services.gif,
       ];
       window.embetter.utils.initMediaPlayers(pageEl, curServices);
 
       /////////////////////////////////////////////////////////////
       // TEST CREATE EMBEDS FROM URL
       /////////////////////////////////////////////////////////////
-      window.embetter.services.youtube.buildFromText('https://www.youtube.com/watch?v=l9XdkPsaynk', playlistEmbedsEl);
-      window.embetter.services.shadertoy.buildFromText('https://www.shadertoy.com/view/4dfGzs', playlistEmbedsEl);
-      window.embetter.services.vimeo.buildFromText('http://vimeo.com/99276873', playlistEmbedsEl);  // './sample-data/vimeo.json'
-      window.embetter.services.soundcloud.buildFromText('https://soundcloud.com/plasticsoundsupply/drop-logik-time-lost', playlistEmbedsEl, './sample-data/soundcloud-track.json');
-      window.embetter.services.soundcloud.buildFromText('https://soundcloud.com/cacheflowe/sets/automate-everything-2005', playlistEmbedsEl, './sample-data/soundcloud-set.json');
-      window.embetter.services.instagram.buildFromText('http://instagram.com/p/xekoQiQY3-/', testEmbedsEl);
-      window.embetter.services.giphy.buildFromText('https://giphy.com/gifs/ken-lee-3ESp1RAn7PjOw', testEmbedsEl);
-      window.embetter.services.mixcloud.buildFromText('https://www.mixcloud.com/Davealex/davealex-30m-electro-2010/', testEmbedsEl);  // './sample-data/mixcloud.json'
-      window.embetter.services.dailymotion.buildFromText('http://www.dailymotion.com/video/x14y6rv_the-ultimate-drunk-fails-compilation_fun', testEmbedsEl);
-      window.embetter.services.codepen.buildFromText('http://codepen.io/nicoptere/pen/mgpxB', testEmbedsEl);
-      window.embetter.services.imgur.buildFromText('http://imgur.com/gallery/iKQET', testEmbedsEl, './sample-data/imgur-gallery.html');
-      window.embetter.services.imgur.buildFromText('http://imgur.com/qM6KaEy', testEmbedsEl, './sample-data/imgur-gifv.html');
-      window.embetter.services.imgur.buildFromText('http://imgur.com/gallery/JT7SP0M', testEmbedsEl, './sample-data/imgur.html');
-      window.embetter.services.bandcamp.buildFromText('https://swindleuk.bandcamp.com/album/swindle-walters-call', testEmbedsEl, './sample-data/bandcamp-album.html');
-      window.embetter.services.ustream.buildFromText('http://www.ustream.tv/channel/almost-home-adoptions-cat-cam', testEmbedsEl, './sample-data/ustream.json');
-      window.embetter.services.ustream.buildFromText('http://www.ustream.tv/recorded/58564970', testEmbedsEl, './sample-data/ustream-recorded.json');
-      window.embetter.services.vine.buildFromText('https://vine.co/v/eWlADOIAEAd', testEmbedsEl, './sample-data/vine.json');
-      window.embetter.services.slideshare.buildFromText('http://www.slideshare.net/HunterLoftis1/forwardjs-we-will-all-be-game-developers', testEmbedsEl, './sample-data/slideshare.json');
-      window.embetter.services.kuula.buildFromText('https://kuula.co/post/7fWCl', testEmbedsEl);
+      window.embetter.services.youtube.buildFromText("https://www.youtube.com/watch?v=l9XdkPsaynk", playlistEmbedsEl);
+      window.embetter.services.shadertoy.buildFromText("https://www.shadertoy.com/view/4dfGzs", playlistEmbedsEl);
+      window.embetter.services.vimeo.buildFromText("http://vimeo.com/99276873", playlistEmbedsEl); // './sample-data/vimeo.json'
+      window.embetter.services.soundcloud.buildFromText(
+        "https://soundcloud.com/plasticsoundsupply/drop-logik-time-lost",
+        playlistEmbedsEl,
+        "./sample-data/soundcloud-track.json"
+      );
+      window.embetter.services.soundcloud.buildFromText(
+        "https://soundcloud.com/cacheflowe/sets/automate-everything-2005",
+        playlistEmbedsEl,
+        "./sample-data/soundcloud-set.json"
+      );
+      window.embetter.services.instagram.buildFromText("http://instagram.com/p/xekoQiQY3-/", testEmbedsEl);
+      window.embetter.services.giphy.buildFromText("https://giphy.com/gifs/ken-lee-3ESp1RAn7PjOw", testEmbedsEl);
+      window.embetter.services.mixcloud.buildFromText(
+        "https://www.mixcloud.com/Davealex/davealex-30m-electro-2010/",
+        testEmbedsEl
+      ); // './sample-data/mixcloud.json'
+      window.embetter.services.dailymotion.buildFromText(
+        "http://www.dailymotion.com/video/x14y6rv_the-ultimate-drunk-fails-compilation_fun",
+        testEmbedsEl
+      );
+      // window.embetter.services.codepen.buildFromText('http://codepen.io/nicoptere/pen/mgpxB', testEmbedsEl);
+      // window.embetter.services.imgur.buildFromText('http://imgur.com/gallery/iKQET', testEmbedsEl, './sample-data/imgur-gallery.html');
+      // window.embetter.services.imgur.buildFromText('http://imgur.com/qM6KaEy', testEmbedsEl, './sample-data/imgur-gifv.html');
+      // window.embetter.services.imgur.buildFromText('http://imgur.com/gallery/JT7SP0M', testEmbedsEl, './sample-data/imgur.html');
+      // window.embetter.services.bandcamp.buildFromText('https://swindleuk.bandcamp.com/album/swindle-walters-call', testEmbedsEl, './sample-data/bandcamp-album.html');
+      // window.embetter.services.ustream.buildFromText('http://www.ustream.tv/channel/almost-home-adoptions-cat-cam', testEmbedsEl, './sample-data/ustream.json');
+      // window.embetter.services.ustream.buildFromText('http://www.ustream.tv/recorded/58564970', testEmbedsEl, './sample-data/ustream-recorded.json');
+      // window.embetter.services.vine.buildFromText('https://vine.co/v/eWlADOIAEAd', testEmbedsEl, './sample-data/vine.json');
+      // window.embetter.services.slideshare.buildFromText('http://www.slideshare.net/HunterLoftis1/forwardjs-we-will-all-be-game-developers', testEmbedsEl, './sample-data/slideshare.json');
+      // window.embetter.services.kuula.buildFromText('https://kuula.co/post/7fWCl', testEmbedsEl);
 
       /////////////////////////////////////////////////////////////
       // LISTEN FOR URL PASTE INTO INPUT FIELD FOR DEMO
       /////////////////////////////////////////////////////////////
-      var newEmbedsEl = document.getElementById('new-embeds');
-      var pasteInput = document.getElementById('pasteMediaUrl');
-      pasteInput.addEventListener('paste', function(e) {
-        window.requestAnimationFrame(function() {
-          window.embetter.utils.buildPlayerFromServiceURL(newEmbedsEl, pasteInput.value, curServices)
-          setTimeout(function() {
-            pasteInput.value = '';
+      function playerCode(htmlStr) {
+        var entityMap = {
+          "<": "&lt;",
+          ">": "&gt;",
+        };
+        function escapeHtml(string) {
+          return String(string).replace(/[<>]/g, function (s) {
+            return entityMap[s];
+          });
+        }
+        htmlStr = htmlStr.replace(/\>\s+\</g, "><"); // remove whitespace between tags
+        return '<p>Embed code:<textarea class="u-full-width">' + escapeHtml(htmlStr) + "</textarea></p>";
+      }
+
+      var newEmbedsEl = document.getElementById("new-embeds");
+      var pasteInput = document.getElementById("pasteMediaUrl");
+      pasteInput.addEventListener("paste", function (e) {
+        window.requestAnimationFrame(function () {
+          EmbetterMedia.componentMarkupFromURL(pasteInput.value, (markup, service) => {
+            let exampleMarkup = `
+              <h3>${service.type.toUpperCase()}</h3>
+              ${markup}
+              ${playerCode(markup.trim())}
+            `;
+            newEmbedsEl.insertAdjacentHTML("afterbegin", exampleMarkup);
+          });
+          setTimeout(function () {
+            pasteInput.value = "";
           }, 750);
         });
       });
     </script>
+    <!-- Include web component -->
+    <script src="./src/embetter-media.js" type="module"></script>
   </body>
 </html>
