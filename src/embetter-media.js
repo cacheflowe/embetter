@@ -210,15 +210,15 @@ class EmbetterMedia extends HTMLElement {
     if (mediaURL || thumbnail) {
       const href = mediaURL || "#";
       const img = thumbnail ? `<img src="${thumbnail}">` : "";
-      fallbackContent = `<a href="${href}" target="_blank">${img}</a>`;
+      fallbackContent = `<a href="${href}">${img}</a>`;
     }
     return `<embetter-media ${serviceAttr}="${serviceId}">${fallbackContent}</embetter-media>`;
   }
 
   playerHTML(mediaUrl, thumbnail) {
     return /* html */ `
-      <a href="${mediaUrl}" target="_blank">
-        <img src="${thumbnail}">
+      <a href="${mediaUrl}">
+        <img src="${thumbnail}" />
         <div class="embetter-loading"></div>
         <div class="embetter-play-button"></div>
       </a>

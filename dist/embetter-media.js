@@ -46,6 +46,16 @@ let m = (
     }
   }
 
+  :host([youtube-id]),
+  :host([dailymotion-id]) {
+    padding-bottom: 56.25%;
+    height: 0;
+
+    img {
+      margin: -9.4% 0;
+    }
+  }
+
   :host([soundcloud-id]),
   :host([mixcloud-id]),
   :host([bandcamp-id]) {

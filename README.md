@@ -28,42 +28,108 @@ import "embetter";
 
 ## Usage
 
-Add `<embetter-media>` elements to your page with the appropriate service attribute:
+There are two ways to use Embetter:
+
+### Minimal markup (thumbnail auto-derived)
+
+For services that can derive a thumbnail from the ID alone (YouTube, Dailymotion, Giphy, CodePen), you only need the service attribute:
 
 ```html
-<!-- Simple: thumbnail auto-derived from ID -->
 <embetter-media youtube-id="l9XdkPsaynk"></embetter-media>
 
-<!-- With fallback content for crawlers/progressive enhancement -->
-<embetter-media vimeo-id="99276873"><a href="https://vimeo.com/99276873" target="_blank"><img src="https://i.vimeocdn.com/video/..."></a></embetter-media>
+<embetter-media dailymotion-id="x14y6rv"></embetter-media>
 
-<!-- Fallback content also provides the thumbnail to the component -->
-<embetter-media soundcloud-id="user/track-name"><a href="https://soundcloud.com/user/track-name" target="_blank"><img src="https://i1.sndcdn.com/..."></a></embetter-media>
+<embetter-media giphy-id="26FfiRH4zeXJM7saY"></embetter-media>
+
+<embetter-media codepen-id="cacheflowe/pen/domZpQ"></embetter-media>
 ```
 
-The `<a><img>` inside the element serves two purposes:
-1. **Progressive enhancement** — crawlers and no-JS browsers see a clickable thumbnail
-2. **Thumbnail source** — the component reads the `<img src>` for its shadow DOM thumbnail
+### Full progressive-enhanced markup (recommended)
+
+For the best experience, include an `<a><img>` inside the element. This serves as both a fallback for crawlers/no-JS browsers and the thumbnail source for the component. Use the URL builder (below) to generate this markup, or construct it by hand:
+
+```html
+<!-- YouTube -->
+<embetter-media youtube-id="l9XdkPsaynk">
+  <a href="https://www.youtube.com/watch?v=l9XdkPsaynk">
+    <img src="http://img.youtube.com/vi/l9XdkPsaynk/0.jpg" />
+  </a>
+</embetter-media>
+
+<!-- Vimeo (thumbnail must be fetched via API or provided manually) -->
+<embetter-media vimeo-id="99276873">
+  <a href="https://vimeo.com/99276873">
+    <img src="https://i.vimeocdn.com/video/480405928-...-d_640" />
+  </a>
+</embetter-media>
+
+<!-- SoundCloud -->
+<embetter-media soundcloud-id="swufm/dan-kelly-with-sinjin-hawke">
+  <a href="https://soundcloud.com/swufm/dan-kelly-with-sinjin-hawke">
+    <img src="https://i1.sndcdn.com/artworks-...-t500x500.jpg" />
+  </a>
+</embetter-media>
+
+<!-- Bandcamp (album/track ID and thumbnail must be scraped or provided manually) -->
+<embetter-media bandcamp-id="album=462033739">
+  <a href="https://client03.bandcamp.com/album/testbed-assembly">
+    <img src="https://f4.bcbits.com/img/a2546679205_16.jpg" />
+  </a>
+</embetter-media>
+
+<!-- Mixcloud -->
+<embetter-media mixcloud-id="Rumpel_Star/the-sound-of-the-eighties-7-a-funky-soulful-trip-through-the-80s-lost-treasures/">
+  <a href="https://www.mixcloud.com/Rumpel_Star/the-sound-of-the-eighties-7-a-funky-soulful-trip-through-the-80s-lost-treasures/">
+    <img src="https://thumbnailer.mixcloud.com/unsafe/600x600/extaudio/c/4/d/9/9235-5d20-4caf-8ec6-2f05c76dec34" />
+  </a>
+</embetter-media>
+
+<!-- Native video file -->
+<embetter-media video-url="videos/my-video.mp4" loops>
+  <a href="videos/my-video.mp4">
+    <img src="videos/my-video-poster.jpg" />
+  </a>
+</embetter-media>
+
+<!-- Native GIF -->
+<embetter-media gif-url="images/animation.gif">
+  <a href="images/animation.gif">
+    <img src="images/animation-poster.png" />
+  </a>
+</embetter-media>
+```
 
 ### Attributes
 
-| Attribute  | Description |
-|------------|-------------|
+| Attribute      | Description |
+|----------------|-------------|
 | `aspect-ratio` | Optional ratio override (examples: `16/9`, `1/1`, `4/5`) |
-| `autoplay` | Set to `"false"` to disable autoplay on embed (default: `true`) |
-| `loops`    | Loop the media on completion |
-| `muted`    | Mute the media on embed |
+| `autoplay`     | Set to `"false"` to disable autoplay on embed (default: `true`) |
+| `loops`        | Loop the media on completion (YouTube, Vimeo, native video) |
+| `muted`        | Mute the media on embed |
 
 ### URL Builder
 
-Build `<embetter-media>` markup from a URL programmatically:
+Build full `<embetter-media>` markup from a URL programmatically. This fetches thumbnails from service APIs and generates the complete progressive-enhanced markup:
 
 ```js
 import EmbetterMedia from "embetter";
 
 EmbetterMedia.componentMarkupFromURL("https://www.youtube.com/watch?v=l9XdkPsaynk", (html, service) => {
+  // html contains the full <embetter-media> element with <a><img> fallback
   document.body.insertAdjacentHTML("beforeend", html);
 });
+```
+
+### Legacy Upgrade
+
+If you have old Embetter embeds using the `<div class="embetter" data-*-id="...">` format, upgrade them all to web components with a single call:
+
+```js
+import EmbetterMedia from "embetter";
+
+EmbetterMedia.upgradeLegacyEmbeds(); // upgrades all .embetter divs on the page
+EmbetterMedia.upgradeLegacyEmbeds(myContainer); // or scope to a specific container
 ```
 
 ### Mobile
@@ -76,19 +142,18 @@ Only one embed plays at a time. Clicking a new player automatically closes the p
 
 ## Supported Services
 
-| Service     | Attribute         | Thumbnail | Notes |
-|-------------|-------------------|-----------|-------|
-| YouTube     | `youtube-id`      | Auto      | |
-| Vimeo       | `vimeo-id`        | Async     | Use `poster` attribute or thumbnail is fetched via API |
-| SoundCloud  | `soundcloud-id`   | Async     | Use `poster` attribute recommended |
-| Instagram   | `instagram-id`    | Async     | Supports `p/`, `reel/`, `tv/`; thumbnail + dimensions fetched via oEmbed when available |
-| Dailymotion | `dailymotion-id`  | Auto      | |
-| Mixcloud    | `mixcloud-id`     | Async     | Use `poster` attribute recommended |
-| CodePen     | `codepen-id`      | Auto      | Format: `user/pen/slug` |
-| Bandcamp    | `bandcamp-id`     | Manual    | Requires `poster` attribute; ID is `album=123` or `track=456` |
-| Giphy       | `giphy-id`        | Auto      | |
-| Video       | `video-url`       | Auto      | Native .mp4/.mov/.m4v files |
-| GIF         | `gif-url`         | Auto      | Native .gif files |
+| Service     | Attribute         | Thumbnail        | Notes |
+|-------------|-------------------|------------------|-------|
+| YouTube     | `youtube-id`      | Auto from ID     | |
+| Vimeo       | `vimeo-id`        | Needs `<a><img>` | Thumbnail URL fetched via Vimeo API or provided manually |
+| SoundCloud  | `soundcloud-id`   | Needs `<a><img>` | Thumbnail via oEmbed proxy or provided manually |
+| Dailymotion | `dailymotion-id`  | Auto from ID     | |
+| Mixcloud    | `mixcloud-id`     | Needs `<a><img>` | Thumbnail via oEmbed proxy or provided manually |
+| CodePen     | `codepen-id`      | Auto from ID     | Format: `user/pen/slug` |
+| Bandcamp    | `bandcamp-id`     | Needs `<a><img>` | ID is `album=123` or `track=456`; thumbnail provided manually |
+| Giphy       | `giphy-id`        | Auto from ID     | |
+| Video       | `video-url`       | Needs `<a><img>` | Native .mp4/.mov/.m4v files |
+| GIF         | `gif-url`         | Needs `<a><img>` | Native .gif files |
 
 ## Development
 
