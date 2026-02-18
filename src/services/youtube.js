@@ -5,7 +5,8 @@ class YouTube {
 
   static embed(config) {
     const autoplayQuery = config.autoplay === true ? "&autoplay=1" : "";
-    return `<iframe class="video" enablejsapi="1" width="${config.w}" height="${config.h}" src="https://www.youtube.com/embed/${config.id}?rel=0&suggestedQuality=hd720&enablejsapi=1${autoplayQuery}" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowfullscreen allow=autoplay></iframe>`;
+    const loopQuery = config.loops === true ? `&loop=1&playlist=${config.id}` : "";
+    return `<iframe class="video" enablejsapi="1" width="${config.w}" height="${config.h}" src="https://www.youtube.com/embed/${config.id}?rel=0&suggestedQuality=hd720&enablejsapi=1${autoplayQuery}${loopQuery}" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowfullscreen allow=autoplay></iframe>`;
   }
 
   static thumbnail(id) {

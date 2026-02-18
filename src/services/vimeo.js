@@ -5,7 +5,7 @@ class Vimeo {
   static regex = /(?:vimeo\.com\/(?:video\/)?|player\.vimeo\.com\/video\/)(\d+)/i;
 
   static embed(config) {
-    const autoplayQuery = config.autoplay === true ? "&autoplay=1&muted=1" : "";
+    const autoplayQuery = config.autoplay === true ? "&autoplay=1" : "";
     const loopQuery = config.loops === true ? "&loop=1" : "";
     return `<iframe id="${config.id}" src="https://player.vimeo.com/video/${config.id}?title=0&byline=0&portrait=0&color=ffffff&api=1&player_id=${config.id}${autoplayQuery}${loopQuery}" width="${config.w}" height="${config.h}" frameborder="0" scrolling="no" webkitallowfullscreen mozallowfullscreen allowfullscreen allow=autoplay></iframe>`;
   }

@@ -1,14 +1,31 @@
-// Create an array of services to export
-// we want to load the service-specific files, and make them available to the web component
-// we also want to create an array of service so the web component can check for service attribute ids to figure out which embed service to use
-
 import YouTube from "./youtube.js";
 import Vimeo from "./vimeo.js";
+import SoundCloud from "./soundcloud.js";
+import Instagram from "./instagram.js";
+import Dailymotion from "./dailymotion.js";
+import Mixcloud from "./mixcloud.js";
+import CodePen from "./codepen.js";
+import Bandcamp from "./bandcamp.js";
+import Giphy from "./giphy.js";
+// import Shadertoy from "./shadertoy.js"; // Shadertoy blocks iframe embedding (X-Frame-Options: SAMEORIGIN)
+// import Kuula from "./kuula.js";
+import Video from "./video.js";
+import GIF from "./gif.js";
 
 const services = [
   YouTube,
   Vimeo,
-  // Add other services here as needed
+  SoundCloud,
+  Instagram,
+  Dailymotion,
+  Mixcloud,
+  CodePen,
+  Bandcamp,
+  Giphy,
+  // Shadertoy,
+  // Kuula,
+  Video,
+  GIF,
 ];
 
 export default services;

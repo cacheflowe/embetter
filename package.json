@@ -1,13 +1,24 @@
 {
   "name": "embetter",
-  "version": "1.0.0",
-  "description": "#### Because iframes are janky",
-  "main": "embetter.js",
+  "version": "2.0.0",
+  "type": "module",
+  "description": "Lazy-loading iframe embed web component",
+  "main": "dist/embetter-media.umd.js",
+  "module": "dist/embetter-media.js",
+  "exports": {
+    ".": {
+      "import": "./dist/embetter-media.js",
+      "require": "./dist/embetter-media.umd.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "update-libs": "npx npm-check-updates -u"
   },
   "repository": {
     "type": "git",
@@ -19,7 +30,8 @@
     "url": "https://github.com/cacheflowe/embetter/issues"
   },
   "homepage": "https://github.com/cacheflowe/embetter#readme",
-  "dependencies": {
-    "vite": "^7.0.3"
+  "devDependencies": {
+    "@vitejs/plugin-basic-ssl": "^2.1.4",
+    "vite": "^7.3.1"
   }
 }
