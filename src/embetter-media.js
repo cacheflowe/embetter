@@ -40,32 +40,7 @@ class EmbetterMedia extends HTMLElement {
       this.posterURL = fallbackImg.src;
     }
     this.innerHTML = "";
-    this.aspectRatio = this.getAttribute("aspect-ratio") || null;
-    this.applyAspectRatio(this.aspectRatio);
     this.findAndActivateService();
-  }
-
-  applyAspectRatio(value) {
-    if (!value) {
-      this.style.removeProperty("--embetter-aspect-ratio");
-      return;
-    }
-    const cleaned = String(value).trim();
-    if (!cleaned) {
-      this.style.removeProperty("--embetter-aspect-ratio");
-      return;
-    }
-    if (/^\d+(?:\.\d+)?\s*\/\s*\d+(?:\.\d+)?$/.test(cleaned) || /^\d+(?:\.\d+)?$/.test(cleaned)) {
-      this.style.setProperty("--embetter-aspect-ratio", cleaned.replace(/\s+/g, ""));
-    }
-  }
-
-  applyAspectRatioFromDimensions(width, height) {
-    const w = Number(width);
-    const h = Number(height);
-    if (Number.isFinite(w) && Number.isFinite(h) && w > 0 && h > 0) {
-      this.style.setProperty("--embetter-aspect-ratio", `${w}/${h}`);
-    }
   }
 
   getElements() {
@@ -107,9 +82,6 @@ class EmbetterMedia extends HTMLElement {
           const url = service.link(this.serviceId);
           service.getData(url).then((data) => {
             const fetchedThumbnail = typeof data === "string" ? data : data?.thumbnail;
-            if (!this.aspectRatio && typeof data === "object") {
-              this.applyAspectRatioFromDimensions(data.width, data.height);
-            }
             if (!thumbnail && !this.posterURL && fetchedThumbnail && this.thumbnail) {
               this.thumbnail.src = fetchedThumbnail;
             }
@@ -124,9 +96,6 @@ class EmbetterMedia extends HTMLElement {
     if (!this.thumbnail) return;
     this.setAttribute("loading", "");
     this.thumbnail.onload = () => {
-      if (!this.aspectRatio) {
-        this.applyAspectRatioFromDimensions(this.thumbnail.naturalWidth, this.thumbnail.naturalHeight);
-      }
       this.removeAttribute("loading");
       this.setAttribute("ready", "");
     };

@@ -2,14 +2,12 @@ let css = /* css */ `
 
   :host {
     --anim-speed: 0.25s;
-    --embetter-aspect-ratio: auto;
     transition: background-color var(--anim-speed) linear, max-width var(--anim-speed) linear, max-height var(--anim-speed) linear;
     background-color: #000;
     position: relative;
     display: block;
     overflow: hidden;
     padding: 0;
-    aspect-ratio: var(--embetter-aspect-ratio);
   }
 
   :host(:hover) {
@@ -44,8 +42,7 @@ let css = /* css */ `
     }
   }
 
-  :host([youtube-id]),
-  :host([dailymotion-id]) {
+  :host([youtube-id]) {
     padding-bottom: 56.25%;
     height: 0;
 

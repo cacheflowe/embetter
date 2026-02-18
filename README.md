@@ -103,7 +103,6 @@ For the best experience, include an `<a><img>` inside the element. This serves a
 
 | Attribute      | Description |
 |----------------|-------------|
-| `aspect-ratio` | Optional ratio override (examples: `16/9`, `1/1`, `4/5`) |
 | `autoplay`     | Set to `"false"` to disable autoplay on embed (default: `true`) |
 | `loops`        | Loop the media on completion (YouTube, Vimeo, native video) |
 | `muted`        | Mute the media on embed |

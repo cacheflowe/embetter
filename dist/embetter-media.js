@@ -4,14 +4,12 @@ let m = (
 
   :host {
     --anim-speed: 0.25s;
-    --embetter-aspect-ratio: auto;
     transition: background-color var(--anim-speed) linear, max-width var(--anim-speed) linear, max-height var(--anim-speed) linear;
     background-color: #000;
     position: relative;
     display: block;
     overflow: hidden;
     padding: 0;
-    aspect-ratio: var(--embetter-aspect-ratio);
   }
 
   :host(:hover) {
@@ -46,8 +44,7 @@ let m = (
     }
   }
 
-  :host([youtube-id]),
-  :host([dailymotion-id]) {
+  :host([youtube-id]) {
     padding-bottom: 56.25%;
     height: 0;
 
@@ -442,23 +439,7 @@ class c extends HTMLElement {
   initComponent() {
     this.markup = "embetter-media component not initialized properly.", this.loops = this.hasAttribute("loops"), this.muted = this.hasAttribute("muted"), this.posterURL = null;
     const t = this.querySelector("img");
-    t && t.src && (this.posterURL = t.src), this.innerHTML = "", this.aspectRatio = this.getAttribute("aspect-ratio") || null, this.applyAspectRatio(this.aspectRatio), this.findAndActivateService();
-  }
-  applyAspectRatio(t) {
-    if (!t) {
-      this.style.removeProperty("--embetter-aspect-ratio");
-      return;
-    }
-    const i = String(t).trim();
-    if (!i) {
-      this.style.removeProperty("--embetter-aspect-ratio");
-      return;
-    }
-    (/^\d+(?:\.\d+)?\s*\/\s*\d+(?:\.\d+)?$/.test(i) || /^\d+(?:\.\d+)?$/.test(i)) && this.style.setProperty("--embetter-aspect-ratio", i.replace(/\s+/g, ""));
-  }
-  applyAspectRatioFromDimensions(t, i) {
-    const e = Number(t), a = Number(i);
-    Number.isFinite(e) && Number.isFinite(a) && e > 0 && a > 0 && this.style.setProperty("--embetter-aspect-ratio", `${e}/${a}`);
+    t && t.src && (this.posterURL = t.src), this.innerHTML = "", this.findAndActivateService();
   }
   getElements() {
     this.thumbnail = this.el.querySelector("img");
@@ -482,7 +463,7 @@ class c extends HTMLElement {
           const a = t.link(this.serviceId);
           t.getData(a).then((s) => {
             const r = typeof s == "string" ? s : s?.thumbnail;
-            !this.aspectRatio && typeof s == "object" && this.applyAspectRatioFromDimensions(s.width, s.height), !e && !this.posterURL && r && this.thumbnail && (this.thumbnail.src = r);
+            !e && !this.posterURL && r && this.thumbnail && (this.thumbnail.src = r);
           });
         }
         break;
@@ -491,7 +472,7 @@ class c extends HTMLElement {
   }
   checkThumbnail() {
     this.thumbnail && (this.setAttribute("loading", ""), this.thumbnail.onload = () => {
-      this.aspectRatio || this.applyAspectRatioFromDimensions(this.thumbnail.naturalWidth, this.thumbnail.naturalHeight), this.removeAttribute("loading"), this.setAttribute("ready", "");
+      this.removeAttribute("loading"), this.setAttribute("ready", "");
     }, this.thumbnail.onerror = () => {
       this.thumbnail.src = this.defaultThumbnail, this.removeAttribute("loading"), this.setAttribute("ready", "");
     }, setTimeout(() => {
@@ -541,7 +522,7 @@ class c extends HTMLElement {
     let s = "";
     if (a || e) {
       const r = a || "#", o = e ? `<img src="${e}">` : "";
-      s = `<a href="${r}" target="_blank">${o}</a>`;
+      s = `<a href="${r}">${o}</a>`;
     }
     return `<embetter-media ${t}="${i}">${s}</embetter-media>`;
   }
@@ -549,8 +530,8 @@ class c extends HTMLElement {
     return (
       /* html */
       `
-      <a href="${t}" target="_blank">
-        <img src="${i}">
+      <a href="${t}">
+        <img src="${i}" />
         <div class="embetter-loading"></div>
         <div class="embetter-play-button"></div>
       </a>
