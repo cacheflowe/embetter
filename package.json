@@ -14,18 +14,30 @@
   "files": [
     "dist"
   ],
+  "keywords": [
+    "embed",
+    "iframe",
+    "lazy-load",
+    "web-component",
+    "youtube",
+    "vimeo",
+    "soundcloud",
+    "bandcamp",
+    "video"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "prepublishOnly": "npm run build",
     "update-libs": "npx npm-check-updates -u"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cacheflowe/embetter.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "cacheflowe",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/cacheflowe/embetter/issues"
   },
