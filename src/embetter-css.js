@@ -43,12 +43,11 @@ let css = /* css */ `
   }
 
   :host([youtube-id]) {
-    padding-bottom: 56.25%;
-    height: 0;
+    aspect-ratio: 16 / 9;
+  }
 
-    img {
-      margin: -9.4% 0;
-    }
+  :host([youtube-id]) img[src$="/0.jpg"] {
+    margin: -9.4% 0;
   }
 
   :host([soundcloud-id]),

@@ -5,20 +5,24 @@ Embetter is a web component that provides a modern way to embed content from var
 The old style of embed looked like this:
 
 ```html
-<div class="embetter" data-youtube-id="l9XdkPsaynk"><a href="https://www.youtube.com/watch?v=l9XdkPsaynk" target="_blank"><img src="http://img.youtube.com/vi/l9XdkPsaynk/0.jpg"></a></div>
+<div class="embetter" data-youtube-id="l9XdkPsaynk">
+  <a href="https://www.youtube.com/watch?v=l9XdkPsaynk" target="_blank">
+    <img src="http://img.youtube.com/vi/l9XdkPsaynk/0.jpg">
+  </a>
+</div>
 ```
 
 The new style of embed looks like this:
 
 ```html
-<embetter-media youtube-id="l9XdkPsaynk"><a href="https://www.youtube.com/watch?v=l9XdkPsaynk" target="_blank"><img src="http://img.youtube.com/vi/l9XdkPsaynk/0.jpg"></a></embetter-media>
+<embetter-media youtube-id="l9XdkPsaynk">
+  <a href="https://www.youtube.com/watch?v=l9XdkPsaynk">
+    <img src="http://img.youtube.com/vi/l9XdkPsaynk/maxresdefault.jpg">
+  </a>
+</embetter-media>
 ```
 
-Some embeds need a poster attribute if the thumbnail can't be inferred from the ID:
-
-```html
-<embetter-media bandcamp-id="album=2659930103" poster="https://f4.bcbits.com/img/a0883249002_16.jpg"></embetter-media>
-```
+TODOs:
 
 - [x] Replace normalize.css and skeleton.css with picocss
 - [x] Start embetter-media web component

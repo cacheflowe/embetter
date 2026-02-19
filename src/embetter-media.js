@@ -8,7 +8,7 @@ class EmbetterMedia extends HTMLElement {
 
   connectedCallback() {
     this.shadow = this.attachShadow({ mode: "open" });
-    this.el = this.shadow;
+    this.el = this.shadow ?? this;
     this.initComponent();
     this.render();
     this.checkThumbnail();
@@ -100,6 +100,11 @@ class EmbetterMedia extends HTMLElement {
       this.setAttribute("ready", "");
     };
     this.thumbnail.onerror = () => {
+      // YouTube maxresdefault.jpg doesn't exist for all videos — fall back to 0.jpg
+      if (this.thumbnail.src.includes("/maxresdefault.jpg")) {
+        this.thumbnail.src = this.thumbnail.src.replace("/maxresdefault.jpg", "/0.jpg");
+        return;
+      }
       this.thumbnail.src = this.defaultThumbnail;
       this.removeAttribute("loading");
       this.setAttribute("ready", "");

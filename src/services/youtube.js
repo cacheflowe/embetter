@@ -10,7 +10,7 @@ class YouTube {
   }
 
   static thumbnail(id) {
-    return "http://img.youtube.com/vi/" + id + "/0.jpg";
+    return "https://img.youtube.com/vi/" + id + "/maxresdefault.jpg";
   }
 
   static link(id) {

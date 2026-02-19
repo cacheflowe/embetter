@@ -52,7 +52,7 @@ For the best experience, include an `<a><img>` inside the element. This serves a
 <!-- YouTube -->
 <embetter-media youtube-id="l9XdkPsaynk">
   <a href="https://www.youtube.com/watch?v=l9XdkPsaynk">
-    <img src="http://img.youtube.com/vi/l9XdkPsaynk/0.jpg" />
+    <img src="https://img.youtube.com/vi/l9XdkPsaynk/maxresdefault.jpg" />
   </a>
 </embetter-media>
 
