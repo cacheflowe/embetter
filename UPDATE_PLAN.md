@@ -74,10 +74,10 @@ Some embeds need a poster attribute if the thumbnail can't be inferred from the 
   - [x] `/api/soundcloud` → SoundCloud oEmbed
   - [x] `/api/bandcamp` → custom middleware (fetches page HTML, scrapes album/track ID + thumbnail)
 - [x] Updated README.md with new web component API
+- [x] Publish to npmx
 
 ## Remaining / Future work
 
-- [ ] Publish to npm
 - [ ] API integrations to enable playlist behavior
 - [ ] Opening a player should scroll the page to the player
 - [ ] Re-enable Shadertoy if they allow iframe embedding again

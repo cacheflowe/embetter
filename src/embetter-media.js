@@ -13,7 +13,7 @@ class EmbetterMedia extends HTMLElement {
     this.render();
     this.checkThumbnail();
     this.addListeners();
-    this.setupMobileObserver();
+    // this.setupMobileObserver();
   }
 
   disconnectedCallback() {
