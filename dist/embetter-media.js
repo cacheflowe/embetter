@@ -45,12 +45,11 @@ let m = (
   }
 
   :host([youtube-id]) {
-    padding-bottom: 56.25%;
-    height: 0;
+    aspect-ratio: 16 / 9;
+  }
 
-    img {
-      margin: -9.4% 0;
-    }
+  :host([youtube-id]) img[src$="/0.jpg"] {
+    margin: -9.4% 0;
   }
 
   :host([soundcloud-id]),
@@ -149,7 +148,7 @@ class p {
     return `<iframe class="video" enablejsapi="1" width="${t.w}" height="${t.h}" src="https://www.youtube.com/embed/${t.id}?rel=0&suggestedQuality=hd720&enablejsapi=1${i}${e}" frameborder="0" scrolling="no" webkitAllowFullScreen mozallowfullscreen allowfullscreen allow=autoplay></iframe>`;
   }
   static thumbnail(t) {
-    return "http://img.youtube.com/vi/" + t + "/0.jpg";
+    return "https://img.youtube.com/vi/" + t + "/maxresdefault.jpg";
   }
   static link(t) {
     return "https://www.youtube.com/watch?v=" + t;
@@ -157,8 +156,8 @@ class p {
   static buildFromText(t, i) {
     const e = t.match(this.regex)[1];
     if (e != null) {
-      const a = this.link(e), s = this.thumbnail(e);
-      i(e, a, s);
+      const s = this.link(e), a = this.thumbnail(e);
+      i(e, s, a);
     }
   }
 }
@@ -179,21 +178,21 @@ class b {
   }
   static getData(t) {
     return new Promise((i, e) => {
-      const a = `https://vimeo.com/api/v2/video/${t}.json`;
-      fetch(a).then((s) => s.json()).then((s) => i(s[0].thumbnail_large)).catch(() => i(""));
+      const s = `https://vimeo.com/api/v2/video/${t}.json`;
+      fetch(s).then((a) => a.json()).then((a) => i(a[0].thumbnail_large)).catch(() => i(""));
     });
   }
   static buildFromText(t, i) {
     const e = t.match(this.regex);
     if (e && e[1]) {
-      const a = e[1], s = this.link(a);
-      this.getData(a).then((r) => {
-        i(a, s, r);
+      const s = e[1], a = this.link(s);
+      this.getData(s).then((r) => {
+        i(s, a, r);
       });
     }
   }
 }
-class g {
+class A {
   static type = "soundcloud";
   static dataAttribute = "soundcloud-id";
   static regex = /(?:https?:\/\/)?(?:w{3}\.)?(?:soundcloud\.com|snd\.sc)\/([a-zA-Z0-9_-]*(?:\/sets)?(?:\/groups)?\/[a-zA-Z0-9_-]*)/;
@@ -214,41 +213,14 @@ class g {
   static buildFromText(t, i) {
     const e = t.match(this.regex);
     if (e && e[1]) {
-      const a = e[1], s = this.link(a);
-      this.getData(s).then((r) => {
-        i(a, s, r);
+      const s = e[1], a = this.link(s);
+      this.getData(a).then((r) => {
+        i(s, a, r);
       });
     }
   }
 }
-class A {
-  static type = "instagram";
-  static dataAttribute = "instagram-id";
-  static regex = /(?:https?:\/\/)?(?:w{3}\.)?(?:instagram\.com|instagr\.am)\/(p|reel|tv)\/([a-zA-Z0-9-_]+)/i;
-  static normalizePath(t) {
-    if (!t) return "p/";
-    const i = String(t).replace(/^\/+|\/+$/g, "");
-    return /^(p|reel|tv)\/[a-zA-Z0-9-_]+$/i.test(i) ? i : `p/${i}`;
-  }
-  static embed(t) {
-    const i = this.normalizePath(t.id), e = t.captioned === !1 ? "" : "captioned/";
-    return `<iframe width="100%" height="100%" scrolling="no" frameborder="0" src="https://www.instagram.com/${i}/embed/${e}?cr=1&v=14" allowfullscreen></iframe>`;
-  }
-  static thumbnail(t) {
-    return "";
-  }
-  static link(t) {
-    return `https://www.instagram.com/${this.normalizePath(t)}/`;
-  }
-  static buildFromText(t, i) {
-    const e = t.match(this.regex);
-    if (e && e[2]) {
-      const a = `${e[1]}/${e[2]}`, s = this.link(a);
-      i(a, s, "");
-    }
-  }
-}
-class f {
+class g {
   static type = "dailymotion";
   static dataAttribute = "dailymotion-id";
   static regex = /(?:https?:\/\/)?(?:w{3}\.)?dailymotion\.com\/video\/([a-zA-Z0-9-_]*)/;
@@ -266,12 +238,12 @@ class f {
     t = t.split("_")[0];
     const e = t.match(this.regex);
     if (e && e[1]) {
-      const a = e[1], s = this.link(a), r = this.thumbnail(a);
-      i(a, s, r);
+      const s = e[1], a = this.link(s), r = this.thumbnail(s);
+      i(s, a, r);
     }
   }
 }
-class y {
+class f {
   static type = "mixcloud";
   static dataAttribute = "mixcloud-id";
   static regex = /(?:https?:\/\/)?(?:w{3}\.)?(?:mixcloud\.com)\/(.*\/.*)/;
@@ -292,20 +264,20 @@ class y {
   static buildFromText(t, i) {
     const e = t.match(this.regex);
     if (e && e[1]) {
-      const a = e[1], s = this.link(a);
-      this.getData(s).then((r) => {
-        i(a, s, r);
+      const s = e[1], a = this.link(s);
+      this.getData(a).then((r) => {
+        i(s, a, r);
       });
     }
   }
 }
-class w {
+class y {
   static type = "codepen";
   static dataAttribute = "codepen-id";
   static regex = /(?:https?:\/\/)?(?:w{3}\.)?(?:codepen\.io)\/([a-zA-Z0-9_\-%]*\/[a-zA-Z0-9_\-%]*\/[a-zA-Z0-9_\-%]*)/;
   static embed(t) {
-    const i = t.id.replace("/pen/", "/embed/"), e = i.split("/")[0], a = i.split("/")[2];
-    return `<iframe src="https://codepen.io/${i}?height=${t.h}&theme-id=0&slug-hash=${a}&default-tab=result&user=${e}" frameborder="0" scrolling="no" allowtransparency="true" allowfullscreen allow=autoplay></iframe>`;
+    const i = t.id.replace("/pen/", "/embed/"), e = i.split("/")[0], s = i.split("/")[2];
+    return `<iframe src="https://codepen.io/${i}?height=${t.h}&theme-id=0&slug-hash=${s}&default-tab=result&user=${e}" frameborder="0" scrolling="no" allowtransparency="true" allowfullscreen allow=autoplay></iframe>`;
   }
   static thumbnail(t) {
     return `https://codepen.io/${t}/image/large.png`;
@@ -316,13 +288,13 @@ class w {
   static buildFromText(t, i) {
     const e = t.match(this.regex);
     if (e && e[1]) {
-      let a = e[1].replace("/embed/", "/pen/");
-      const s = this.link(a), r = this.thumbnail(a);
-      i(a, s, r);
+      let s = e[1].replace("/embed/", "/pen/");
+      const a = this.link(s), r = this.thumbnail(s);
+      i(s, a, r);
     }
   }
 }
-class v {
+class w {
   static type = "bandcamp";
   static dataAttribute = "bandcamp-id";
   static regex = /(?:https?:\/\/)?(?:w{3}\.)?([a-zA-Z0-9_\-]*\.bandcamp\.com\/(?:album|track)\/[a-zA-Z0-9_\-%]*)/;
@@ -341,14 +313,14 @@ class v {
   static buildFromText(t, i) {
     const e = t.match(this.regex);
     if (e && e[1]) {
-      const s = `https://${e[1]}`;
-      this.getData(s).then((r) => {
-        r.id && i(r.id, s, r.thumbnail || "");
+      const a = `https://${e[1]}`;
+      this.getData(a).then((r) => {
+        r.id && i(r.id, a, r.thumbnail || "");
       });
     }
   }
 }
-class $ {
+class v {
   static type = "giphy";
   static dataAttribute = "giphy-id";
   static regex = /(?:https?:\/\/)?(?:w{3}\.)?giphy\.com\/gifs\/([a-zA-Z0-9_\-%]*)/;
@@ -362,10 +334,10 @@ class $ {
     return `https://giphy.com/gifs/${t}`;
   }
   static buildFromText(t, i) {
-    const e = t.split("/"), a = e[e.length - 1], s = a.split("-"), r = s[s.length - 1];
+    const e = t.split("/"), s = e[e.length - 1], a = s.split("-"), r = a[a.length - 1];
     if (r) {
-      const o = this.link(a), l = this.thumbnail(r);
-      i(r, o, l);
+      const o = this.link(s), n = this.thumbnail(r);
+      i(r, o, n);
     }
   }
 }
@@ -374,8 +346,8 @@ class k {
   static dataAttribute = "video-url";
   static regex = /(?:https?:\/\/)?(?:w{3}\.)?(.+\.(?:mp4|mov|m4v))(?:\/|$|\s|\?|#)/;
   static embed(t) {
-    const i = t.autoplay === !0 ? ' autoplay="true"' : "", e = t.loops === !0 ? ' loop="true"' : "", a = t.muted === !0 ? " muted" : "";
-    return `<video src="${t.id}" width="${t.w}" height="${t.h}"${i}${e}${a} controls playsinline webkitallowfullscreen mozallowfullscreen allowfullscreen></video>`;
+    const i = t.autoplay === !0 ? ' autoplay="true"' : "", e = t.loops === !0 ? ' loop="true"' : "", s = t.muted === !0 ? " muted" : "";
+    return `<video src="${t.id}" width="${t.w}" height="${t.h}"${i}${e}${s} controls playsinline webkitallowfullscreen mozallowfullscreen allowfullscreen></video>`;
   }
   static thumbnail(t) {
     return t.replace(".mp4", "-poster.jpg").replace(".mov", "-poster.jpg").replace(".m4v", "-poster.jpg");
@@ -386,12 +358,12 @@ class k {
   static buildFromText(t, i) {
     const e = t.match(this.regex);
     if (e && e[1]) {
-      const a = e[1], s = this.thumbnail(a);
-      i(a, a, s);
+      const s = e[1], a = this.thumbnail(s);
+      i(s, s, a);
     }
   }
 }
-class x {
+class $ {
   static type = "gif";
   static dataAttribute = "gif-url";
   static regex = /(?:https?:\/\/)?(?:w{3}\.)?(.+\.gif)(?:\/|$|\s|\?|#)/;
@@ -407,31 +379,17 @@ class x {
   static buildFromText(t, i) {
     const e = t.match(this.regex);
     if (e && e[1]) {
-      const a = e[1], s = this.thumbnail(a);
-      i(a, a, s);
+      const s = e[1], a = this.thumbnail(s);
+      i(s, s, a);
     }
   }
 }
-const d = [
-  p,
-  b,
-  g,
-  A,
-  f,
-  y,
-  w,
-  v,
-  $,
-  // Shadertoy,
-  // Kuula,
-  k,
-  x
-];
+const d = [k, $, p, b, A, g, f, y, w, v];
 class c extends HTMLElement {
   defaultThumbnail = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArwAAAGcAQMAAAABMOGrAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAADUExURQAAAKd6PdoAAAA6SURBVHja7cGBAAAAAMOg+VPf4ARVAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAN488AAGP4e1mAAAAAElFTkSuQmCC";
   static EMBETTER_ACTIVATED = "embetter-activated";
   connectedCallback() {
-    this.shadow = this.attachShadow({ mode: "open" }), this.el = this.shadow, this.initComponent(), this.render(), this.checkThumbnail(), this.addListeners(), this.setupMobileObserver();
+    this.shadow = this.attachShadow({ mode: "open" }), this.el = this.shadow ?? this, this.initComponent(), this.render(), this.checkThumbnail(), this.addListeners();
   }
   disconnectedCallback() {
     this.unembedMedia(), this.removeAttribute("ready"), this.playButton && this.playButton.removeEventListener("click", this.clickListener), document.removeEventListener(c.EMBETTER_ACTIVATED, this.embedListener), this.observer && (this.observer.disconnect(), this.observer = null);
@@ -460,9 +418,9 @@ class c extends HTMLElement {
         this.service = t, this.serviceType = t.type, this.serviceId = this.getAttribute(i);
         let e = this.posterURL || t.thumbnail(this.serviceId);
         if (this.markup = this.playerHTML(t.link(this.serviceId), e), t.getData) {
-          const a = t.link(this.serviceId);
-          t.getData(a).then((s) => {
-            const r = typeof s == "string" ? s : s?.thumbnail;
+          const s = t.link(this.serviceId);
+          t.getData(s).then((a) => {
+            const r = typeof a == "string" ? a : a?.thumbnail;
             !e && !this.posterURL && r && this.thumbnail && (this.thumbnail.src = r);
           });
         }
@@ -474,6 +432,10 @@ class c extends HTMLElement {
     this.thumbnail && (this.setAttribute("loading", ""), this.thumbnail.onload = () => {
       this.removeAttribute("loading"), this.setAttribute("ready", "");
     }, this.thumbnail.onerror = () => {
+      if (this.thumbnail.src.includes("/maxresdefault.jpg")) {
+        this.thumbnail.src = this.thumbnail.src.replace("/maxresdefault.jpg", "/0.jpg");
+        return;
+      }
       this.thumbnail.src = this.defaultThumbnail, this.removeAttribute("loading"), this.setAttribute("ready", "");
     }, setTimeout(() => {
       this.thumbnail.height < 50 && (this.thumbnail.src = this.defaultThumbnail), this.removeAttribute("loading"), this.setAttribute("ready", "");
@@ -518,13 +480,13 @@ class c extends HTMLElement {
     var i = document.createElement("div");
     return i.innerHTML = t, i.firstChild;
   }
-  static componentHTML(t, i, e = null, a = null) {
-    let s = "";
-    if (a || e) {
-      const r = a || "#", o = e ? `<img src="${e}">` : "";
-      s = `<a href="${r}">${o}</a>`;
+  static componentHTML(t, i, e = null, s = null) {
+    let a = "";
+    if (s || e) {
+      const r = s || "#", o = e ? `<img src="${e}">` : "";
+      a = `<a href="${r}">${o}</a>`;
     }
-    return `<embetter-media ${t}="${i}">${s}</embetter-media>`;
+    return `<embetter-media ${t}="${i}">${a}</embetter-media>`;
   }
   playerHTML(t, i) {
     return (
@@ -555,13 +517,13 @@ class c extends HTMLElement {
   }
   static upgradeLegacyEmbeds(t = document) {
     t.querySelectorAll(".embetter").forEach((e) => {
-      for (const a of d) {
-        const s = `data-${a.dataAttribute}`;
-        if (e.hasAttribute(s)) {
-          const r = e.getAttribute(s), o = document.createElement("embetter-media");
-          o.setAttribute(a.dataAttribute, r);
-          const l = e.querySelector("a");
-          l && o.appendChild(l.cloneNode(!0)), e.hasAttribute("data-loops") && o.setAttribute("loops", ""), e.hasAttribute("data-muted") && o.setAttribute("muted", ""), e.replaceWith(o);
+      for (const s of d) {
+        const a = `data-${s.dataAttribute}`;
+        if (e.hasAttribute(a)) {
+          const r = e.getAttribute(a), o = document.createElement("embetter-media");
+          o.setAttribute(s.dataAttribute, r);
+          const n = e.querySelector("a");
+          n && o.appendChild(n.cloneNode(!0)), e.hasAttribute("data-loops") && o.setAttribute("loops", ""), e.hasAttribute("data-muted") && o.setAttribute("muted", ""), e.replaceWith(o);
           break;
         }
       }
@@ -569,26 +531,26 @@ class c extends HTMLElement {
   }
   static componentMarkupFromURL(t, i) {
     for (let e = 0; e < d.length; e++) {
-      const a = d[e];
-      if (t.match(a.regex) != null) {
-        a.buildFromText(t, (s, r, o) => {
-          const l = (h) => {
+      const s = d[e];
+      if (t.match(s.regex) != null) {
+        s.buildFromText(t, (a, r, o) => {
+          const n = (h) => {
             let u = c.componentHTML(
-              a.dataAttribute,
-              s,
+              s.dataAttribute,
+              a,
               h,
               r
             );
-            i(u, a);
+            i(u, s);
           };
-          if (!o && a.getData && r) {
-            a.getData(r).then((h) => {
+          if (!o && s.getData && r) {
+            s.getData(r).then((h) => {
               const u = typeof h == "string" ? h : h?.thumbnail;
-              l(u || o);
-            }).catch(() => l(o));
+              n(u || o);
+            }).catch(() => n(o));
             return;
           }
-          l(o);
+          n(o);
         });
         break;
       }
