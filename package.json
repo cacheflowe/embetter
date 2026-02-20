@@ -1,6 +1,6 @@
 {
   "name": "embetter",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "type": "module",
   "description": "Lazy-loading iframe embed web component",
   "main": "dist/embetter-media.umd.js",
