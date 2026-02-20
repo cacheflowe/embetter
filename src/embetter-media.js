@@ -7,13 +7,23 @@ class EmbetterMedia extends HTMLElement {
   static EMBETTER_ACTIVATED = "embetter-activated";
 
   connectedCallback() {
-    this.shadow = this.attachShadow({ mode: "open" });
-    this.el = this.shadow ?? this;
-    this.initComponent();
-    this.render();
-    this.checkThumbnail();
-    this.addListeners();
-    // this.setupMobileObserver();
+    setTimeout(() => {
+      if (!this.isConnected) return;
+
+      if (!this.shadow) {
+        this.initialHTML = this.innerHTML;
+        this.innerHTML = "";
+        this.shadow = this.attachShadow({ mode: "open" });
+        this.el = this.shadow ?? this;
+        this.initComponent();
+        this.render();
+        this.getElements();
+        this.checkThumbnail();
+      }
+
+      this.addListeners();
+      // this.setupMobileObserver();
+    }, 0);
   }
 
   disconnectedCallback() {
@@ -33,13 +43,6 @@ class EmbetterMedia extends HTMLElement {
     this.markup = `embetter-media component not initialized properly.`;
     this.loops = this.hasAttribute("loops");
     this.muted = this.hasAttribute("muted");
-    // Read thumbnail from light DOM fallback content, then clear it
-    this.posterURL = null;
-    const fallbackImg = this.querySelector("img");
-    if (fallbackImg && fallbackImg.src) {
-      this.posterURL = fallbackImg.src;
-    }
-    this.innerHTML = "";
     this.findAndActivateService();
   }
 
@@ -75,46 +78,43 @@ class EmbetterMedia extends HTMLElement {
         this.service = service;
         this.serviceType = service.type;
         this.serviceId = this.getAttribute(serviceId);
-        let thumbnail = this.posterURL || service.thumbnail(this.serviceId);
-        this.markup = this.playerHTML(service.link(this.serviceId), thumbnail);
-        // If no thumbnail and service has async getData, fetch it
-        if (service.getData) {
-          const url = service.link(this.serviceId);
-          service.getData(url).then((data) => {
-            const fetchedThumbnail = typeof data === "string" ? data : data?.thumbnail;
-            if (!thumbnail && !this.posterURL && fetchedThumbnail && this.thumbnail) {
-              this.thumbnail.src = fetchedThumbnail;
-            }
-          });
-        }
+        this.markup = this.playerHTML(service.link(this.serviceId));
         break;
       }
     }
   }
 
+  onReady() {
+    this.removeAttribute("loading");
+    this.setAttribute("ready", "");
+  }
+
   checkThumbnail() {
     if (!this.thumbnail) return;
     this.setAttribute("loading", "");
-    this.thumbnail.onload = () => {
-      this.removeAttribute("loading");
-      this.setAttribute("ready", "");
-    };
-    this.thumbnail.onerror = () => {
-      // YouTube maxresdefault.jpg doesn't exist for all videos — fall back to 0.jpg
-      if (this.thumbnail.src.includes("/maxresdefault.jpg")) {
-        this.thumbnail.src = this.thumbnail.src.replace("/maxresdefault.jpg", "/0.jpg");
-        return;
-      }
-      this.thumbnail.src = this.defaultThumbnail;
-      this.removeAttribute("loading");
-      this.setAttribute("ready", "");
-    };
+
+    if (this.thumbnail.complete) {
+      this.onReady();
+    } else {
+      this.thumbnail.onload = () => {
+        this.onReady();
+      };
+      this.thumbnail.onerror = () => {
+        // YouTube maxresdefault.jpg doesn't exist for all videos — fall back to 0.jpg
+        if (this.thumbnail.src.includes("/maxresdefault.jpg")) {
+          this.thumbnail.src = this.thumbnail.src.replace("/maxresdefault.jpg", "/0.jpg");
+          return;
+        }
+        this.thumbnail.src = this.defaultThumbnail;
+        this.onReady();
+      };
+    }
+
     setTimeout(() => {
       if (this.thumbnail.height < 50) {
         this.thumbnail.src = this.defaultThumbnail;
       }
-      this.removeAttribute("loading");
-      this.setAttribute("ready", "");
+      this.onReady();
     }, 4000);
   }
 
@@ -189,13 +189,11 @@ class EmbetterMedia extends HTMLElement {
     return `<embetter-media ${serviceAttr}="${serviceId}">${fallbackContent}</embetter-media>`;
   }
 
-  playerHTML(mediaUrl, thumbnail) {
+  playerHTML(mediaUrl) {
     return /* html */ `
-      <a href="${mediaUrl}">
-        <img src="${thumbnail}" />
-        <div class="embetter-loading"></div>
-        <div class="embetter-play-button"></div>
-      </a>
+      ${this.initialHTML}
+      <div class="embetter-loading"></div>
+      <div class="embetter-play-button"></div>
     `;
   }
 
@@ -212,7 +210,6 @@ class EmbetterMedia extends HTMLElement {
       ${this.html()}
       <style>${this.css()}</style>
     `;
-    this.getElements();
   }
 
   static register() {

@@ -156,8 +156,8 @@ class p {
   static buildFromText(t, i) {
     const e = t.match(this.regex)[1];
     if (e != null) {
-      const s = this.link(e), a = this.thumbnail(e);
-      i(e, s, a);
+      const a = this.link(e), s = this.thumbnail(e);
+      i(e, a, s);
     }
   }
 }
@@ -178,16 +178,16 @@ class b {
   }
   static getData(t) {
     return new Promise((i, e) => {
-      const s = `https://vimeo.com/api/v2/video/${t}.json`;
-      fetch(s).then((a) => a.json()).then((a) => i(a[0].thumbnail_large)).catch(() => i(""));
+      const a = `https://vimeo.com/api/v2/video/${t}.json`;
+      fetch(a).then((s) => s.json()).then((s) => i(s[0].thumbnail_large)).catch(() => i(""));
     });
   }
   static buildFromText(t, i) {
     const e = t.match(this.regex);
     if (e && e[1]) {
-      const s = e[1], a = this.link(s);
-      this.getData(s).then((r) => {
-        i(s, a, r);
+      const a = e[1], s = this.link(a);
+      this.getData(a).then((r) => {
+        i(a, s, r);
       });
     }
   }
@@ -213,9 +213,9 @@ class A {
   static buildFromText(t, i) {
     const e = t.match(this.regex);
     if (e && e[1]) {
-      const s = e[1], a = this.link(s);
-      this.getData(a).then((r) => {
-        i(s, a, r);
+      const a = e[1], s = this.link(a);
+      this.getData(s).then((r) => {
+        i(a, s, r);
       });
     }
   }
@@ -238,8 +238,8 @@ class g {
     t = t.split("_")[0];
     const e = t.match(this.regex);
     if (e && e[1]) {
-      const s = e[1], a = this.link(s), r = this.thumbnail(s);
-      i(s, a, r);
+      const a = e[1], s = this.link(a), r = this.thumbnail(a);
+      i(a, s, r);
     }
   }
 }
@@ -264,9 +264,9 @@ class f {
   static buildFromText(t, i) {
     const e = t.match(this.regex);
     if (e && e[1]) {
-      const s = e[1], a = this.link(s);
-      this.getData(a).then((r) => {
-        i(s, a, r);
+      const a = e[1], s = this.link(a);
+      this.getData(s).then((r) => {
+        i(a, s, r);
       });
     }
   }
@@ -276,8 +276,8 @@ class y {
   static dataAttribute = "codepen-id";
   static regex = /(?:https?:\/\/)?(?:w{3}\.)?(?:codepen\.io)\/([a-zA-Z0-9_\-%]*\/[a-zA-Z0-9_\-%]*\/[a-zA-Z0-9_\-%]*)/;
   static embed(t) {
-    const i = t.id.replace("/pen/", "/embed/"), e = i.split("/")[0], s = i.split("/")[2];
-    return `<iframe src="https://codepen.io/${i}?height=${t.h}&theme-id=0&slug-hash=${s}&default-tab=result&user=${e}" frameborder="0" scrolling="no" allowtransparency="true" allowfullscreen allow=autoplay></iframe>`;
+    const i = t.id.replace("/pen/", "/embed/"), e = i.split("/")[0], a = i.split("/")[2];
+    return `<iframe src="https://codepen.io/${i}?height=${t.h}&theme-id=0&slug-hash=${a}&default-tab=result&user=${e}" frameborder="0" scrolling="no" allowtransparency="true" allowfullscreen allow=autoplay></iframe>`;
   }
   static thumbnail(t) {
     return `https://codepen.io/${t}/image/large.png`;
@@ -288,9 +288,9 @@ class y {
   static buildFromText(t, i) {
     const e = t.match(this.regex);
     if (e && e[1]) {
-      let s = e[1].replace("/embed/", "/pen/");
-      const a = this.link(s), r = this.thumbnail(s);
-      i(s, a, r);
+      let a = e[1].replace("/embed/", "/pen/");
+      const s = this.link(a), r = this.thumbnail(a);
+      i(a, s, r);
     }
   }
 }
@@ -313,9 +313,9 @@ class w {
   static buildFromText(t, i) {
     const e = t.match(this.regex);
     if (e && e[1]) {
-      const a = `https://${e[1]}`;
-      this.getData(a).then((r) => {
-        r.id && i(r.id, a, r.thumbnail || "");
+      const s = `https://${e[1]}`;
+      this.getData(s).then((r) => {
+        r.id && i(r.id, s, r.thumbnail || "");
       });
     }
   }
@@ -334,9 +334,9 @@ class v {
     return `https://giphy.com/gifs/${t}`;
   }
   static buildFromText(t, i) {
-    const e = t.split("/"), s = e[e.length - 1], a = s.split("-"), r = a[a.length - 1];
+    const e = t.split("/"), a = e[e.length - 1], s = a.split("-"), r = s[s.length - 1];
     if (r) {
-      const o = this.link(s), n = this.thumbnail(r);
+      const o = this.link(a), n = this.thumbnail(r);
       i(r, o, n);
     }
   }
@@ -346,8 +346,8 @@ class k {
   static dataAttribute = "video-url";
   static regex = /(?:https?:\/\/)?(?:w{3}\.)?(.+\.(?:mp4|mov|m4v))(?:\/|$|\s|\?|#)/;
   static embed(t) {
-    const i = t.autoplay === !0 ? ' autoplay="true"' : "", e = t.loops === !0 ? ' loop="true"' : "", s = t.muted === !0 ? " muted" : "";
-    return `<video src="${t.id}" width="${t.w}" height="${t.h}"${i}${e}${s} controls playsinline webkitallowfullscreen mozallowfullscreen allowfullscreen></video>`;
+    const i = t.autoplay === !0 ? ' autoplay="true"' : "", e = t.loops === !0 ? ' loop="true"' : "", a = t.muted === !0 ? " muted" : "";
+    return `<video src="${t.id}" width="${t.w}" height="${t.h}"${i}${e}${a} controls playsinline webkitallowfullscreen mozallowfullscreen allowfullscreen></video>`;
   }
   static thumbnail(t) {
     return t.replace(".mp4", "-poster.jpg").replace(".mov", "-poster.jpg").replace(".m4v", "-poster.jpg");
@@ -358,8 +358,8 @@ class k {
   static buildFromText(t, i) {
     const e = t.match(this.regex);
     if (e && e[1]) {
-      const s = e[1], a = this.thumbnail(s);
-      i(s, s, a);
+      const a = e[1], s = this.thumbnail(a);
+      i(a, a, s);
     }
   }
 }
@@ -379,8 +379,8 @@ class $ {
   static buildFromText(t, i) {
     const e = t.match(this.regex);
     if (e && e[1]) {
-      const s = e[1], a = this.thumbnail(s);
-      i(s, s, a);
+      const a = e[1], s = this.thumbnail(a);
+      i(a, a, s);
     }
   }
 }
@@ -389,15 +389,15 @@ class c extends HTMLElement {
   defaultThumbnail = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAArwAAAGcAQMAAAABMOGrAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAADUExURQAAAKd6PdoAAAA6SURBVHja7cGBAAAAAMOg+VPf4ARVAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAN488AAGP4e1mAAAAAElFTkSuQmCC";
   static EMBETTER_ACTIVATED = "embetter-activated";
   connectedCallback() {
-    this.shadow = this.attachShadow({ mode: "open" }), this.el = this.shadow ?? this, this.initComponent(), this.render(), this.checkThumbnail(), this.addListeners();
+    setTimeout(() => {
+      this.isConnected && (this.shadow || (this.initialHTML = this.innerHTML, this.innerHTML = "", this.shadow = this.attachShadow({ mode: "open" }), this.el = this.shadow ?? this, this.initComponent(), this.render(), this.getElements(), this.checkThumbnail()), this.addListeners());
+    }, 0);
   }
   disconnectedCallback() {
     this.unembedMedia(), this.removeAttribute("ready"), this.playButton && this.playButton.removeEventListener("click", this.clickListener), document.removeEventListener(c.EMBETTER_ACTIVATED, this.embedListener), this.observer && (this.observer.disconnect(), this.observer = null);
   }
   initComponent() {
-    this.markup = "embetter-media component not initialized properly.", this.loops = this.hasAttribute("loops"), this.muted = this.hasAttribute("muted"), this.posterURL = null;
-    const t = this.querySelector("img");
-    t && t.src && (this.posterURL = t.src), this.innerHTML = "", this.findAndActivateService();
+    this.markup = "embetter-media component not initialized properly.", this.loops = this.hasAttribute("loops"), this.muted = this.hasAttribute("muted"), this.findAndActivateService();
   }
   getElements() {
     this.thumbnail = this.el.querySelector("img");
@@ -415,30 +415,25 @@ class c extends HTMLElement {
     for (let t of d) {
       let i = t.dataAttribute;
       if (this.hasAttribute(i)) {
-        this.service = t, this.serviceType = t.type, this.serviceId = this.getAttribute(i);
-        let e = this.posterURL || t.thumbnail(this.serviceId);
-        if (this.markup = this.playerHTML(t.link(this.serviceId), e), t.getData) {
-          const s = t.link(this.serviceId);
-          t.getData(s).then((a) => {
-            const r = typeof a == "string" ? a : a?.thumbnail;
-            !e && !this.posterURL && r && this.thumbnail && (this.thumbnail.src = r);
-          });
-        }
+        this.service = t, this.serviceType = t.type, this.serviceId = this.getAttribute(i), this.markup = this.playerHTML(t.link(this.serviceId));
         break;
       }
     }
   }
+  onReady() {
+    this.removeAttribute("loading"), this.setAttribute("ready", "");
+  }
   checkThumbnail() {
-    this.thumbnail && (this.setAttribute("loading", ""), this.thumbnail.onload = () => {
-      this.removeAttribute("loading"), this.setAttribute("ready", "");
+    this.thumbnail && (this.setAttribute("loading", ""), this.thumbnail.complete ? this.onReady() : (this.thumbnail.onload = () => {
+      this.onReady();
     }, this.thumbnail.onerror = () => {
       if (this.thumbnail.src.includes("/maxresdefault.jpg")) {
         this.thumbnail.src = this.thumbnail.src.replace("/maxresdefault.jpg", "/0.jpg");
         return;
       }
-      this.thumbnail.src = this.defaultThumbnail, this.removeAttribute("loading"), this.setAttribute("ready", "");
-    }, setTimeout(() => {
-      this.thumbnail.height < 50 && (this.thumbnail.src = this.defaultThumbnail), this.removeAttribute("loading"), this.setAttribute("ready", "");
+      this.thumbnail.src = this.defaultThumbnail, this.onReady();
+    }), setTimeout(() => {
+      this.thumbnail.height < 50 && (this.thumbnail.src = this.defaultThumbnail), this.onReady();
     }, 4e3));
   }
   setupMobileObserver() {
@@ -480,23 +475,21 @@ class c extends HTMLElement {
     var i = document.createElement("div");
     return i.innerHTML = t, i.firstChild;
   }
-  static componentHTML(t, i, e = null, s = null) {
-    let a = "";
-    if (s || e) {
-      const r = s || "#", o = e ? `<img src="${e}">` : "";
-      a = `<a href="${r}">${o}</a>`;
+  static componentHTML(t, i, e = null, a = null) {
+    let s = "";
+    if (a || e) {
+      const r = a || "#", o = e ? `<img src="${e}">` : "";
+      s = `<a href="${r}">${o}</a>`;
     }
-    return `<embetter-media ${t}="${i}">${a}</embetter-media>`;
+    return `<embetter-media ${t}="${i}">${s}</embetter-media>`;
   }
-  playerHTML(t, i) {
+  playerHTML(t) {
     return (
       /* html */
       `
-      <a href="${t}">
-        <img src="${i}" />
-        <div class="embetter-loading"></div>
-        <div class="embetter-play-button"></div>
-      </a>
+      ${this.initialHTML}
+      <div class="embetter-loading"></div>
+      <div class="embetter-play-button"></div>
     `
     );
   }
@@ -510,18 +503,18 @@ class c extends HTMLElement {
     this.el.innerHTML = `
       ${this.html()}
       <style>${this.css()}</style>
-    `, this.getElements();
+    `;
   }
   static register() {
     customElements.define("embetter-media", c);
   }
   static upgradeLegacyEmbeds(t = document) {
     t.querySelectorAll(".embetter").forEach((e) => {
-      for (const s of d) {
-        const a = `data-${s.dataAttribute}`;
-        if (e.hasAttribute(a)) {
-          const r = e.getAttribute(a), o = document.createElement("embetter-media");
-          o.setAttribute(s.dataAttribute, r);
+      for (const a of d) {
+        const s = `data-${a.dataAttribute}`;
+        if (e.hasAttribute(s)) {
+          const r = e.getAttribute(s), o = document.createElement("embetter-media");
+          o.setAttribute(a.dataAttribute, r);
           const n = e.querySelector("a");
           n && o.appendChild(n.cloneNode(!0)), e.hasAttribute("data-loops") && o.setAttribute("loops", ""), e.hasAttribute("data-muted") && o.setAttribute("muted", ""), e.replaceWith(o);
           break;
@@ -531,20 +524,20 @@ class c extends HTMLElement {
   }
   static componentMarkupFromURL(t, i) {
     for (let e = 0; e < d.length; e++) {
-      const s = d[e];
-      if (t.match(s.regex) != null) {
-        s.buildFromText(t, (a, r, o) => {
+      const a = d[e];
+      if (t.match(a.regex) != null) {
+        a.buildFromText(t, (s, r, o) => {
           const n = (h) => {
             let u = c.componentHTML(
-              s.dataAttribute,
-              a,
+              a.dataAttribute,
+              s,
               h,
               r
             );
-            i(u, s);
+            i(u, a);
           };
-          if (!o && s.getData && r) {
-            s.getData(r).then((h) => {
+          if (!o && a.getData && r) {
+            a.getData(r).then((h) => {
               const u = typeof h == "string" ? h : h?.thumbnail;
               n(u || o);
             }).catch(() => n(o));
